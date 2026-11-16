@@ -118,7 +118,7 @@ let unlockCheckTime = 0;
 let shopRenderTime = 0;
 let spreadAnimationTimer;
 let cheatInput = "";
-const SPREAD_CHEAT_CODE = "TimmyTuffJeff";
+const SPREAD_CHEAT_CODE = "Charlie12032012";
 let remoteSocket = null;
 let remoteConnectionWanted = false;
 let remoteEndpoint = "";

@@ -112,13 +112,20 @@
       <section id="admin-tools" hidden>
       <div class="admin-remote admin-connection-status" aria-label="Connected tabs">
         <div class="remote-controls">
-          <label class="remote-broadcast-label"><input id="remote-broadcast" type="checkbox" /> Send actions to other connected game tabs</label>
+          <button id="admin-local-target" class="admin-action primary" type="button" aria-pressed="true">Local control</button>
           <button id="admin-logout" class="admin-action" type="button">Sign out</button>
         </div>
+        <p id="admin-target-status" class="remote-status" role="status" aria-live="polite">Controlling this tab.</p>
         <p class="remote-count">Connected game tabs: <strong id="remote-client-count">0</strong></p>
         <p id="remote-status" class="remote-status" role="status" aria-live="polite">Signed in.</p>
       </div>
-      <p class="admin-intro">Give your spread jar a boost, or let chance decide.</p>
+      <section class="admin-remote" aria-labelledby="remote-sessions-title">
+        <h3 id="remote-sessions-title">Active game sessions</h3>
+        <p>Select a connected tab to direct the controls below to it.</p>
+        <ul id="remote-session-list" class="remote-session-list"></ul>
+        <p id="remote-sessions-empty" class="remote-sessions-empty" role="status">No other game tabs are connected.</p>
+      </section>
+      <p id="admin-scope-title" class="admin-intro">Controls apply to this tab.</p>
       <label class="admin-label" for="admin-amount">Spread amount</label>
       <input id="admin-amount" class="admin-input" type="number" min="0" max="1e60" step="any" inputmode="decimal" placeholder="e.g. 1000000" />
       <div class="admin-actions">

@@ -211,17 +211,19 @@ button { font: inherit; }
 .admin-remote .admin-label { margin-top: 10px; }
 .remote-controls { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; margin-top: 10px; }
 .remote-controls .admin-action { min-height: 38px; }
-.remote-broadcast-label { display: flex; align-items: center; gap: 7px; color: #71553d; font-size: .72rem; font-weight: 700; }
-.remote-broadcast-label input { accent-color: #806044; }
 .remote-password-hint { margin: 7px 0 0; color: #8f7a67; font-size: .7rem; }
 .remote-login-button { width: 100%; margin-top: 12px; }
 .admin-connection-status { margin-bottom: 15px; }
 .admin-connection-status .remote-controls { margin-top: 0; }
-.admin-connection-status .remote-broadcast-label { line-height: 1.5; }
 .remote-status, .remote-count { margin: 9px 0 0; color: #8f7a67; font-size: .72rem; }
 .remote-status[data-state="connected"] { color: #526e3e; font-weight: 800; }
 .remote-status[data-state="error"] { color: #a84e3a; font-weight: 800; }
 .remote-count strong { color: #624632; }
+.remote-session-list { display: grid; gap: 7px; margin: 12px 0 0; padding: 0; list-style: none; }
+.remote-session { justify-content: flex-start; width: 100%; text-align: left; }
+.remote-session[aria-pressed="true"] { border-color: #9c7652; background: #efe3d2; color: #5a3929; }
+.remote-sessions-empty { margin: 9px 0 0; color: #8f7a67; font-size: .72rem; }
+.remote-sessions-empty[hidden] { display: none; }
 .admin-label { display: block; margin-bottom: 7px; color: #71553d; font-size: .76rem; font-weight: 800; }
 .admin-input { width: 100%; padding: 12px 13px; border: 1px solid #e8dccd; border-radius: 11px; outline: none; background: #fff; color: #463128; font: inherit; font-size: .9rem; }
 .admin-input:focus { border-color: #c99a67; box-shadow: 0 0 0 3px rgba(201,154,103,.17); }

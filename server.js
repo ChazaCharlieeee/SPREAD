@@ -61,6 +61,25 @@ function sendConnectionCount() {
   });
 }
 
+function sendAdminSessionLists() {
+  const sessions = Array.from(webSockets.clients)
+    .filter((client) => client.readyState === WebSocket.OPEN)
+    .map((client) => ({
+      id: client.clientId,
+      label: `Game tab ${client.clientId.slice(0, 6)}`
+    }));
+
+  webSockets.clients.forEach((admin) => {
+    if (admin.readyState !== WebSocket.OPEN
+      || !admin.adminSessionToken
+      || Date.now() >= admin.adminSessionExpiresAt) return;
+    sendJson(admin, {
+      type: "sessions",
+      sessions: sessions.filter((session) => session.id !== admin.clientId)
+    });
+  });
+}
+
 function isAllowedOrigin(origin, request) {
   if (typeof origin !== "string" || !origin) return false;
 
@@ -123,6 +142,7 @@ function signIn(socket, request, message) {
   socket.adminSessionToken = sessionToken;
   socket.adminSessionExpiresAt = Date.now() + ADMIN_SESSION_MS;
   sendJson(socket, { type: "auth-ok", sessionToken, expiresAt: socket.adminSessionExpiresAt });
+  sendAdminSessionLists();
 }
 
 function validateCommand(message) {
@@ -203,7 +223,9 @@ server.on("upgrade", (request, socket, head) => {
 });
 
 webSockets.on("connection", (socket) => {
+  socket.clientId = crypto.randomBytes(6).toString("hex");
   sendConnectionCount();
+  sendAdminSessionLists();
   socket.on("message", (data, isBinary) => {
     if (isBinary) {
       sendJson(socket, { type: "error", message: "Binary messages are not supported." });
@@ -254,16 +276,27 @@ webSockets.on("connection", (socket) => {
       return;
     }
 
-    let recipients = 0;
-    webSockets.clients.forEach((client) => {
-      if (client === socket || client.readyState !== WebSocket.OPEN) return;
-      sendJson(client, { type: "command", ...command });
-      recipients++;
-    });
-    sendJson(socket, { type: "sent", requestId, recipients });
+    if (typeof message.targetClientId !== "string" || !/^[a-f0-9]{12}$/.test(message.targetClientId)) {
+      sendJson(socket, { type: "error", requestId, message: "Select an active game tab first." });
+      return;
+    }
+
+    const target = Array.from(webSockets.clients)
+      .find((client) => client.clientId === message.targetClientId);
+    if (!target || target === socket || target.readyState !== WebSocket.OPEN) {
+      sendJson(socket, { type: "error", requestId, message: "That game tab is no longer connected." });
+      sendAdminSessionLists();
+      return;
+    }
+
+    sendJson(target, { type: "command", ...command });
+    sendJson(socket, { type: "sent", requestId, targetClientId: target.clientId });
   });
 
-  socket.on("close", sendConnectionCount);
+  socket.on("close", () => {
+    sendConnectionCount();
+    sendAdminSessionLists();
+  });
   socket.on("error", (error) => console.error("A game tab connection failed.", error));
 });
 

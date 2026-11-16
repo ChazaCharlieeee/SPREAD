@@ -1,7 +1,6 @@
 "use strict";
 
 const SAVE_KEY = "cookie_clicker_save_v1";
-const REMOTE_URL_KEY = "spread_clicker_remote_server_v1";
 
 const BUILDINGS = [
   { id: "cursor", name: "Spread Cursor", icon: "👆", cost: 15, cps: 0.1, desc: "Clicks the spread for you." },
@@ -113,22 +112,13 @@ let frenzyEndTime = 0;
 let audioContext = null;
 let clickBoostEndTime = 0;
 let productionBoostEndTime = 0;
+let luckyClickArmed = false;
 let lastFrameTime = performance.now();
 let unlockCheckTime = 0;
 let shopRenderTime = 0;
 let spreadAnimationTimer;
 let cheatInput = "";
 const SPREAD_CHEAT_CODE = "Charlie12032012";
-let remoteSocket = null;
-let remoteConnectionWanted = false;
-let remoteEndpoint = "";
-let remoteReconnectTimer = 0;
-let remoteRequestCounter = 0;
-let remoteAddressSaved = true;
-let remoteAuthToken = null;
-let pendingAdminCredentials = null;
-let remoteSessions = [];
-let selectedRemoteClientId = null;
 
 const els = {
   cookieCount: document.getElementById("cookie-count"),
@@ -160,24 +150,15 @@ const els = {
   adminEveryBuilding: document.getElementById("admin-every-building"),
   adminAllUpgrades: document.getElementById("admin-all-upgrades"),
   adminSugarFrenzy: document.getElementById("admin-sugar-frenzy"),
+  adminMystery: document.getElementById("admin-mystery"),
+  adminConfetti: document.getElementById("admin-confetti"),
+  adminDisco: document.getElementById("admin-disco"),
+  adminDance: document.getElementById("admin-dance"),
+  adminLuckyClick: document.getElementById("admin-lucky-click"),
   clickBoostStatus: document.getElementById("click-boost-status"),
   productionBoostStatus: document.getElementById("production-boost-status"),
   adminStatus: document.getElementById("admin-status"),
-  adminLogin: document.getElementById("admin-login"),
-  adminTools: document.getElementById("admin-tools"),
-  adminUsername: document.getElementById("admin-username"),
-  adminPassword: document.getElementById("admin-password"),
-  adminLoginSubmit: document.getElementById("admin-login-submit"),
-  adminLogout: document.getElementById("admin-logout"),
-  adminLocalTarget: document.getElementById("admin-local-target"),
-  adminTargetStatus: document.getElementById("admin-target-status"),
-  adminScopeTitle: document.getElementById("admin-scope-title"),
-  remoteSessionList: document.getElementById("remote-session-list"),
-  remoteSessionsEmpty: document.getElementById("remote-sessions-empty"),
-  remoteEndpoint: document.getElementById("remote-endpoint"),
-  remoteLoginStatus: document.getElementById("remote-login-status"),
-  remoteStatus: document.getElementById("remote-status"),
-  remoteClientCount: document.getElementById("remote-client-count")
+  celebrationLayer: document.getElementById("celebration-layer")
 };
 
 function formatNumber(value) {
@@ -244,314 +225,6 @@ function saveGame() {
   }
 }
 
-function setRemoteStatus(message, status = "") {
-  const statusElement = remoteAuthToken ? els.remoteStatus : els.remoteLoginStatus;
-  statusElement.textContent = message;
-  statusElement.dataset.state = status;
-}
-
-function updateRemoteTargetUI() {
-  const selectedSession = remoteSessions.find((session) => session.id === selectedRemoteClientId);
-  els.adminLocalTarget.setAttribute("aria-pressed", String(!selectedSession));
-  els.adminTargetStatus.textContent = selectedSession
-    ? `Targeting ${selectedSession.label}. Admin actions will affect that tab only.`
-    : "Controlling this tab.";
-  els.adminScopeTitle.textContent = selectedSession
-    ? `Controls apply to ${selectedSession.label}.`
-    : "Controls apply to this tab.";
-  els.remoteSessionList.querySelectorAll("[data-session-id]").forEach((button) => {
-    button.setAttribute("aria-pressed", String(button.dataset.sessionId === selectedRemoteClientId));
-  });
-}
-
-function renderRemoteSessions(sessions) {
-  const previousSelection = selectedRemoteClientId;
-  remoteSessions = sessions.filter((session) =>
-    session
-    && typeof session.id === "string"
-    && /^[a-f0-9]{12}$/.test(session.id)
-    && typeof session.label === "string"
-  );
-  const selectionWasLost = Boolean(previousSelection)
-    && !remoteSessions.some((session) => session.id === selectedRemoteClientId);
-  if (!remoteSessions.some((session) => session.id === selectedRemoteClientId)) {
-    selectedRemoteClientId = null;
-  }
-
-  els.remoteSessionList.replaceChildren();
-  remoteSessions.forEach((session) => {
-    const item = document.createElement("li");
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "admin-action remote-session";
-    button.dataset.sessionId = session.id;
-    button.textContent = session.label;
-    button.setAttribute("aria-pressed", String(session.id === selectedRemoteClientId));
-    button.addEventListener("click", () => {
-      selectedRemoteClientId = session.id;
-      updateRemoteTargetUI();
-    });
-    item.appendChild(button);
-    els.remoteSessionList.appendChild(item);
-  });
-  els.remoteSessionsEmpty.hidden = remoteSessions.length > 0;
-  updateRemoteTargetUI();
-  if (selectionWasLost) {
-    els.adminTargetStatus.textContent = "The selected game tab disconnected. Local control is selected.";
-  }
-}
-
-function getDefaultRemoteEndpoint() {
-  if (location.protocol !== "http:" && location.protocol !== "https:") return "";
-  const url = new URL(location.href);
-  url.protocol = location.protocol === "https:" ? "wss:" : "ws:";
-  url.pathname = "/live";
-  url.search = "";
-  url.hash = "";
-  return url.href;
-}
-
-function connectRemote(endpointText = "") {
-  const candidate = endpointText.trim() || els.remoteEndpoint.value.trim() || getDefaultRemoteEndpoint();
-  if (!candidate) {
-    setRemoteStatus("Enter the secure WebSocket address from your hosted server.", "error");
-    return;
-  }
-
-  let url;
-  try {
-    url = new URL(candidate);
-  } catch {
-    setRemoteStatus("Enter a valid WebSocket address.", "error");
-    return;
-  }
-
-  if (url.protocol !== "ws:" && url.protocol !== "wss:") {
-    setRemoteStatus("The address must start with ws:// or wss://.", "error");
-    return;
-  }
-  if ((location.protocol === "https:" || location.protocol === "file:") && url.protocol !== "wss:") {
-    setRemoteStatus("Use wss:// so the admin key is sent over an encrypted connection.", "error");
-    return;
-  }
-  const isLoopback = ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);
-  if (url.protocol === "ws:" && !isLoopback) {
-    setRemoteStatus("Use wss:// for remote servers so the admin key is encrypted.", "error");
-    return;
-  }
-  if (url.username || url.password || url.search || url.hash) {
-    setRemoteStatus("Remove credentials, query text, and fragments from the address.", "error");
-    return;
-  }
-  if (url.pathname === "/") url.pathname = "/live";
-  if (url.pathname !== "/live") {
-    setRemoteStatus("The server address must use the /live path.", "error");
-    return;
-  }
-
-  const normalizedEndpoint = url.href;
-  if (remoteSocket && remoteEndpoint === normalizedEndpoint) {
-    remoteConnectionWanted = true;
-    if (remoteSocket.readyState === WebSocket.OPEN) sendRemoteLogin();
-    return;
-  }
-  if (remoteSocket) {
-    const previousSocket = remoteSocket;
-    remoteSocket = null;
-    previousSocket.close();
-  }
-
-  remoteEndpoint = normalizedEndpoint;
-  els.remoteEndpoint.value = remoteEndpoint;
-  remoteConnectionWanted = true;
-  window.clearTimeout(remoteReconnectTimer);
-  try {
-    localStorage.setItem(REMOTE_URL_KEY, remoteEndpoint);
-    remoteAddressSaved = true;
-  } catch (error) {
-    console.warn("Could not save the remote server address.", error);
-    remoteAddressSaved = false;
-  }
-  openRemoteSocket(remoteEndpoint);
-}
-
-function openRemoteSocket(endpoint) {
-  if (!remoteConnectionWanted) return;
-  if (typeof WebSocket !== "function") {
-    setRemoteStatus("This browser does not support WebSocket connections.", "error");
-    return;
-  }
-
-  setRemoteStatus("Connecting…");
-  let socket;
-  try {
-    socket = new WebSocket(endpoint);
-  } catch (error) {
-    console.error("Could not connect to the remote game server.", error);
-    setRemoteStatus("Could not open the connection; retrying…", "error");
-    scheduleRemoteReconnect(endpoint);
-    return;
-  }
-  remoteSocket = socket;
-
-  socket.addEventListener("open", () => {
-    if (remoteSocket !== socket) return;
-    setRemoteStatus(remoteAddressSaved ? "Connected. Sign in to unlock admin controls." : "Connected, but this browser could not save the server address.", "connected");
-    if (pendingAdminCredentials) sendRemoteLogin();
-  });
-  socket.addEventListener("message", (event) => {
-    if (remoteSocket !== socket) return;
-    let message;
-    try {
-      message = JSON.parse(event.data);
-    } catch (error) {
-      console.error("The remote server sent an invalid message.", error);
-      setRemoteStatus("The server sent an invalid message.", "error");
-      return;
-    }
-
-    if (!message || typeof message !== "object" || Array.isArray(message)) {
-      setRemoteStatus("The server sent an invalid message.", "error");
-      return;
-    }
-
-    if (message.type === "status" && Number.isInteger(message.connectedTabs)) {
-      els.remoteClientCount.textContent = String(message.connectedTabs);
-    } else if (message.type === "sessions" && Array.isArray(message.sessions)) {
-      renderRemoteSessions(message.sessions);
-    } else if (message.type === "auth-ok" && typeof message.sessionToken === "string") {
-      remoteAuthToken = message.sessionToken;
-      pendingAdminCredentials = null;
-      els.adminPassword.value = "";
-      els.adminLogin.hidden = true;
-      els.adminTools.hidden = false;
-      selectedRemoteClientId = null;
-      renderRemoteSessions([]);
-      setRemoteStatus("Signed in. Select a connected game tab below to control it.", "connected");
-      els.adminLogout.focus();
-    } else if (message.type === "auth-failed") {
-      pendingAdminCredentials = null;
-      els.adminPassword.value = "";
-      setRemoteStatus(message.message || "Sign-in failed.", "error");
-    } else if (message.type === "sent" && typeof message.requestId === "string") {
-      const target = remoteSessions.find((session) => session.id === message.targetClientId);
-      setRemoteStatus(`Command sent to ${target ? target.label : "the selected game tab"}.`, "connected");
-    } else if (message.type === "error") {
-      if (typeof message.message === "string" && message.message.toLowerCase().includes("sign in again")) {
-        remoteAuthToken = null;
-        els.adminTools.hidden = true;
-        els.adminLogin.hidden = false;
-        selectedRemoteClientId = null;
-        renderRemoteSessions([]);
-      }
-      setRemoteStatus(message.message || "The server rejected the command.", "error");
-    } else if (message.type === "command") {
-      applyRemoteAdminCommand(message);
-    }
-  });
-  socket.addEventListener("close", () => {
-    if (remoteSocket !== socket) return;
-    remoteSocket = null;
-    remoteAuthToken = null;
-    els.adminTools.hidden = true;
-    els.adminLogin.hidden = false;
-    selectedRemoteClientId = null;
-    renderRemoteSessions([]);
-    els.remoteClientCount.textContent = "0";
-    if (remoteConnectionWanted) {
-      setRemoteStatus("Disconnected. Reconnecting; sign in again when connected.");
-      scheduleRemoteReconnect(endpoint);
-    } else {
-      setRemoteStatus("Not connected");
-    }
-  });
-  socket.addEventListener("error", () => {
-    if (remoteSocket === socket) setRemoteStatus("Connection failed; checking the server…", "error");
-  });
-}
-
-function scheduleRemoteReconnect(endpoint) {
-  window.clearTimeout(remoteReconnectTimer);
-  remoteReconnectTimer = window.setTimeout(() => {
-    if (remoteConnectionWanted) openRemoteSocket(endpoint);
-  }, 5000);
-}
-
-function sendRemoteLogin() {
-  if (!pendingAdminCredentials || !remoteSocket || remoteSocket.readyState !== WebSocket.OPEN) return;
-  try {
-    remoteSocket.send(JSON.stringify({
-      type: "login",
-      username: pendingAdminCredentials.username,
-      password: pendingAdminCredentials.password
-    }));
-    setRemoteStatus("Checking your sign-in…");
-  } catch (error) {
-    console.error("Could not send admin sign-in.", error);
-    setRemoteStatus("Could not send sign-in; please retry.", "error");
-  }
-}
-
-function loginToRemoteAdmin() {
-  const username = els.adminUsername.value.trim();
-  const password = els.adminPassword.value;
-  if (!username || !password) {
-    setRemoteStatus("Enter both your admin username and password.", "error");
-    return;
-  }
-  pendingAdminCredentials = { username, password };
-  connectRemote();
-}
-
-function logoutRemoteAdmin() {
-  if (remoteSocket && remoteSocket.readyState === WebSocket.OPEN) {
-    remoteSocket.send(JSON.stringify({ type: "logout" }));
-  }
-  remoteAuthToken = null;
-  pendingAdminCredentials = null;
-  els.adminPassword.value = "";
-  selectedRemoteClientId = null;
-  renderRemoteSessions([]);
-  els.adminTools.hidden = true;
-  els.adminLogin.hidden = false;
-  setRemoteStatus("Signed out.");
-  els.adminUsername.focus();
-}
-
-function sendRemoteAdminCommand(action, payload = {}) {
-  const targetClientId = selectedRemoteClientId;
-  if (!targetClientId) return false;
-  if (!remoteAuthToken || !remoteSocket || remoteSocket.readyState !== WebSocket.OPEN) {
-    setRemoteStatus("This action ran here, but the remote server is not connected.", "error");
-    return false;
-  }
-
-  const requestId = `${Date.now()}-${++remoteRequestCounter}`;
-  try {
-    remoteSocket.send(JSON.stringify({ type: "admin-command", requestId, sessionToken: remoteAuthToken, targetClientId, action, payload }));
-    setRemoteStatus("Sending the command to other connected tabs…");
-    return true;
-  } catch (error) {
-    console.error("Could not send the remote admin command.", error);
-    setRemoteStatus("This action ran here, but the remote command could not be sent.", "error");
-    return false;
-  }
-}
-
-function initializeRemoteControl() {
-  let savedEndpoint = "";
-  try {
-    savedEndpoint = localStorage.getItem(REMOTE_URL_KEY) || "";
-  } catch (error) {
-    console.warn("Could not read the saved remote server address.", error);
-  }
-  const endpoint = savedEndpoint || getDefaultRemoteEndpoint();
-  if (endpoint) {
-    els.remoteEndpoint.value = endpoint;
-    connectRemote(endpoint);
-  }
-}
-
 function showToast(message) {
   const toast = document.createElement("div");
   toast.className = "toast";
@@ -562,6 +235,21 @@ function showToast(message) {
     toast.style.transition = "opacity .25s ease";
     window.setTimeout(() => toast.remove(), 260);
   }, 3000);
+}
+
+function launchConfetti(count = 32) {
+  const colors = ["#d97d55", "#e7b84f", "#83a66d", "#8d7ac4", "#e58aa0"];
+  for (let index = 0; index < count; index++) {
+    const piece = document.createElement("span");
+    piece.className = "confetti-piece";
+    piece.style.left = `${Math.random() * 100}%`;
+    piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.setProperty("--confetti-x", `${(Math.random() - 0.5) * 240}px`);
+    piece.style.setProperty("--confetti-rotation", `${Math.random() * 900 - 450}deg`);
+    piece.style.animationDelay = `${Math.random() * 0.25}s`;
+    els.celebrationLayer.appendChild(piece);
+    window.setTimeout(() => piece.remove(), 2400);
+  }
 }
 
 function playTone(startFrequency, endFrequency, duration, volume) {
@@ -721,17 +409,39 @@ function buyUpgrade(id) {
   renderShop();
 }
 
-function startSugarFrenzy() {
+function startSugarFrenzy(duration = 15000) {
   frenzyMultiplier = 7;
-  frenzyEndTime = Date.now() + 15000;
-  showToast("🍯 Sugar rush! 7× production for 15 seconds!");
+  frenzyEndTime = Date.now() + duration;
+  showToast(`🍯 Sugar rush! 7× production for ${Math.ceil(duration / 1000)} seconds!`);
 }
 
 els.cookieButton.addEventListener("click", (event) => {
-  const gain = getCookiesPerClick();
+  let gain = getCookiesPerClick();
+  if (luckyClickArmed) {
+    gain *= 10;
+    luckyClickArmed = false;
+    els.adminLuckyClick.setAttribute("aria-pressed", "false");
+    els.adminLuckyClick.textContent = "🍀 Arm a 10× lucky click";
+    els.adminStatus.textContent = `Lucky click! You earned ${formatNumber(gain)} spreads.`;
+    showToast(`🍀 10× lucky click! +${formatNumber(gain)} spreads`);
+    launchConfetti(24);
+  } else if (Math.random() < 0.01) {
+    gain *= 10;
+    showToast(`🎉 Jackpot! That click made ${formatNumber(gain)} spreads!`);
+    launchConfetti(24);
+  }
   state.cookies += gain;
   state.totalCookies += gain;
   state.totalClicks++;
+  if (state.totalClicks % 100 === 0) {
+    const streakBonus = gain * 25;
+    if (Number.isFinite(state.cookies + streakBonus) && Number.isFinite(state.totalCookies + streakBonus)) {
+      state.cookies += streakBonus;
+      state.totalCookies += streakBonus;
+      showToast(`🎊 100-click streak! Bonus: ${formatNumber(streakBonus)} spreads!`);
+      launchConfetti(20);
+    }
+  }
   els.cookieButton.classList.add("clicked");
   window.clearTimeout(spreadAnimationTimer);
   spreadAnimationTimer = window.setTimeout(() => els.cookieButton.classList.remove("clicked"), 130);
@@ -758,7 +468,7 @@ window.addEventListener("keydown", (event) => {
 function openAdminPanel() {
   els.adminPanel.hidden = false;
   els.adminStatus.textContent = "";
-  (remoteAuthToken ? els.adminAmount : els.adminUsername).focus();
+  els.adminAmount.focus();
 }
 
 function closeAdminPanel() {
@@ -794,94 +504,6 @@ function grantAdminSpreads(amount, message) {
   return true;
 }
 
-function applyRemoteAdminCommand(command) {
-  if (!command || typeof command !== "object" || Array.isArray(command)) {
-    setRemoteStatus("The server sent an invalid command.", "error");
-    return;
-  }
-  const amount = command.payload && command.payload.amount;
-  if (["grant", "remove", "random"].includes(command.action)
-    && (!Number.isFinite(amount) || amount <= 0 || amount > 1e60)) {
-    console.error("The remote server sent an invalid spread amount.");
-    setRemoteStatus("The server sent an invalid command.", "error");
-    return;
-  }
-
-  switch (command.action) {
-    case "grant":
-      if (!grantAdminSpreads(amount, `Remote admin added ${formatNumber(amount)} spreads.`)) {
-        showToast("Remote admin's spread grant was too large for this save.");
-        return;
-      }
-      refreshAfterAdminChange();
-      showToast(`Remote admin: +${formatNumber(amount)} spreads`);
-      break;
-    case "remove": {
-      const removed = Math.min(amount, state.cookies);
-      state.cookies -= removed;
-      refreshAfterAdminChange();
-      showToast(`Remote admin removed ${formatNumber(removed)} spreads`);
-      break;
-    }
-    case "random":
-      if (Math.random() < 0.5) {
-        if (!grantAdminSpreads(amount, `Remote admin bonus: ${formatNumber(amount)} spreads.`)) {
-          showToast("Remote admin's spread grant was too large for this save.");
-          return;
-        }
-        showToast(`Remote admin: lucky gain of ${formatNumber(amount)} spreads`);
-      } else {
-        const lost = Math.min(amount, state.cookies);
-        state.cookies -= lost;
-        showToast(`Remote admin: lost ${formatNumber(lost)} spreads`);
-      }
-      refreshAfterAdminChange();
-      break;
-    case "click-boost":
-      clickBoostEndTime = Date.now() + 60000;
-      updateAdminBoosterStatus();
-      showToast("Remote admin doubled click power for 60 seconds!");
-      break;
-    case "production-boost":
-      productionBoostEndTime = Date.now() + 60000;
-      updateAdminBoosterStatus();
-      showToast("Remote admin doubled production for 60 seconds!");
-      break;
-    case "every-building":
-      BUILDINGS.forEach((building) => {
-        state.buildings[building.id] = (state.buildings[building.id] || 0) + 1;
-      });
-      refreshAfterAdminChange();
-      showToast("Remote admin added one of every building!");
-      break;
-    case "all-upgrades":
-      state.upgrades = UPGRADES.map((upgrade) => upgrade.id);
-      refreshAfterAdminChange();
-      showToast("Remote admin unlocked every upgrade!");
-      break;
-    case "sugar-frenzy":
-      startSugarFrenzy();
-      break;
-    default:
-      console.error("The remote server sent an unsupported admin command.");
-      setRemoteStatus("The server sent an unsupported command.", "error");
-  }
-}
-
-els.adminLoginSubmit.addEventListener("click", loginToRemoteAdmin);
-els.adminUsername.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") loginToRemoteAdmin();
-});
-els.adminPassword.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") loginToRemoteAdmin();
-});
-els.adminLogout.addEventListener("click", logoutRemoteAdmin);
-els.adminLocalTarget.addEventListener("click", () => {
-  selectedRemoteClientId = null;
-  updateRemoteTargetUI();
-  els.adminAmount.focus();
-});
-
 els.adminClose.addEventListener("click", closeAdminPanel);
 els.adminPanel.addEventListener("click", (event) => {
   if (event.target === els.adminPanel) closeAdminPanel();
@@ -890,10 +512,6 @@ els.adminPanel.addEventListener("click", (event) => {
 els.adminAdd.addEventListener("click", () => {
   const amount = getAdminAmount();
   if (amount === null) return;
-  if (selectedRemoteClientId) {
-    sendRemoteAdminCommand("grant", { amount });
-    return;
-  }
   if (!grantAdminSpreads(amount, `Added ${formatNumber(amount)} spreads to your jar.`)) return;
   refreshAfterAdminChange();
 });
@@ -901,10 +519,6 @@ els.adminAdd.addEventListener("click", () => {
 els.adminPanel.querySelectorAll("[data-admin-grant]").forEach((button) => {
   button.addEventListener("click", () => {
     const amount = Number(button.dataset.adminGrant);
-    if (selectedRemoteClientId) {
-      sendRemoteAdminCommand("grant", { amount });
-      return;
-    }
     if (grantAdminSpreads(amount, `Bonus! Added ${formatNumber(amount)} spreads.`)) {
       refreshAfterAdminChange();
     }
@@ -914,10 +528,6 @@ els.adminPanel.querySelectorAll("[data-admin-grant]").forEach((button) => {
 els.adminRemove.addEventListener("click", () => {
   const amount = getAdminAmount();
   if (amount === null) return;
-  if (selectedRemoteClientId) {
-    sendRemoteAdminCommand("remove", { amount });
-    return;
-  }
   const removed = Math.min(amount, state.cookies);
   state.cookies -= removed;
   els.adminStatus.textContent = `Removed ${formatNumber(removed)} spreads from your jar.`;
@@ -927,10 +537,6 @@ els.adminRemove.addEventListener("click", () => {
 els.adminRandom.addEventListener("click", () => {
   const amount = getAdminAmount();
   if (amount === null) return;
-  if (selectedRemoteClientId) {
-    sendRemoteAdminCommand("random", { amount });
-    return;
-  }
   if (Math.random() < 0.5) {
     if (!grantAdminSpreads(amount, `Lucky! You gained ${formatNumber(amount)} spreads.`)) return;
   } else {
@@ -942,28 +548,16 @@ els.adminRandom.addEventListener("click", () => {
 });
 
 els.adminClickBoost.addEventListener("click", () => {
-  if (selectedRemoteClientId) {
-    sendRemoteAdminCommand("click-boost");
-    return;
-  }
   clickBoostEndTime = Date.now() + 60000;
   updateAdminBoosterStatus();
 });
 
 els.adminProductionBoost.addEventListener("click", () => {
-  if (selectedRemoteClientId) {
-    sendRemoteAdminCommand("production-boost");
-    return;
-  }
   productionBoostEndTime = Date.now() + 60000;
   updateAdminBoosterStatus();
 });
 
 els.adminEveryBuilding.addEventListener("click", () => {
-  if (selectedRemoteClientId) {
-    sendRemoteAdminCommand("every-building");
-    return;
-  }
   BUILDINGS.forEach((building) => {
     state.buildings[building.id] = (state.buildings[building.id] || 0) + 1;
   });
@@ -972,22 +566,68 @@ els.adminEveryBuilding.addEventListener("click", () => {
 });
 
 els.adminAllUpgrades.addEventListener("click", () => {
-  if (selectedRemoteClientId) {
-    sendRemoteAdminCommand("all-upgrades");
-    return;
-  }
   state.upgrades = UPGRADES.map((upgrade) => upgrade.id);
   els.adminStatus.textContent = "Every upgrade unlocked! All their bonuses are active.";
   refreshAfterAdminChange();
 });
 
 els.adminSugarFrenzy.addEventListener("click", () => {
-  if (selectedRemoteClientId) {
-    sendRemoteAdminCommand("sugar-frenzy");
-    return;
-  }
   startSugarFrenzy();
   els.adminStatus.textContent = "Sugar frenzy! All production is 7× for 15 seconds.";
+});
+
+els.adminMystery.addEventListener("click", () => {
+  const surprise = Math.floor(Math.random() * 4);
+  if (surprise === 0) {
+    const amount = Math.max(100, getCookiesPerClick() * 50);
+    if (!grantAdminSpreads(amount, `Mystery jar prize: +${formatNumber(amount)} spreads!`)) return;
+    refreshAfterAdminChange();
+    launchConfetti(28);
+  } else if (surprise === 1) {
+    clickBoostEndTime = Date.now() + 45000;
+    els.adminStatus.textContent = "Mystery jar prize: 2× click power for 45 seconds!";
+    updateAdminBoosterStatus();
+    showToast("⚡ The mystery jar boosted your clicks!");
+  } else if (surprise === 2) {
+    productionBoostEndTime = Date.now() + 45000;
+    els.adminStatus.textContent = "Mystery jar prize: 2× production for 45 seconds!";
+    updateAdminBoosterStatus();
+    showToast("🏭 The mystery jar boosted production!");
+  } else {
+    els.adminStatus.textContent = "Mystery jar prize: a 7× sugar rush for 10 seconds!";
+    startSugarFrenzy(10000);
+  }
+});
+
+els.adminConfetti.addEventListener("click", () => {
+  launchConfetti(52);
+  playTone(520, 880, 0.22, 0.11);
+  els.adminStatus.textContent = "Confetti party! The spreadery is celebrating.";
+});
+
+els.adminDisco.addEventListener("click", () => {
+  const enabled = document.body.classList.toggle("disco-mode");
+  els.adminDisco.setAttribute("aria-pressed", String(enabled));
+  els.adminDisco.textContent = `🪩 Disco mode: ${enabled ? "on" : "off"}`;
+  els.adminStatus.textContent = enabled ? "Disco mode is on. Dance, little spreadery!" : "Disco mode is off.";
+});
+
+els.adminDance.addEventListener("click", () => {
+  const enabled = document.body.classList.toggle("dance-mode");
+  els.adminDance.setAttribute("aria-pressed", String(enabled));
+  els.adminDance.textContent = `💃 Dance mode: ${enabled ? "on" : "off"}`;
+  els.adminStatus.textContent = enabled ? "Dance mode is on. Look at that spread move!" : "Dance mode is off.";
+});
+
+els.adminLuckyClick.addEventListener("click", () => {
+  luckyClickArmed = !luckyClickArmed;
+  els.adminLuckyClick.setAttribute("aria-pressed", String(luckyClickArmed));
+  els.adminLuckyClick.textContent = luckyClickArmed
+    ? "🍀 Lucky click armed!"
+    : "🍀 Arm a 10× lucky click";
+  els.adminStatus.textContent = luckyClickArmed
+    ? "Your next spread click will be worth 10×!"
+    : "Lucky click cancelled.";
 });
 
 function updateAdminBoosterStatus() {
@@ -1011,6 +651,14 @@ els.resetButton.addEventListener("click", () => {
   frenzyEndTime = 0;
   clickBoostEndTime = 0;
   productionBoostEndTime = 0;
+  luckyClickArmed = false;
+  document.body.classList.remove("disco-mode", "dance-mode");
+  els.adminLuckyClick.setAttribute("aria-pressed", "false");
+  els.adminLuckyClick.textContent = "🍀 Arm a 10× lucky click";
+  els.adminDisco.setAttribute("aria-pressed", "false");
+  els.adminDisco.textContent = "🪩 Disco mode: off";
+  els.adminDance.setAttribute("aria-pressed", "false");
+  els.adminDance.textContent = "💃 Dance mode: off";
   updateAdminBoosterStatus();
   saveGame();
   renderShop();
@@ -1070,7 +718,6 @@ function gameLoop(now) {
 }
 
 function startGame() {
-  initializeRemoteControl();
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
     navigator.serviceWorker.register("./service-worker.js").catch((error) => {
       console.warn("Could not enable the offline app cache.", error);

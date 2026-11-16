@@ -65,6 +65,7 @@
           </button>
         </div>
         <p class="click-hint">Click the picture to make <strong>more spreads</strong></p>
+        <p class="surprise-hint">Keep clicking — a surprise jackpot might happen!</p>
         <div class="oven-status"><span class="oven-light"></span><span>Ready to spread</span><span class="status-divider">·</span><span id="building-summary">Your spreadery is just getting started</span></div>
       </section>
 
@@ -96,36 +97,7 @@
         </div>
         <button id="admin-close" class="icon-button" type="button" aria-label="Close admin panel">✕</button>
       </header>
-      <section id="admin-login" class="admin-remote" aria-labelledby="admin-remote-title">
-        <h3 id="admin-remote-title">Remote tab control</h3>
-        <p>Sign in to unlock admin controls for Spread Clicker tabs connected to your hosted server.</p>
-        <label class="admin-label" for="remote-endpoint">WebSocket address</label>
-        <input id="remote-endpoint" class="admin-input" type="url" autocomplete="url" placeholder="Uses this site's secure address when hosted" />
-        <label class="admin-label" for="admin-username">Admin username</label>
-        <input id="admin-username" class="admin-input" type="text" autocomplete="username" maxlength="80" />
-        <label class="admin-label" for="admin-password">Admin password</label>
-        <input id="admin-password" class="admin-input" type="password" autocomplete="current-password" maxlength="256" />
-        <p class="remote-password-hint">Set the password privately on your server; it must be at least 12 characters.</p>
-        <button id="admin-login-submit" class="admin-action primary remote-login-button" type="button">Sign in</button>
-        <p id="remote-login-status" class="remote-status" role="status" aria-live="polite">Not connected</p>
-      </section>
-      <section id="admin-tools" hidden>
-      <div class="admin-remote admin-connection-status" aria-label="Connected tabs">
-        <div class="remote-controls">
-          <button id="admin-local-target" class="admin-action primary" type="button" aria-pressed="true">Local control</button>
-          <button id="admin-logout" class="admin-action" type="button">Sign out</button>
-        </div>
-        <p id="admin-target-status" class="remote-status" role="status" aria-live="polite">Controlling this tab.</p>
-        <p class="remote-count">Connected game tabs: <strong id="remote-client-count">0</strong></p>
-        <p id="remote-status" class="remote-status" role="status" aria-live="polite">Signed in.</p>
-      </div>
-      <section class="admin-remote" aria-labelledby="remote-sessions-title">
-        <h3 id="remote-sessions-title">Active game sessions</h3>
-        <p>Select a connected tab to direct the controls below to it.</p>
-        <ul id="remote-session-list" class="remote-session-list"></ul>
-        <p id="remote-sessions-empty" class="remote-sessions-empty" role="status">No other game tabs are connected.</p>
-      </section>
-      <p id="admin-scope-title" class="admin-intro">Controls apply to this tab.</p>
+      <p class="admin-intro">These controls affect only this game in this browser tab.</p>
       <label class="admin-label" for="admin-amount">Spread amount</label>
       <input id="admin-amount" class="admin-input" type="number" min="0" max="1e60" step="any" inputmode="decimal" placeholder="e.g. 1000000" />
       <div class="admin-actions">
@@ -160,11 +132,22 @@
           <button id="admin-sugar-frenzy" class="admin-action" type="button">🍯 Start a sugar frenzy</button>
         </div>
       </section>
-      <p id="admin-status" class="admin-status" role="status" aria-live="polite"></p>
+      <section class="admin-toys">
+        <h3>Extra fun</h3>
+        <div class="admin-presets">
+          <button id="admin-mystery" class="admin-action" type="button">🎁 Open a mystery jar</button>
+          <button id="admin-confetti" class="admin-action" type="button">🎉 Confetti party</button>
+          <button id="admin-disco" class="admin-action" type="button" aria-pressed="false">🪩 Disco mode: off</button>
+          <button id="admin-dance" class="admin-action" type="button" aria-pressed="false">💃 Dance mode: off</button>
+          <button id="admin-lucky-click" class="admin-action" type="button" aria-pressed="false">🍀 Arm a 10× lucky click</button>
+        </div>
+        <p class="admin-help">The lucky click stays armed until you click the spread.</p>
       </section>
+      <p id="admin-status" class="admin-status" role="status" aria-live="polite"></p>
     </div>
   </section>
   <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+  <div id="celebration-layer" aria-hidden="true"></div>
   <script src="Code.js"></script>
 </body>
 </html>

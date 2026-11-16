@@ -140,6 +140,7 @@ button { font: inherit; }
 .stage-heading h1 { margin: 9px 0 5px; color: #583b2b; font-family: "Playfair Display", Georgia, serif; font-size: clamp(1.35rem, 2.2vw, 1.85rem); }
 .stage-heading p { margin: 0; color: #a18c79; font-size: .82rem; }
 .cookie-wrap { position: relative; display: grid; width: min(300px, 68vw); aspect-ratio: 1; place-items: center; margin-top: 32px; }
+.surprise-hint { margin: -20px 0 32px; color: #b28a68; font-size: .68rem; font-style: italic; }
 .cookie-glow { position: absolute; inset: 12%; border-radius: 50%; background: #e8c99e; filter: blur(35px); opacity: .43; transition: transform .3s; }
 .cookie-button {
   position: relative;
@@ -198,6 +199,8 @@ button { font: inherit; }
 
 #toast-container { position: fixed; z-index: 30; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
 .toast { max-width: min(360px, calc(100vw - 40px)); padding: 12px 16px; border: 1px solid #ead9c5; border-radius: 12px; background: #fffdf8; color: #624632; box-shadow: 0 9px 30px rgba(85,57,33,.12); font-size: .82rem; font-weight: 700; animation: toast-in .25s ease both; }
+#celebration-layer { position: fixed; z-index: 60; inset: 0; overflow: hidden; pointer-events: none; }
+.confetti-piece { position: absolute; top: -14px; width: 8px; height: 12px; border-radius: 2px; animation: confetti-fall 1.8s ease-in forwards; }
 
 .admin-overlay { position: fixed; z-index: 40; inset: 0; display: grid; place-items: center; overflow-y: auto; padding: 20px; background: rgba(57,42,31,.38); backdrop-filter: blur(7px); }
 .admin-overlay[hidden] { display: none; }
@@ -205,25 +208,6 @@ button { font: inherit; }
 .admin-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .admin-header h2 { margin: 4px 0 0; color: #583b2b; font-family: "Playfair Display", Georgia, serif; font-size: 1.65rem; }
 .admin-intro { margin: 12px 0 19px; color: #8f7a67; font-size: .84rem; }
-.admin-remote { margin: 0 0 20px; padding: 14px; border: 1px solid #e8dccd; border-radius: 13px; background: #faf6ef; }
-.admin-remote h3 { margin: 0; color: #674a34; font-family: "Playfair Display", Georgia, serif; font-size: 1.08rem; }
-.admin-remote > p:first-of-type { margin: 7px 0 13px; color: #8f7a67; font-size: .74rem; line-height: 1.5; }
-.admin-remote .admin-label { margin-top: 10px; }
-.remote-controls { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; margin-top: 10px; }
-.remote-controls .admin-action { min-height: 38px; }
-.remote-password-hint { margin: 7px 0 0; color: #8f7a67; font-size: .7rem; }
-.remote-login-button { width: 100%; margin-top: 12px; }
-.admin-connection-status { margin-bottom: 15px; }
-.admin-connection-status .remote-controls { margin-top: 0; }
-.remote-status, .remote-count { margin: 9px 0 0; color: #8f7a67; font-size: .72rem; }
-.remote-status[data-state="connected"] { color: #526e3e; font-weight: 800; }
-.remote-status[data-state="error"] { color: #a84e3a; font-weight: 800; }
-.remote-count strong { color: #624632; }
-.remote-session-list { display: grid; gap: 7px; margin: 12px 0 0; padding: 0; list-style: none; }
-.remote-session { justify-content: flex-start; width: 100%; text-align: left; }
-.remote-session[aria-pressed="true"] { border-color: #9c7652; background: #efe3d2; color: #5a3929; }
-.remote-sessions-empty { margin: 9px 0 0; color: #8f7a67; font-size: .72rem; }
-.remote-sessions-empty[hidden] { display: none; }
 .admin-label { display: block; margin-bottom: 7px; color: #71553d; font-size: .76rem; font-weight: 800; }
 .admin-input { width: 100%; padding: 12px 13px; border: 1px solid #e8dccd; border-radius: 11px; outline: none; background: #fff; color: #463128; font: inherit; font-size: .9rem; }
 .admin-input:focus { border-color: #c99a67; box-shadow: 0 0 0 3px rgba(201,154,103,.17); }
@@ -239,12 +223,22 @@ button { font: inherit; }
 .admin-toys h3 { margin: 0 0 9px; color: #674a34; font-family: "Playfair Display", Georgia, serif; font-size: 1.08rem; }
 .admin-presets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .admin-presets .admin-action { min-height: 46px; }
+.admin-action[aria-pressed="true"] { border-color: #b98b59; background: #f3e5ce; color: #5a3929; }
+.admin-help { margin: 8px 0 0; color: #9a8775; font-size: .7rem; }
 .booster-action { justify-content: space-between; text-align: left; }
 .booster-action strong { color: #a57c51; font-size: .7rem; white-space: nowrap; }
 .admin-status { min-height: 20px; margin: 13px 0 0; color: #687c51; font-size: .77rem; font-weight: 700; }
 
 @keyframes banner-pop { from { opacity: 0; transform: translateY(-6px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes confetti-fall { to { opacity: 0; transform: translate3d(var(--confetti-x), 110vh, 0) rotate(var(--confetti-rotation)); } }
+@keyframes spread-dance { 0%, 100% { transform: rotate(-4deg) scale(1); } 50% { transform: rotate(4deg) scale(1.05); } }
+@keyframes disco-wash { 0%, 100% { background-color: #ffe6bc; } 33% { background-color: #d9e8ff; } 66% { background-color: #f8d9eb; } }
+@keyframes disco-glow { 0%, 100% { background: #edbe69; opacity: .55; } 50% { background: #9ec7e8; opacity: .75; } }
+
+body.disco-mode .bake-stage { animation: disco-wash 3s linear infinite; }
+body.disco-mode .cookie-glow { animation: disco-glow 1.5s ease-in-out infinite alternate; }
+body.dance-mode .cookie-wrap { animation: spread-dance 1.1s ease-in-out infinite; }
 
 @media (max-width: 1050px) {
   .game-shell { padding-right: 20px; padding-left: 20px; }
@@ -279,7 +273,6 @@ button { font: inherit; }
   .left-column { display: flex; }
   .rate-line { font-size: .63rem; }
   .upgrades-list { grid-template-columns: 1fr; }
-  .remote-controls { grid-template-columns: 1fr; }
   .admin-overlay { padding: 12px; }
   .admin-dialog { padding: 18px; }
   .admin-actions { grid-template-columns: 1fr; }

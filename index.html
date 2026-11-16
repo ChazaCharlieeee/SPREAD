@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f6eee1" />
+  <title>Spread Clicker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="game-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Spread Clicker home">
+        <span class="brand-cookie" aria-hidden="true">✦</span>
+        <span><strong>SPREAD</strong><small>CLICKER</small></span>
+      </a>
+      <div class="ticker" aria-live="polite">
+        <span class="ticker-dot"></span>
+        <p id="news-text">Fresh spreads, straight from the jar.</p>
+      </div>
+      <div class="top-controls">
+        <button id="toggle-sfx-btn" class="icon-button" type="button" aria-pressed="true" title="Toggle sound">🔊 Sound on</button>
+        <button id="reset-btn" class="icon-button reset-button" type="button" title="Reset all progress">↺ Reset</button>
+      </div>
+    </header>
+
+    <main class="game-grid">
+      <aside class="left-column">
+        <section class="panel score-panel">
+          <div class="eyebrow">YOUR SPREAD JAR</div>
+          <div id="cookie-count" class="cookie-count" aria-live="polite">0</div>
+          <div class="cookie-label">spreads</div>
+          <div class="rate-line"><span><strong id="cps-display">0</strong> per second</span><span><strong id="cpc-display">+1</strong> per click</span></div>
+        </section>
+
+        <section class="panel stats-panel">
+          <h2>Your spreadery</h2>
+          <ul class="stats-list">
+            <li><span>Spread all time</span><strong id="stat-total">0</strong></li>
+            <li><span>Manual clicks</span><strong id="stat-clicks">0</strong></li>
+            <li><span>Time spreading</span><strong id="stat-time">0s</strong></li>
+          </ul>
+        </section>
+
+        <section class="panel achievement-panel">
+          <div class="section-heading">
+            <h2>Little victories</h2>
+            <span id="achievements-count" class="achievement-count">0 / 0</span>
+          </div>
+          <div id="achievements-container" class="achievements-grid"></div>
+        </section>
+      </aside>
+
+      <section class="bake-stage" aria-label="Spread making area">
+        <div class="stage-heading">
+          <span class="stage-kicker">THE LITTLE SPREADERY</span>
+          <h1>Make something spread.</h1>
+          <p>Every great spread starts with one click.</p>
+        </div>
+        <div id="frenzy-banner" class="frenzy-banner hidden" role="status">🍯 Sugar rush! <span id="frenzy-timer">15s</span> · 7× production</div>
+        <div class="cookie-wrap">
+          <div class="cookie-glow"></div>
+          <button id="cookie-btn" class="cookie-button" type="button" aria-label="Click the picture to make a spread">
+            <img src="spread-clicker.jpg" alt="" aria-hidden="true" />
+          </button>
+        </div>
+        <p class="click-hint">Click the picture to make <strong>more spreads</strong></p>
+        <div class="oven-status"><span class="oven-light"></span><span>Ready to spread</span><span class="status-divider">·</span><span id="building-summary">Your spreadery is just getting started</span></div>
+      </section>
+
+      <aside class="shop-column">
+        <section class="panel upgrades-panel">
+          <div class="section-heading">
+            <div><div class="eyebrow">MAKE IT BETTER</div><h2>Upgrades</h2></div>
+            <span class="heading-icon">✨</span>
+          </div>
+          <div id="upgrades-container" class="upgrades-list"></div>
+        </section>
+        <section class="panel shop-panel">
+          <div class="section-heading shop-heading">
+            <div><div class="eyebrow">GROW YOUR SPREADERY</div><h2>Shop</h2></div>
+            <span class="shop-tag">BUILDINGS</span>
+          </div>
+          <div id="buildings-container" class="buildings-list"></div>
+        </section>
+      </aside>
+    </main>
+    <footer class="footer-note">Made with a little bit of magic.</footer>
+  </div>
+  <section id="admin-panel" class="admin-overlay" role="dialog" aria-modal="true" aria-labelledby="admin-title" hidden>
+    <div class="admin-dialog">
+      <header class="admin-header">
+        <div>
+          <div class="eyebrow">SECRET SPREADERY CONTROLS</div>
+          <h2 id="admin-title">Spread Admin</h2>
+        </div>
+        <button id="admin-close" class="icon-button" type="button" aria-label="Close admin panel">✕</button>
+      </header>
+      <section id="admin-login" class="admin-remote" aria-labelledby="admin-remote-title">
+        <h3 id="admin-remote-title">Remote tab control</h3>
+        <p>Sign in to unlock admin controls for Spread Clicker tabs connected to your hosted server.</p>
+        <label class="admin-label" for="remote-endpoint">WebSocket address</label>
+        <input id="remote-endpoint" class="admin-input" type="url" autocomplete="url" placeholder="Uses this site's secure address when hosted" />
+        <label class="admin-label" for="admin-username">Admin username</label>
+        <input id="admin-username" class="admin-input" type="text" autocomplete="username" maxlength="80" />
+        <label class="admin-label" for="admin-password">Admin password</label>
+        <input id="admin-password" class="admin-input" type="password" autocomplete="current-password" maxlength="256" />
+        <p class="remote-password-hint">Set the password privately on your server; it must be at least 12 characters.</p>
+        <button id="admin-login-submit" class="admin-action primary remote-login-button" type="button">Sign in</button>
+        <p id="remote-login-status" class="remote-status" role="status" aria-live="polite">Not connected</p>
+      </section>
+      <section id="admin-tools" hidden>
+      <div class="admin-remote admin-connection-status" aria-label="Connected tabs">
+        <div class="remote-controls">
+          <label class="remote-broadcast-label"><input id="remote-broadcast" type="checkbox" /> Send actions to other connected game tabs</label>
+          <button id="admin-logout" class="admin-action" type="button">Sign out</button>
+        </div>
+        <p class="remote-count">Connected game tabs: <strong id="remote-client-count">0</strong></p>
+        <p id="remote-status" class="remote-status" role="status" aria-live="polite">Signed in.</p>
+      </div>
+      <p class="admin-intro">Give your spread jar a boost, or let chance decide.</p>
+      <label class="admin-label" for="admin-amount">Spread amount</label>
+      <input id="admin-amount" class="admin-input" type="number" min="0" max="1e60" step="any" inputmode="decimal" placeholder="e.g. 1000000" />
+      <div class="admin-actions">
+        <button id="admin-add" class="admin-action primary" type="button">＋ Add spreads</button>
+        <button id="admin-remove" class="admin-action" type="button">− Remove spreads</button>
+        <button id="admin-random" class="admin-action random" type="button">🎲 Random gain or loss</button>
+      </div>
+      <section class="admin-toys">
+        <h3>Quick grants</h3>
+        <div class="admin-presets">
+          <button class="admin-action" data-admin-grant="1000000" type="button">🪙 +1 million</button>
+          <button class="admin-action" data-admin-grant="1000000000" type="button">💰 +1 billion</button>
+          <button class="admin-action" data-admin-grant="1000000000000000" type="button">💎 +1 Qa</button>
+        </div>
+      </section>
+      <div class="admin-boosters">
+        <h3>Temporary boosters</h3>
+        <button id="admin-click-boost" class="admin-action booster-action" type="button">
+          <span>⚡ Double click power · 60 sec</span>
+          <strong id="click-boost-status">Ready</strong>
+        </button>
+        <button id="admin-production-boost" class="admin-action booster-action" type="button">
+          <span>🏭 Double production · 60 sec</span>
+          <strong id="production-boost-status">Ready</strong>
+        </button>
+      </div>
+      <section class="admin-toys">
+        <h3>Bakery mayhem</h3>
+        <div class="admin-presets">
+          <button id="admin-every-building" class="admin-action" type="button">🏗️ Add one of every building</button>
+          <button id="admin-all-upgrades" class="admin-action" type="button">✨ Unlock every upgrade</button>
+          <button id="admin-sugar-frenzy" class="admin-action" type="button">🍯 Start a sugar frenzy</button>
+        </div>
+      </section>
+      <p id="admin-status" class="admin-status" role="status" aria-live="polite"></p>
+      </section>
+    </div>
+  </section>
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+  <script src="Code.js"></script>
+</body>
+</html>

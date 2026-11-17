@@ -3,95 +3,95 @@
 const SAVE_KEY = "cookie_clicker_save_v1";
 
 const BUILDINGS = [
-  { id: "cursor", name: "Spread Cursor", icon: "👆", cost: 15, cps: 0.1, desc: "Clicks the spread for you." },
-  { id: "grandma", name: "Spread Grandma", icon: "👵", cost: 100, cps: 1, desc: "A nice grandma to make more spreads." },
-  { id: "farm", name: "Spread Farm", icon: "🌾", cost: 1100, cps: 8, desc: "Grows fresh spreads in the fields." },
-  { id: "mine", name: "Spread Mine", icon: "⛏️", cost: 12000, cps: 47, desc: "Mines ingredients for your spreads." },
-  { id: "factory", name: "Spread Factory", icon: "🏭", cost: 130000, cps: 260, desc: "Mass-produces freshly made spreads." },
-  { id: "bank", name: "Spread Bank", icon: "🏦", cost: 1400000, cps: 1400, desc: "Makes your spread earn interest." },
-  { id: "temple", name: "Spread Temple", icon: "🏛️", cost: 20000000, cps: 7800, desc: "A sacred place of spread worship." },
-  { id: "lab", name: "Spread Lab", icon: "🧪", cost: 330000000, cps: 44000, desc: "Discovers new ways to make spreads." },
-  { id: "portal", name: "Spread Portal", icon: "🌀", cost: 5100000000, cps: 260000, desc: "Brings spreads in from somewhere else." },
-  { id: "galaxy", name: "Spread Galaxy", icon: "🌌", cost: 75000000000, cps: 1600000, desc: "Turns an entire galaxy into a spread factory." },
-  { id: "dimension", name: "Spread Dimension", icon: "🔮", cost: 1100000000000, cps: 10000000, desc: "Makes spreads across dimensions." },
-  { id: "time-machine", name: "Spread Time Machine", icon: "⏳", cost: 14000000000000, cps: 77000000, desc: "Borrows spreads from the future." },
-  { id: "antimatter", name: "Spread Antimatter Condenser", icon: "⚛️", cost: 170000000000000, cps: 430000000, desc: "Condenses antimatter into pure spread." },
-  { id: "prism", name: "Spread Prism", icon: "🔺", cost: 2100000000000000, cps: 2900000000, desc: "Turns light itself into spreads." },
-  { id: "chancemaker", name: "Spread Chancemaker", icon: "🎲", cost: 26000000000000000, cps: 21000000000, desc: "Takes a chance and wins more spreads." },
-  { id: "fractal-engine", name: "Spread Fractal Engine", icon: "🧬", cost: 310000000000000000, cps: 150000000000, desc: "Makes tiny spread makers that make more spread makers." },
-  { id: "spread-suburb", name: "Spread Suburb", icon: "🏘️", cost: 420000000000000000, cps: 220000000000, desc: "Every home in town gets a tiny spreadery." },
-  { id: "spread-city", name: "Spread City", icon: "🌆", cost: 850000000000000000, cps: 360000000000, desc: "A bright city where every billboard sells spreads." },
-  { id: "spread-megacity", name: "Spread Megacity", icon: "🏙️", cost: 1600000000000000000, cps: 540000000000, desc: "A whole megacity runs on spread production." },
-  { id: "spread-multiverse", name: "Spread Multiverse", icon: "🪐", cost: 2800000000000000000, cps: 720000000000, desc: "Parallel worlds pool their spreads together." },
-  { id: "spreadster", name: "Spreadster", icon: "📻", cost: 4200000000000000000, cps: 800000000000, desc: "Broadcasts fresh spreads to everyone." },
-  { id: "spreadsheet", name: "Spreadsheet", icon: "📊", cost: 58000000000000000000, cps: 4500000000000, desc: "Organizes spreads into perfectly productive rows." },
-  { id: "spreadstergram", name: "Spreadstergram", icon: "📸", cost: 850000000000000000000, cps: 29000000000000, desc: "Shares spreads so fast they make more spreads." }
+  { id: "cursor", name: "Spread Cursor", icon: "👆", cost: 15, cps: 0.085, desc: "Clicks the spread for you." },
+  { id: "grandma", name: "Spread Grandma", icon: "👵", cost: 100, cps: 0.85, desc: "A nice grandma to make more spreads." },
+  { id: "farm", name: "Spread Farm", icon: "🌾", cost: 1100, cps: 6.8, desc: "Grows fresh spreads in the fields." },
+  { id: "mine", name: "Spread Mine", icon: "⛏️", cost: 12000, cps: 40, desc: "Mines ingredients for your spreads." },
+  { id: "factory", name: "Spread Factory", icon: "🏭", cost: 130000, cps: 220, desc: "Mass-produces freshly made spreads." },
+  { id: "bank", name: "Spread Bank", icon: "🏦", cost: 1400000, cps: 1200, desc: "Makes your spread earn interest." },
+  { id: "temple", name: "Spread Temple", icon: "🏛️", cost: 20000000, cps: 6600, desc: "A sacred place of spread worship." },
+  { id: "lab", name: "Spread Lab", icon: "🧪", cost: 330000000, cps: 37000, desc: "Discovers new ways to make spreads." },
+  { id: "portal", name: "Spread Portal", icon: "🌀", cost: 5100000000, cps: 220000, desc: "Brings spreads in from somewhere else." },
+  { id: "galaxy", name: "Spread Galaxy", icon: "🌌", cost: 75000000000, cps: 1350000, desc: "Turns an entire galaxy into a spread factory." },
+  { id: "dimension", name: "Spread Dimension", icon: "🔮", cost: 1100000000000, cps: 8500000, desc: "Makes spreads across dimensions." },
+  { id: "time-machine", name: "Spread Time Machine", icon: "⏳", cost: 14000000000000, cps: 65000000, desc: "Borrows spreads from the future." },
+  { id: "antimatter", name: "Spread Antimatter Condenser", icon: "⚛️", cost: 170000000000000, cps: 365000000, desc: "Condenses antimatter into pure spread." },
+  { id: "prism", name: "Spread Prism", icon: "🔺", cost: 2100000000000000, cps: 2450000000, desc: "Turns light itself into spreads." },
+  { id: "chancemaker", name: "Spread Chancemaker", icon: "🎲", cost: 26000000000000000, cps: 18000000000, desc: "Takes a chance and wins more spreads." },
+  { id: "fractal-engine", name: "Spread Fractal Engine", icon: "🧬", cost: 310000000000000000, cps: 127500000000, desc: "Makes tiny spread makers that make more spread makers." },
+  { id: "spread-suburb", name: "Spread Suburb", icon: "🏘️", cost: 420000000000000000, cps: 187000000000, desc: "Every home in town gets a tiny spreadery." },
+  { id: "spread-city", name: "Spread City", icon: "🌆", cost: 850000000000000000, cps: 306000000000, desc: "A bright city where every billboard sells spreads." },
+  { id: "spread-megacity", name: "Spread Megacity", icon: "🏙️", cost: 1600000000000000000, cps: 459000000000, desc: "A whole megacity runs on spread production." },
+  { id: "spread-multiverse", name: "Spread Multiverse", icon: "🪐", cost: 2800000000000000000, cps: 612000000000, desc: "Parallel worlds pool their spreads together." },
+  { id: "spreadster", name: "Spreadster", icon: "📻", cost: 4200000000000000000, cps: 680000000000, desc: "Broadcasts fresh spreads to everyone." },
+  { id: "spreadsheet", name: "Spreadsheet", icon: "📊", cost: 58000000000000000000, cps: 3800000000000, desc: "Organizes spreads into perfectly productive rows." },
+  { id: "spreadstergram", name: "Spreadstergram", icon: "📸", cost: 850000000000000000000, cps: 24500000000000, desc: "Shares spreads so fast they make more spreads." }
 ];
 
 const CURSORS = [
   { id: "starter", name: "Starter Cursor", icon: "👆", cost: 0, multiplier: 1 },
-  { id: "bronze", name: "Bronze Pointer", icon: "🖱️", cost: 100, multiplier: 1.5 },
-  { id: "gold", name: "Golden Pointer", icon: "🌟", cost: 750, multiplier: 2 },
-  { id: "diamond", name: "Diamond Cursor", icon: "💎", cost: 5000, multiplier: 3 },
-  { id: "rainbow", name: "Rainbow Cursor", icon: "🌈", cost: 25000, multiplier: 5 },
-  { id: "cosmic", name: "Cosmic Cursor", icon: "🪄", cost: 150000, multiplier: 10 },
-  { id: "comet", name: "Comet Cursor", icon: "☄️", cost: 2000000, multiplier: 20 },
-  { id: "nebula", name: "Nebula Pointer", icon: "🌌", cost: 50000000, multiplier: 35 },
-  { id: "quantum", name: "Quantum Cursor", icon: "⚛️", cost: 2500000000, multiplier: 60 },
-  { id: "supernova", name: "Supernova Cursor", icon: "💫", cost: 1000000000000, multiplier: 100 },
-  { id: "infinity", name: "Infinity Pointer", icon: "♾️", cost: 1e18, multiplier: 175 },
-  { id: "tuff", name: "Tuff Tuff Cursor", icon: "👑", cost: 1e24, multiplier: 300 },
-  { id: "ultra", name: "Ultra Cursor", icon: "✨", cost: 1e30, multiplier: 500 },
-  { id: "galaxy", name: "Galaxy Pointer", icon: "🌠", cost: 1e36, multiplier: 800 },
-  { id: "reality", name: "Reality Bender", icon: "🌀", cost: 1e42, multiplier: 1250 },
-  { id: "overdrive", name: "Overdrive Cursor", icon: "⚡", cost: 1e48, multiplier: 2000 },
-  { id: "titan", name: "Titan Pointer", icon: "🔱", cost: 1e54, multiplier: 3500 },
-  { id: "apex", name: "Apex Cursor", icon: "🏆", cost: 1e60, multiplier: 6000 }
+  { id: "bronze", name: "Bronze Pointer", icon: "🖱️", cost: 1000, multiplier: 1.2 },
+  { id: "gold", name: "Golden Pointer", icon: "🌟", cost: 7500, multiplier: 1.6 },
+  { id: "diamond", name: "Diamond Cursor", icon: "💎", cost: 50000, multiplier: 2.4 },
+  { id: "rainbow", name: "Rainbow Cursor", icon: "🌈", cost: 250000, multiplier: 4 },
+  { id: "cosmic", name: "Cosmic Cursor", icon: "🪄", cost: 1500000, multiplier: 8 },
+  { id: "comet", name: "Comet Cursor", icon: "☄️", cost: 20000000, multiplier: 16 },
+  { id: "nebula", name: "Nebula Pointer", icon: "🌌", cost: 500000000, multiplier: 28 },
+  { id: "quantum", name: "Quantum Cursor", icon: "⚛️", cost: 25000000000, multiplier: 48 },
+  { id: "supernova", name: "Supernova Cursor", icon: "💫", cost: 10000000000000, multiplier: 80 },
+  { id: "infinity", name: "Infinity Pointer", icon: "♾️", cost: 1e19, multiplier: 140 },
+  { id: "tuff", name: "Tuff Tuff Cursor", icon: "👑", cost: 1e25, multiplier: 240 },
+  { id: "ultra", name: "Ultra Cursor", icon: "✨", cost: 1e31, multiplier: 400 },
+  { id: "galaxy", name: "Galaxy Pointer", icon: "🌠", cost: 1e37, multiplier: 640 },
+  { id: "reality", name: "Reality Bender", icon: "🌀", cost: 1e43, multiplier: 1000 },
+  { id: "overdrive", name: "Overdrive Cursor", icon: "⚡", cost: 1e49, multiplier: 1600 },
+  { id: "titan", name: "Titan Pointer", icon: "🔱", cost: 1e55, multiplier: 2800 },
+  { id: "apex", name: "Apex Cursor", icon: "🏆", cost: 1e61, multiplier: 4800 }
 ];
 
 const FISH_HABITATS = [
-  { id: "coral-garden", name: "Coral Garden", icon: "🪸", cost: 100000, bonus: 0.05, desc: "Coral comforts your fish. +5% production." },
-  { id: "bubble-castle", name: "Bubble Castle", icon: "🫧", cost: 2000000, bonus: 0.1, desc: "A bubbly home for your collection. +10% production." },
-  { id: "sunken-ship", name: "Sunken Treasure Ship", icon: "🚢", cost: 50000000, bonus: 0.2, desc: "Treasures inspire the whole tank. +20% production." },
-  { id: "rainbow-reef", name: "Rainbow Reef", icon: "🌈", cost: 1000000000, bonus: 0.35, desc: "A legendary reef energizes your fish. +35% production." }
+  { id: "coral-garden", name: "Coral Garden", icon: "🪸", cost: 125000, bonus: 0.04, desc: "Coral comforts your fish. +4% production." },
+  { id: "bubble-castle", name: "Bubble Castle", icon: "🫧", cost: 2500000, bonus: 0.08, desc: "A bubbly home for your collection. +8% production." },
+  { id: "sunken-ship", name: "Sunken Treasure Ship", icon: "🚢", cost: 62500000, bonus: 0.16, desc: "Treasures inspire the whole tank. +16% production." },
+  { id: "rainbow-reef", name: "Rainbow Reef", icon: "🌈", cost: 1250000000, bonus: 0.28, desc: "A legendary reef energizes your fish. +28% production." }
 ];
 
 const CLICK_UPGRADES = [
-  { id: "strong-fingers", name: "Spread Strong Fingers", icon: "💪", cost: 25, desc: "Each purchase doubles spreads per click.", req: (s) => s.totalClicks >= 10, mult: 2 },
-  { id: "butter-cookie", name: "Spread Butter", icon: "🧈", cost: 250, desc: "Each purchase doubles spreads per click.", req: (s) => s.totalCookies >= 250, mult: 2 },
-  { id: "chocolate-chips", name: "Spread Extra Toppings", icon: "🍫", cost: 1000, desc: "Each purchase doubles spreads per click.", req: (s) => s.totalClicks >= 100, mult: 2 },
-  { id: "sugar-rush", name: "Spread Sugar Rush", icon: "🍬", cost: 5000, desc: "Each purchase triples spreads per click.", req: (s) => s.totalCookies >= 5000, mult: 3 },
-  { id: "quick-tap", name: "Quick-Tap Practice", icon: "⚡", cost: 150, desc: "Each purchase doubles spreads per click.", req: (s) => s.totalClicks >= 25, mult: 2 },
-  { id: "sticky-fingers", name: "Sticky Fingers", icon: "🫳", cost: 600, desc: "Each purchase doubles spreads per click.", req: (s) => s.totalClicks >= 60, mult: 2 },
-  { id: "spread-sling", name: "Spread Sling", icon: "🥄", cost: 1800, desc: "Each purchase triples spreads per click.", req: (s) => s.totalClicks >= 120, mult: 3 },
-  { id: "turbo-thumb", name: "Turbo Thumb", icon: "👍", cost: 4500, desc: "Each purchase doubles spreads per click.", req: (s) => s.totalClicks >= 250, mult: 2 },
-  { id: "power-palm", name: "Power Palm", icon: "🖐️", cost: 10000, desc: "Each purchase triples spreads per click.", req: (s) => s.totalClicks >= 500, mult: 3 },
-  { id: "double-tap", name: "Double-Tap Technique", icon: "✌️", cost: 22000, desc: "Each purchase doubles spreads per click.", req: (s) => s.totalClicks >= 900, mult: 2 },
-  { id: "mega-mitts", name: "Mega Mitts", icon: "🥊", cost: 48000, desc: "Each purchase triples spreads per click.", req: (s) => s.totalClicks >= 1500, mult: 3 },
-  { id: "lightning-click", name: "Lightning Click", icon: "🌩️", cost: 100000, desc: "Each purchase doubles spreads per click.", req: (s) => s.totalClicks >= 2500, mult: 2 },
-  { id: "spread-storm", name: "Spreadstorm", icon: "🌪️", cost: 220000, desc: "Each purchase triples spreads per click.", req: (s) => s.totalClicks >= 4000, mult: 3 },
-  { id: "click-cannon", name: "Click Cannon", icon: "🚀", cost: 450000, desc: "Each purchase doubles spreads per click.", req: (s) => s.totalClicks >= 6500, mult: 2 },
-  { id: "golden-touch-upgrade", name: "Golden Touch", icon: "✨", cost: 900000, desc: "Each purchase multiplies spreads per click by five.", req: (s) => s.totalClicks >= 10000, mult: 5 }
+  { id: "strong-fingers", name: "Spread Strong Fingers", icon: "💪", cost: 200, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalClicks >= 10, mult: 1.25 },
+  { id: "butter-cookie", name: "Spread Butter", icon: "🧈", cost: 2000, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalCookies >= 250, mult: 1.25 },
+  { id: "chocolate-chips", name: "Spread Extra Toppings", icon: "🍫", cost: 8000, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalClicks >= 100, mult: 1.25 },
+  { id: "sugar-rush", name: "Spread Sugar Rush", icon: "🍬", cost: 40000, desc: "Each purchase adds 50% more spreads per click.", req: (s) => s.totalCookies >= 5000, mult: 1.5 },
+  { id: "quick-tap", name: "Quick-Tap Practice", icon: "⚡", cost: 1200, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalClicks >= 25, mult: 1.25 },
+  { id: "sticky-fingers", name: "Sticky Fingers", icon: "🫳", cost: 4800, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalClicks >= 60, mult: 1.25 },
+  { id: "spread-sling", name: "Spread Sling", icon: "🥄", cost: 14400, desc: "Each purchase adds 50% more spreads per click.", req: (s) => s.totalClicks >= 120, mult: 1.5 },
+  { id: "turbo-thumb", name: "Turbo Thumb", icon: "👍", cost: 36000, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalClicks >= 250, mult: 1.25 },
+  { id: "power-palm", name: "Power Palm", icon: "🖐️", cost: 80000, desc: "Each purchase adds 50% more spreads per click.", req: (s) => s.totalClicks >= 500, mult: 1.5 },
+  { id: "double-tap", name: "Double-Tap Technique", icon: "✌️", cost: 176000, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalClicks >= 900, mult: 1.25 },
+  { id: "mega-mitts", name: "Mega Mitts", icon: "🥊", cost: 384000, desc: "Each purchase adds 50% more spreads per click.", req: (s) => s.totalClicks >= 1500, mult: 1.5 },
+  { id: "lightning-click", name: "Lightning Click", icon: "🌩️", cost: 800000, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalClicks >= 2500, mult: 1.25 },
+  { id: "spread-storm", name: "Spreadstorm", icon: "🌪️", cost: 1760000, desc: "Each purchase adds 50% more spreads per click.", req: (s) => s.totalClicks >= 4000, mult: 1.5 },
+  { id: "click-cannon", name: "Click Cannon", icon: "🚀", cost: 3600000, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalClicks >= 6500, mult: 1.25 },
+  { id: "golden-touch-upgrade", name: "Golden Touch", icon: "✨", cost: 7200000, desc: "Each purchase multiplies spreads per click by 2.", req: (s) => s.totalClicks >= 10000, mult: 2 }
 ];
 
 const UPGRADES = [
-  { id: "grandmas-rolling-pin", name: "Spread Rolling Pins", icon: "🧑‍🍳", cost: 500, desc: "Grandmas make spreads twice as fast.", req: (s) => (s.buildings.grandma || 0) >= 1, type: "building", target: "grandma", mult: 2 },
-  { id: "fertilizer", name: "Spread Magic Fertilizer", icon: "🌱", cost: 5500, desc: "Spread farms are twice as productive.", req: (s) => (s.buildings.farm || 0) >= 1, type: "building", target: "farm", mult: 2 },
-  { id: "laser-drills", name: "Spread Laser Drills", icon: "🔦", cost: 60000, desc: "Spread mines are twice as productive.", req: (s) => (s.buildings.mine || 0) >= 1, type: "building", target: "mine", mult: 2 },
-  { id: "robot-bakers", name: "Spread Robot Makers", icon: "🤖", cost: 650000, desc: "Spread factories are twice as productive.", req: (s) => (s.buildings.factory || 0) >= 1, type: "building", target: "factory", mult: 2 },
-  { id: "interest", name: "Spread Compound Interest", icon: "💰", cost: 7000000, desc: "Spread banks are twice as productive.", req: (s) => (s.buildings.bank || 0) >= 1, type: "building", target: "bank", mult: 2 },
-  { id: "lab-research", name: "Spread Research", icon: "🔬", cost: 990000000, desc: "Spread Labs are twice as productive.", req: (s) => (s.buildings.lab || 0) >= 1, type: "building", target: "lab", mult: 2 },
-  { id: "portal-stabilizer", name: "Spread Stabilizer", icon: "🪄", cost: 15300000000, desc: "Spread Portals are twice as productive.", req: (s) => (s.buildings.portal || 0) >= 1, type: "building", target: "portal", mult: 2 },
-  { id: "galactic-spread", name: "Spread Galactic Boost", icon: "🌠", cost: 225000000000, desc: "Spread Galaxies are twice as productive.", req: (s) => (s.buildings.galaxy || 0) >= 1, type: "building", target: "galaxy", mult: 2 },
-  { id: "dimensional-spread", name: "Spread Dimension Boost", icon: "💫", cost: 3300000000000, desc: "Spread Dimensions are twice as productive.", req: (s) => (s.buildings.dimension || 0) >= 1, type: "building", target: "dimension", mult: 2 },
-  { id: "time-tuner", name: "Spread Time Tuner", icon: "⌚", cost: 42000000000000, desc: "Spread Time Machines are twice as productive.", req: (s) => (s.buildings["time-machine"] || 0) >= 1, type: "building", target: "time-machine", mult: 2 },
-  { id: "antimatter-coils", name: "Spread Antimatter Coils", icon: "🧲", cost: 510000000000000, desc: "Spread Antimatter Condensers are twice as productive.", req: (s) => (s.buildings.antimatter || 0) >= 1, type: "building", target: "antimatter", mult: 2 },
-  { id: "prismatic-lenses", name: "Spread Prismatic Lenses", icon: "🌈", cost: 6300000000000000, desc: "Spread Prisms are twice as productive.", req: (s) => (s.buildings.prism || 0) >= 1, type: "building", target: "prism", mult: 2 },
-  { id: "lucky-dice", name: "Spread Lucky Dice", icon: "🎰", cost: 78000000000000000, desc: "Spread Chancemakers are twice as productive.", req: (s) => (s.buildings.chancemaker || 0) >= 1, type: "building", target: "chancemaker", mult: 2 },
-  { id: "fractal-blueprints", name: "Spread Fractal Blueprints", icon: "🧩", cost: 930000000000000000, desc: "Spread Fractal Engines are twice as productive.", req: (s) => (s.buildings["fractal-engine"] || 0) >= 1, type: "building", target: "fractal-engine", mult: 2 },
-  { id: "spreadster-amplifier", name: "Spreadster Amplifier", icon: "📡", cost: 12600000000000000000, desc: "Spreadsters make twice as many spreads each second.", req: (s) => (s.buildings.spreadster || 0) >= 1, type: "building", target: "spreadster", mult: 2 },
-  { id: "spreadsheet-formulas", name: "Spreadsheet Formulas", icon: "🧮", cost: 174000000000000000000, desc: "Spreadsheets make twice as many spreads each second.", req: (s) => (s.buildings.spreadsheet || 0) >= 1, type: "building", target: "spreadsheet", mult: 2 },
-  { id: "spreadstergram-filters", name: "Spreadstergram Filters", icon: "🌈", cost: 2550000000000000000000, desc: "Spreadstergrams make twice as many spreads each second.", req: (s) => (s.buildings.spreadstergram || 0) >= 1, type: "building", target: "spreadstergram", mult: 2 }
+  { id: "grandmas-rolling-pin", name: "Spread Rolling Pins", icon: "🧑‍🍳", cost: 500, desc: "Grandmas make 75% more spreads.", req: (s) => (s.buildings.grandma || 0) >= 1, type: "building", target: "grandma", mult: 1.75 },
+  { id: "fertilizer", name: "Spread Magic Fertilizer", icon: "🌱", cost: 5500, desc: "Spread farms are 75% more productive.", req: (s) => (s.buildings.farm || 0) >= 1, type: "building", target: "farm", mult: 1.75 },
+  { id: "laser-drills", name: "Spread Laser Drills", icon: "🔦", cost: 60000, desc: "Spread mines are 75% more productive.", req: (s) => (s.buildings.mine || 0) >= 1, type: "building", target: "mine", mult: 1.75 },
+  { id: "robot-bakers", name: "Spread Robot Makers", icon: "🤖", cost: 650000, desc: "Spread factories are 75% more productive.", req: (s) => (s.buildings.factory || 0) >= 1, type: "building", target: "factory", mult: 1.75 },
+  { id: "interest", name: "Spread Compound Interest", icon: "💰", cost: 7000000, desc: "Spread banks are 75% more productive.", req: (s) => (s.buildings.bank || 0) >= 1, type: "building", target: "bank", mult: 1.75 },
+  { id: "lab-research", name: "Spread Research", icon: "🔬", cost: 990000000, desc: "Spread Labs are 75% more productive.", req: (s) => (s.buildings.lab || 0) >= 1, type: "building", target: "lab", mult: 1.75 },
+  { id: "portal-stabilizer", name: "Spread Stabilizer", icon: "🪄", cost: 15300000000, desc: "Spread Portals are 75% more productive.", req: (s) => (s.buildings.portal || 0) >= 1, type: "building", target: "portal", mult: 1.75 },
+  { id: "galactic-spread", name: "Spread Galactic Boost", icon: "🌠", cost: 225000000000, desc: "Spread Galaxies are 75% more productive.", req: (s) => (s.buildings.galaxy || 0) >= 1, type: "building", target: "galaxy", mult: 1.75 },
+  { id: "dimensional-spread", name: "Spread Dimension Boost", icon: "💫", cost: 3300000000000, desc: "Spread Dimensions are 75% more productive.", req: (s) => (s.buildings.dimension || 0) >= 1, type: "building", target: "dimension", mult: 1.75 },
+  { id: "time-tuner", name: "Spread Time Tuner", icon: "⌚", cost: 42000000000000, desc: "Spread Time Machines are 75% more productive.", req: (s) => (s.buildings["time-machine"] || 0) >= 1, type: "building", target: "time-machine", mult: 1.75 },
+  { id: "antimatter-coils", name: "Spread Antimatter Coils", icon: "🧲", cost: 510000000000000, desc: "Spread Antimatter Condensers are 75% more productive.", req: (s) => (s.buildings.antimatter || 0) >= 1, type: "building", target: "antimatter", mult: 1.75 },
+  { id: "prismatic-lenses", name: "Spread Prismatic Lenses", icon: "🌈", cost: 6300000000000000, desc: "Spread Prisms are 75% more productive.", req: (s) => (s.buildings.prism || 0) >= 1, type: "building", target: "prism", mult: 1.75 },
+  { id: "lucky-dice", name: "Spread Lucky Dice", icon: "🎰", cost: 78000000000000000, desc: "Spread Chancemakers are 75% more productive.", req: (s) => (s.buildings.chancemaker || 0) >= 1, type: "building", target: "chancemaker", mult: 1.75 },
+  { id: "fractal-blueprints", name: "Spread Fractal Blueprints", icon: "🧩", cost: 930000000000000000, desc: "Spread Fractal Engines are 75% more productive.", req: (s) => (s.buildings["fractal-engine"] || 0) >= 1, type: "building", target: "fractal-engine", mult: 1.75 },
+  { id: "spreadster-amplifier", name: "Spreadster Amplifier", icon: "📡", cost: 12600000000000000000, desc: "Spreadsters make 75% more spreads each second.", req: (s) => (s.buildings.spreadster || 0) >= 1, type: "building", target: "spreadster", mult: 1.75 },
+  { id: "spreadsheet-formulas", name: "Spreadsheet Formulas", icon: "🧮", cost: 174000000000000000000, desc: "Spreadsheets make 75% more spreads each second.", req: (s) => (s.buildings.spreadsheet || 0) >= 1, type: "building", target: "spreadsheet", mult: 1.75 },
+  { id: "spreadstergram-filters", name: "Spreadstergram Filters", icon: "🌈", cost: 2550000000000000000000, desc: "Spreadstergrams make 75% more spreads each second.", req: (s) => (s.buildings.spreadstergram || 0) >= 1, type: "building", target: "spreadstergram", mult: 1.75 }
 ];
 
 const ACHIEVEMENTS = [
@@ -184,7 +184,8 @@ const FISH_CHARACTERS = [
 ];
 const SECRET_FISH = { id: "oliva", name: "Oliva", tier: "Secret", gender: "secret" };
 const MAX_SPREAD_GRANT = 1e60;
-const FISH_TIER_SELL_MULTIPLIERS = [0.5, 1, 2, 5, 10, 20];
+const OLIVA_REWARD = 1e58;
+const FISH_TIER_SELL_MULTIPLIERS = [0.4, 0.75, 1.5, 3.5, 7, 14];
 
 function createDefaultState() {
   return {
@@ -404,7 +405,7 @@ function getBuildingCount(game = state) {
 }
 
 function getBuildingCost(building) {
-  return Math.min(Number.MAX_VALUE, Math.floor(building.cost * Math.pow(1.15, state.buildings[building.id] || 0)));
+  return Math.min(Number.MAX_VALUE, Math.floor(building.cost * Math.pow(1.16, state.buildings[building.id] || 0)));
 }
 
 function getBuildingMultiplier(id) {
@@ -414,11 +415,11 @@ function getBuildingMultiplier(id) {
 
 function getClickUpgradeCost(upgrade) {
   const level = state.clickUpgradeLevels[upgrade.id] || 0;
-  return Math.min(MAX_SPREAD_GRANT, Math.floor(upgrade.cost * Math.pow(1.85, level)));
+  return Math.min(MAX_SPREAD_GRANT, Math.floor(upgrade.cost * Math.pow(2.4, level)));
 }
 
 function getFishRollCost() {
-  return Math.min(MAX_SPREAD_GRANT, Math.max(100, Math.floor(state.totalCookies * 0.001)));
+  return Math.min(MAX_SPREAD_GRANT, Math.max(100, Math.floor(state.totalCookies * 0.0012)));
 }
 
 function getFishDuplicateSaleValue(character) {
@@ -427,7 +428,7 @@ function getFishDuplicateSaleValue(character) {
 }
 
 function getFishLuckUpgradeCost() {
-  return Math.min(MAX_SPREAD_GRANT, Math.max(1000, Math.floor(state.totalCookies * 0.00001)) * Math.pow(4, state.fishLuckLevel));
+  return Math.min(MAX_SPREAD_GRANT, Math.max(1000, Math.floor(state.totalCookies * 0.00001)) * Math.pow(5, state.fishLuckLevel));
 }
 
 function getFishLevelUpCost(id) {
@@ -435,7 +436,7 @@ function getFishLevelUpCost(id) {
   if (!character) return MAX_SPREAD_GRANT;
   const tierIndex = getFishTierIndex(character);
   const level = state.fishLevels[id] || 1;
-  return Math.min(MAX_SPREAD_GRANT, Math.max(1000, Math.floor(getFishRollCost() * 0.1 * (tierIndex + 1) * level)));
+  return Math.min(MAX_SPREAD_GRANT, Math.max(1000, Math.floor(getFishRollCost() * 0.12 * (tierIndex + 1) * level)));
 }
 
 function getFishProductionMultiplier() {
@@ -443,7 +444,7 @@ function getFishProductionMultiplier() {
     total + (state.fishCollection[id] ? Math.max(0, level - 1) : 0), 0);
   const habitatBonus = FISH_HABITATS.reduce((total, habitat) =>
     total + (state.fishHabitats[habitat.id] ? habitat.bonus : 0), 0);
-  return (1 + bonusLevels * 0.01) * (1 + habitatBonus);
+  return (1 + bonusLevels * 0.008) * (1 + habitatBonus);
 }
 
 function getFishUniqueCount() {
@@ -458,17 +459,17 @@ function getLocalDateKey() {
 function getFishTierOdds() {
   const level = state.fishLuckLevel;
   return [
-    { name: "Common", chance: 50 - 4 * level },
+    { name: "Common", chance: 50 - 2.2 * level },
     { name: "Uncommon", chance: 25 },
-    { name: "Rare", chance: 15 + 3 * level },
-    { name: "Epic", chance: 7 + 0.7 * level },
-    { name: "Legendary", chance: 2.9 + 0.25 * level },
+    { name: "Rare", chance: 15 + 1.5 * level },
+    { name: "Epic", chance: 7 + 0.5 * level },
+    { name: "Legendary", chance: 2.9 + 0.15 * level },
     { name: "Mythic", chance: 0.1 + 0.05 * level }
   ];
 }
 
 function getCookiesPerSecond() {
-  const boost = Date.now() < productionBoostEndTime ? 2 : 1;
+  const boost = Date.now() < productionBoostEndTime ? 1.5 : 1;
   return BUILDINGS.reduce((sum, building) => sum + (state.buildings[building.id] || 0) * building.cps * getBuildingMultiplier(building.id), 0)
     * frenzyMultiplier * boost * getFishProductionMultiplier();
 }
@@ -479,7 +480,7 @@ function getCookiesPerClick() {
     return Math.min(1e100, total * Math.pow(upgrade.mult, level));
   }, 1);
   const cursor = CURSORS.find((item) => item.id === state.equippedCursor) || CURSORS[0];
-  const boost = Date.now() < clickBoostEndTime ? 2 : 1;
+  const boost = Date.now() < clickBoostEndTime ? 1.5 : 1;
   return Math.max(1, Math.floor(Math.min(1e100, multiplier * cursor.multiplier * frenzyMultiplier * boost)));
 }
 
@@ -844,7 +845,7 @@ function addFishSpreads(amount) {
 
 function checkFishCollectionReward() {
   if (state.fishCollectionRewardClaimed || getFishUniqueCount() !== FISH_CHARACTERS.length) return false;
-  const reward = Math.min(MAX_SPREAD_GRANT, getFishRollCost() * 100);
+  const reward = Math.min(MAX_SPREAD_GRANT, getFishRollCost() * 50);
   if (!addFishSpreads(reward)) return false;
   state.fishCollectionRewardClaimed = true;
   showToast(`🏆 All 200 characters collected! You earned ${formatNumber(reward)} spreads!`);
@@ -886,9 +887,9 @@ function rollFish(useDailyRoll = false) {
   state.fishRolls = Math.min(Number.MAX_SAFE_INTEGER, state.fishRolls + 1);
 
   if (character.id === SECRET_FISH.id) {
-    state.cookies = Math.max(state.cookies, MAX_SPREAD_GRANT);
-    state.totalCookies = Math.max(state.totalCookies, MAX_SPREAD_GRANT);
-    els.fishStatus.textContent = "✨ SECRET! Oliva appeared! A 1-in-10,000 discovery! Your jar has at least 1 Novemdecillion spreads!";
+    state.cookies = Math.max(state.cookies, OLIVA_REWARD);
+    state.totalCookies = Math.max(state.totalCookies, OLIVA_REWARD);
+    els.fishStatus.textContent = "✨ SECRET! Oliva appeared! A 1-in-10,000 discovery and a huge spread bonus!";
     launchConfetti(100);
     showToast("✨ Oliva! The secret character filled your jar with spreads!");
   } else if (copies) {
@@ -1201,24 +1202,24 @@ function buyClickUpgrade(id) {
 }
 
 function startSugarFrenzy(duration = 15000) {
-  frenzyMultiplier = 7;
+  frenzyMultiplier = 5;
   frenzyEndTime = Date.now() + duration;
-  showToast(`🍯 Sugar rush! 7× production for ${Math.ceil(duration / 1000)} seconds!`);
+  showToast(`🍯 Sugar rush! 5× production for ${Math.ceil(duration / 1000)} seconds!`);
 }
 
 els.cookieButton.addEventListener("click", (event) => {
   let gain = getCookiesPerClick();
   let streakBonus = 0;
   if (luckyClickArmed) {
-    gain *= 10;
+    gain *= 5;
     luckyClickArmed = false;
     els.adminLuckyClick.setAttribute("aria-pressed", "false");
-    els.adminLuckyClick.textContent = "🍀 Arm a 10× lucky click";
+    els.adminLuckyClick.textContent = "🍀 Arm a 5× lucky click";
     els.adminStatus.textContent = `Lucky click! You earned ${formatNumber(gain)} spreads.`;
-    showToast(`🍀 10× lucky click! +${formatNumber(gain)} spreads`);
+    showToast(`🍀 5× lucky click! +${formatNumber(gain)} spreads`);
     launchConfetti(24);
   } else if (Math.random() < 0.01) {
-    gain *= 10;
+    gain *= 5;
     showToast(`🎉 Jackpot! That click made ${formatNumber(gain)} spreads!`);
     launchConfetti(24);
   }
@@ -1226,7 +1227,7 @@ els.cookieButton.addEventListener("click", (event) => {
   state.totalCookies += gain;
   state.totalClicks++;
   if (state.totalClicks % 100 === 0) {
-    streakBonus = gain * 25;
+    streakBonus = gain * 10;
     if (Number.isFinite(state.cookies + streakBonus) && Number.isFinite(state.totalCookies + streakBonus)) {
       state.cookies += streakBonus;
       state.totalCookies += streakBonus;
@@ -1439,7 +1440,7 @@ els.adminAllUpgrades.addEventListener("click", () => {
 
 els.adminSugarFrenzy.addEventListener("click", () => {
   startSugarFrenzy();
-  els.adminStatus.textContent = "Sugar frenzy! All production is 7× for 15 seconds.";
+  els.adminStatus.textContent = "Sugar frenzy! All production is 5× for 15 seconds.";
 });
 
 els.adminMystery.addEventListener("click", () => {
@@ -1451,16 +1452,16 @@ els.adminMystery.addEventListener("click", () => {
     launchConfetti(28);
   } else if (surprise === 1) {
     clickBoostEndTime = Date.now() + 45000;
-    els.adminStatus.textContent = "Mystery jar prize: 2× click power for 45 seconds!";
+    els.adminStatus.textContent = "Mystery jar prize: 1.5× click power for 45 seconds!";
     updateAdminBoosterStatus();
     showToast("⚡ The mystery jar boosted your clicks!");
   } else if (surprise === 2) {
     productionBoostEndTime = Date.now() + 45000;
-    els.adminStatus.textContent = "Mystery jar prize: 2× production for 45 seconds!";
+    els.adminStatus.textContent = "Mystery jar prize: 1.5× production for 45 seconds!";
     updateAdminBoosterStatus();
     showToast("🏭 The mystery jar boosted production!");
   } else {
-    els.adminStatus.textContent = "Mystery jar prize: a 7× sugar rush for 10 seconds!";
+    els.adminStatus.textContent = "Mystery jar prize: a 5× sugar rush for 10 seconds!";
     startSugarFrenzy(10000);
   }
 });
@@ -1490,9 +1491,9 @@ els.adminLuckyClick.addEventListener("click", () => {
   els.adminLuckyClick.setAttribute("aria-pressed", String(luckyClickArmed));
   els.adminLuckyClick.textContent = luckyClickArmed
     ? "🍀 Lucky click armed!"
-    : "🍀 Arm a 10× lucky click";
+    : "🍀 Arm a 5× lucky click";
   els.adminStatus.textContent = luckyClickArmed
-    ? "Your next spread click will be worth 10×!"
+    ? "Your next spread click will be worth 5×!"
     : "Lucky click cancelled.";
 });
 
@@ -1505,8 +1506,8 @@ els.adminRandomFish.addEventListener("click", () => {
     state.fishLevels[character.id] = state.fishLevels[character.id] || 1;
     state.fishRolls = Math.min(Number.MAX_SAFE_INTEGER, state.fishRolls + 1);
     if (character.id === SECRET_FISH.id) {
-      state.cookies = Math.max(state.cookies, MAX_SPREAD_GRANT);
-      state.totalCookies = Math.max(state.totalCookies, MAX_SPREAD_GRANT);
+      state.cookies = Math.max(state.cookies, OLIVA_REWARD);
+      state.totalCookies = Math.max(state.totalCookies, OLIVA_REWARD);
     }
   }
   checkFishCollectionReward();
@@ -1538,7 +1539,7 @@ els.adminClearBoosts.addEventListener("click", () => {
   els.adminDance.setAttribute("aria-pressed", "false");
   els.adminDance.textContent = "💃 Dance mode: off";
   els.adminLuckyClick.setAttribute("aria-pressed", "false");
-  els.adminLuckyClick.textContent = "🍀 Arm a 10× lucky click";
+  els.adminLuckyClick.textContent = "🍀 Arm a 5× lucky click";
   updateAdminBoosterStatus();
   els.frenzyBanner.hidden = true;
   els.adminStatus.textContent = "All temporary boosts and fun modes are off.";
@@ -1547,9 +1548,9 @@ els.adminClearBoosts.addEventListener("click", () => {
 els.adminUnlockOliva.addEventListener("click", () => {
   state.fishCollection[SECRET_FISH.id] = Math.max(1, state.fishCollection[SECRET_FISH.id] || 0);
   state.fishLevels[SECRET_FISH.id] = state.fishLevels[SECRET_FISH.id] || 1;
-  state.cookies = Math.max(state.cookies, MAX_SPREAD_GRANT);
-  state.totalCookies = Math.max(state.totalCookies, MAX_SPREAD_GRANT);
-  els.fishStatus.textContent = "✨ Admin reveal! Oliva joined your collection and your jar has at least 1e60 spreads!";
+  state.cookies = Math.max(state.cookies, OLIVA_REWARD);
+  state.totalCookies = Math.max(state.totalCookies, OLIVA_REWARD);
+  els.fishStatus.textContent = "✨ Admin reveal! Oliva joined your collection with a huge spread bonus!";
   els.adminStatus.textContent = "Oliva unlocked! The secret fish is in your collection.";
   refreshAfterAdminChange();
   els.fishCollectionDetails.open = true;
@@ -1579,8 +1580,8 @@ els.adminAdd100Fish.addEventListener("click", () => {
     if (character.id === SECRET_FISH.id) secretUnlocked = true;
   }
   if (secretUnlocked) {
-    state.cookies = Math.max(state.cookies, MAX_SPREAD_GRANT);
-    state.totalCookies = Math.max(state.totalCookies, MAX_SPREAD_GRANT);
+    state.cookies = Math.max(state.cookies, OLIVA_REWARD);
+    state.totalCookies = Math.max(state.totalCookies, OLIVA_REWARD);
   }
   checkFishCollectionReward();
   els.adminStatus.textContent = `Added 100 random fish${secretUnlocked ? " and unlocked Oliva!" : "!"}`;
@@ -1637,7 +1638,7 @@ els.resetButton.addEventListener("click", () => {
   luckyClickArmed = false;
   document.body.classList.remove("disco-mode", "dance-mode");
   els.adminLuckyClick.setAttribute("aria-pressed", "false");
-  els.adminLuckyClick.textContent = "🍀 Arm a 10× lucky click";
+  els.adminLuckyClick.textContent = "🍀 Arm a 5× lucky click";
   els.adminDisco.setAttribute("aria-pressed", "false");
   els.adminDisco.textContent = "🪩 Disco mode: off";
   els.adminDance.setAttribute("aria-pressed", "false");

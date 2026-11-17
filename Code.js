@@ -24,14 +24,34 @@ const BUILDINGS = [
   { id: "spreadstergram", name: "Spreadstergram", icon: "📸", cost: 850000000000000000000, cps: 29000000000000, desc: "Shares spreads so fast they make more spreads." }
 ];
 
+const CURSORS = [
+  { id: "starter", name: "Starter Cursor", icon: "👆", cost: 0, multiplier: 1 },
+  { id: "bronze", name: "Bronze Pointer", icon: "🖱️", cost: 100, multiplier: 1.5 },
+  { id: "gold", name: "Golden Pointer", icon: "🌟", cost: 750, multiplier: 2 },
+  { id: "diamond", name: "Diamond Cursor", icon: "💎", cost: 5000, multiplier: 3 },
+  { id: "rainbow", name: "Rainbow Cursor", icon: "🌈", cost: 25000, multiplier: 5 },
+  { id: "cosmic", name: "Cosmic Cursor", icon: "🪄", cost: 150000, multiplier: 10 }
+];
+
 const UPGRADES = [
-  { id: "strong-fingers", name: "Spread Strong Fingers", icon: "💪", cost: 50, desc: "Double spreads per click.", req: (s) => s.totalClicks >= 10, type: "click", mult: 2 },
+  { id: "strong-fingers", name: "Spread Strong Fingers", icon: "💪", cost: 25, desc: "Double spreads per click.", req: (s) => s.totalClicks >= 10, type: "click", mult: 2 },
   { id: "grandmas-rolling-pin", name: "Spread Rolling Pins", icon: "🧑‍🍳", cost: 500, desc: "Grandmas make spreads twice as fast.", req: (s) => (s.buildings.grandma || 0) >= 1, type: "building", target: "grandma", mult: 2 },
-  { id: "butter-cookie", name: "Spread Butter", icon: "🧈", cost: 1000, desc: "Double spreads per click again.", req: (s) => s.totalCookies >= 500, type: "click", mult: 2 },
+  { id: "butter-cookie", name: "Spread Butter", icon: "🧈", cost: 250, desc: "Double spreads per click again.", req: (s) => s.totalCookies >= 250, type: "click", mult: 2 },
   { id: "fertilizer", name: "Spread Magic Fertilizer", icon: "🌱", cost: 5500, desc: "Spread farms are twice as productive.", req: (s) => (s.buildings.farm || 0) >= 1, type: "building", target: "farm", mult: 2 },
-  { id: "chocolate-chips", name: "Spread Extra Toppings", icon: "🍫", cost: 12000, desc: "Double spreads per click once more.", req: (s) => s.totalClicks >= 100, type: "click", mult: 2 },
+  { id: "chocolate-chips", name: "Spread Extra Toppings", icon: "🍫", cost: 1000, desc: "Double spreads per click once more.", req: (s) => s.totalClicks >= 100, type: "click", mult: 2 },
   { id: "laser-drills", name: "Spread Laser Drills", icon: "🔦", cost: 60000, desc: "Spread mines are twice as productive.", req: (s) => (s.buildings.mine || 0) >= 1, type: "building", target: "mine", mult: 2 },
-  { id: "sugar-rush", name: "Spread Sugar Rush", icon: "🍬", cost: 100000, desc: "Your clicks are extra sweet.", req: (s) => s.totalCookies >= 50000, type: "click", mult: 3 },
+  { id: "sugar-rush", name: "Spread Sugar Rush", icon: "🍬", cost: 5000, desc: "Triple spreads per click.", req: (s) => s.totalCookies >= 5000, type: "click", mult: 3 },
+  { id: "quick-tap", name: "Quick-Tap Practice", icon: "⚡", cost: 150, desc: "Double spreads per click.", req: (s) => s.totalClicks >= 25, type: "click", mult: 2 },
+  { id: "sticky-fingers", name: "Sticky Fingers", icon: "🫳", cost: 600, desc: "Double spreads per click.", req: (s) => s.totalClicks >= 60, type: "click", mult: 2 },
+  { id: "spread-sling", name: "Spread Sling", icon: "🥄", cost: 1800, desc: "Triple spreads per click.", req: (s) => s.totalClicks >= 120, type: "click", mult: 3 },
+  { id: "turbo-thumb", name: "Turbo Thumb", icon: "👍", cost: 4500, desc: "Double spreads per click.", req: (s) => s.totalClicks >= 250, type: "click", mult: 2 },
+  { id: "power-palm", name: "Power Palm", icon: "🖐️", cost: 10000, desc: "Triple spreads per click.", req: (s) => s.totalClicks >= 500, type: "click", mult: 3 },
+  { id: "double-tap", name: "Double-Tap Technique", icon: "✌️", cost: 22000, desc: "Double spreads per click.", req: (s) => s.totalClicks >= 900, type: "click", mult: 2 },
+  { id: "mega-mitts", name: "Mega Mitts", icon: "🥊", cost: 48000, desc: "Triple spreads per click.", req: (s) => s.totalClicks >= 1500, type: "click", mult: 3 },
+  { id: "lightning-click", name: "Lightning Click", icon: "🌩️", cost: 100000, desc: "Double spreads per click.", req: (s) => s.totalClicks >= 2500, type: "click", mult: 2 },
+  { id: "spread-storm", name: "Spreadstorm", icon: "🌪️", cost: 220000, desc: "Triple spreads per click.", req: (s) => s.totalClicks >= 4000, type: "click", mult: 3 },
+  { id: "click-cannon", name: "Click Cannon", icon: "🚀", cost: 450000, desc: "Double spreads per click.", req: (s) => s.totalClicks >= 6500, type: "click", mult: 2 },
+  { id: "golden-touch-upgrade", name: "Golden Touch", icon: "✨", cost: 900000, desc: "Five times more spreads per click.", req: (s) => s.totalClicks >= 10000, type: "click", mult: 5 },
   { id: "robot-bakers", name: "Spread Robot Makers", icon: "🤖", cost: 650000, desc: "Spread factories are twice as productive.", req: (s) => (s.buildings.factory || 0) >= 1, type: "building", target: "factory", mult: 2 },
   { id: "interest", name: "Spread Compound Interest", icon: "💰", cost: 7000000, desc: "Spread banks are twice as productive.", req: (s) => (s.buildings.bank || 0) >= 1, type: "building", target: "bank", mult: 2 },
   { id: "lab-research", name: "Spread Research", icon: "🔬", cost: 990000000, desc: "Spread Labs are twice as productive.", req: (s) => (s.buildings.lab || 0) >= 1, type: "building", target: "lab", mult: 2 },
@@ -68,6 +88,63 @@ const HEADLINES = [
   { min: 500000, text: "Your spreadery is now visible from space." }
 ];
 
+const FISH_TIERS = [
+  { name: "Common", count: 40, className: "common" },
+  { name: "Uncommon", count: 25, className: "uncommon" },
+  { name: "Rare", count: 15, className: "rare" },
+  { name: "Epic", count: 10, className: "epic" },
+  { name: "Legendary", count: 6, className: "legendary" },
+  { name: "Mythic", count: 4, className: "mythic" }
+];
+const GIRL_FISH_NAMES = [
+  "Ava", "Aria", "Amelia", "Abigail", "Alice", "Autumn", "Bella", "Brooklyn", "Claire", "Chloe",
+  "Camila", "Delilah", "Eleanor", "Ella", "Elizabeth", "Emma", "Emily", "Evelyn", "Eliana", "Faith",
+  "Fiona", "Freya", "Gabriella", "Grace", "Hannah", "Harper", "Hazel", "Isabella", "Ivy", "Jasmine",
+  "Josephine", "Julia", "Kaylee", "Layla", "Lillian", "Lily", "Lucy", "Luna", "Madeline", "Maya",
+  "Melody", "Mila", "Naomi", "Natalie", "Nora", "Olivia", "Paisley", "Penny", "Quinn", "Riley",
+  "Rose", "Ruby", "Sadie", "Samantha", "Sarah", "Savannah", "Scarlett", "Sofia", "Stella", "Summer",
+  "Thea", "Valentina", "Violet", "Zoe", "Adelaide", "Beatrice", "Cecilia", "Daphne", "Estelle", "Francesca",
+  "Georgia", "Helena", "Imogen", "Juliet", "Kiara", "Lorelei", "Maeve", "Nina", "Opal", "Penelope",
+  "Rosalie", "Seraphina", "Tabitha", "Uma", "Veronica", "Willa", "Ximena", "Yasmin", "Zara", "Bonnie",
+  "Cleo", "Daisy", "Elsie", "Greta", "Hallie", "Indigo", "Marina", "Noelle", "Petra", "Tessa"
+];
+const BOY_FISH_NAMES = [
+  "Liam", "Noah", "Oliver", "Elijah", "James", "William", "Benjamin", "Lucas", "Henry", "Theodore",
+  "Jack", "Levi", "Alexander", "Jackson", "Mateo", "Daniel", "Michael", "Mason", "Sebastian", "Ethan",
+  "Logan", "Owen", "Samuel", "Jacob", "Asher", "Aiden", "John", "Joseph", "Wyatt", "David",
+  "Leo", "Luke", "Julian", "Hudson", "Grayson", "Matthew", "Ezra", "Gabriel", "Carter", "Isaac",
+  "Jayden", "Luca", "Anthony", "Dylan", "Lincoln", "Thomas", "Maverick", "Elias", "Josiah", "Charles",
+  "Caleb", "Christopher", "Ezekiel", "Miles", "Jaxon", "Isaiah", "Andrew", "Joshua", "Nathan", "Nolan",
+  "Adrian", "Cameron", "Santiago", "Eli", "Aaron", "Ryan", "Angel", "Cooper", "Waylon", "Easton",
+  "Kai", "Christian", "Landon", "Colton", "Roman", "Axel", "Brooks", "Jonathan", "Robert", "Jameson",
+  "Ian", "Everett", "Greyson", "Wesley", "Jeremiah", "Hunter", "Leonardo", "Jordan", "Jose", "Bennett",
+  "Silas", "Nicholas", "Parker", "Beau", "Weston", "Austin", "Connor", "Carson", "Dominic", "Xavier"
+];
+
+function createFishCharacters(names, gender, idPrefix) {
+  return names.map((name, index) => {
+    let tierEnd = 0;
+    const tier = FISH_TIERS.find((item) => {
+      tierEnd += item.count;
+      return index < tierEnd;
+    });
+    return {
+      id: `${idPrefix}-${String(index + 1).padStart(3, "0")}`,
+      name,
+      tier: tier.name,
+      gender
+    };
+  });
+}
+
+const FISH_CHARACTERS = [
+  ...createFishCharacters(GIRL_FISH_NAMES, "girl", "fish"),
+  ...createFishCharacters(BOY_FISH_NAMES, "boy", "boy")
+];
+const SECRET_FISH = { id: "oliva", name: "Oliva", tier: "Secret", gender: "secret" };
+const MAX_SPREAD_GRANT = 1e60;
+const FISH_TIER_SELL_MULTIPLIERS = [0.5, 1, 2, 5, 10, 20];
+
 function createDefaultState() {
   return {
     cookies: 0,
@@ -78,6 +155,14 @@ function createDefaultState() {
     upgrades: [],
     achievements: [],
     soundEnabled: true,
+    cursorCollection: { starter: true },
+    equippedCursor: "starter",
+    fishCollection: {},
+    fishLevels: {},
+    fishLuckLevel: 0,
+    fishRolls: 0,
+    fishDailyRollDate: "",
+    fishCollectionRewardClaimed: false,
     lastSaved: Date.now()
   };
 }
@@ -99,6 +184,28 @@ function loadGame() {
     if (!Array.isArray(state.achievements)) state.achievements = [];
     state.achievements = state.achievements.filter((id) => id !== "golden-touch");
     state.soundEnabled = Boolean(state.soundEnabled);
+    if (!state.cursorCollection || typeof state.cursorCollection !== "object" || Array.isArray(state.cursorCollection)) state.cursorCollection = { starter: true };
+    const validCursorIds = new Set(CURSORS.map((cursor) => cursor.id));
+    Object.keys(state.cursorCollection).forEach((id) => {
+      if (!validCursorIds.has(id) || typeof state.cursorCollection[id] !== "boolean") delete state.cursorCollection[id];
+    });
+    state.cursorCollection.starter = true;
+    if (!validCursorIds.has(state.equippedCursor) || !state.cursorCollection[state.equippedCursor]) state.equippedCursor = "starter";
+    if (!state.fishCollection || typeof state.fishCollection !== "object" || Array.isArray(state.fishCollection)) state.fishCollection = {};
+    if (!state.fishLevels || typeof state.fishLevels !== "object" || Array.isArray(state.fishLevels)) state.fishLevels = {};
+    const validFishIds = new Set([...FISH_CHARACTERS.map((character) => character.id), SECRET_FISH.id]);
+    Object.keys(state.fishCollection).forEach((id) => {
+      const count = state.fishCollection[id];
+      if (!validFishIds.has(id) || !Number.isSafeInteger(count) || count < 0) delete state.fishCollection[id];
+    });
+    Object.keys(state.fishLevels).forEach((id) => {
+      const level = state.fishLevels[id];
+      if (!validFishIds.has(id) || !Number.isInteger(level) || level < 1 || level > 10) delete state.fishLevels[id];
+    });
+    if (!Number.isInteger(state.fishLuckLevel) || state.fishLuckLevel < 0 || state.fishLuckLevel > 5) state.fishLuckLevel = 0;
+    if (!Number.isSafeInteger(state.fishRolls) || state.fishRolls < 0) state.fishRolls = 0;
+    if (typeof state.fishDailyRollDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(state.fishDailyRollDate)) state.fishDailyRollDate = "";
+    state.fishCollectionRewardClaimed = Boolean(state.fishCollectionRewardClaimed);
     return state;
   } catch (error) {
     console.warn("Could not load the game save; starting a fresh game.", error);
@@ -118,7 +225,13 @@ let unlockCheckTime = 0;
 let shopRenderTime = 0;
 let spreadAnimationTimer;
 let cheatInput = "";
-const SPREAD_CHEAT_CODE = "Charlie12032012";
+let fishCollectionFilter = "all";
+let fishFlightFrame = null;
+let fishFlightVersion = 0;
+let fishScrollBehavior = null;
+let fishOlivaTimer = null;
+const SPREAD_CHEAT_CODE = "TimmyTuffJeff";
+const ADMIN_PASSWORD = "charlie12032012franke";
 
 const els = {
   cookieCount: document.getElementById("cookie-count"),
@@ -129,9 +242,25 @@ const els = {
   time: document.getElementById("stat-time"),
   cookieButton: document.getElementById("cookie-btn"),
   upgrades: document.getElementById("upgrades-container"),
+  cursorShop: document.getElementById("cursor-shop-container"),
   buildings: document.getElementById("buildings-container"),
   achievements: document.getElementById("achievements-container"),
   achievementCount: document.getElementById("achievements-count"),
+  fishRoll: document.getElementById("fish-roll"),
+  fishDailyRoll: document.getElementById("fish-daily-roll"),
+  fishLuckUpgrade: document.getElementById("fish-luck-upgrade"),
+  fishCollection: document.getElementById("fish-collection"),
+  fishCollectionDetails: document.getElementById("fish-collection-details"),
+  fishCollectionFilters: document.getElementById("fish-collection-filters"),
+  fishCollectionCount: document.getElementById("fish-collection-count"),
+  fishRollCount: document.getElementById("fish-roll-count"),
+  fishProductionBonus: document.getElementById("fish-production-bonus"),
+  fishRollCost: document.getElementById("fish-roll-cost"),
+  fishLuckStatus: document.getElementById("fish-luck-status"),
+  fishTierOdds: document.getElementById("fish-tier-odds"),
+  fishStatus: document.getElementById("fish-status"),
+  fishAnimationLayer: document.getElementById("fish-animation-layer"),
+  fishOlivaCelebration: document.getElementById("fish-oliva-celebration"),
   toastContainer: document.getElementById("toast-container"),
   news: document.getElementById("news-text"),
   frenzyBanner: document.getElementById("frenzy-banner"),
@@ -140,6 +269,10 @@ const els = {
   resetButton: document.getElementById("reset-btn"),
   buildingSummary: document.getElementById("building-summary"),
   adminPanel: document.getElementById("admin-panel"),
+  adminLogin: document.getElementById("admin-login"),
+  adminPassword: document.getElementById("admin-password"),
+  adminLoginStatus: document.getElementById("admin-login-status"),
+  adminTools: document.getElementById("admin-tools"),
   adminClose: document.getElementById("admin-close"),
   adminAmount: document.getElementById("admin-amount"),
   adminAdd: document.getElementById("admin-add"),
@@ -148,6 +281,7 @@ const els = {
   adminClickBoost: document.getElementById("admin-click-boost"),
   adminProductionBoost: document.getElementById("admin-production-boost"),
   adminEveryBuilding: document.getElementById("admin-every-building"),
+  admin100kBuildings: document.getElementById("admin-100k-buildings"),
   adminAllUpgrades: document.getElementById("admin-all-upgrades"),
   adminSugarFrenzy: document.getElementById("admin-sugar-frenzy"),
   adminMystery: document.getElementById("admin-mystery"),
@@ -155,6 +289,9 @@ const els = {
   adminDisco: document.getElementById("admin-disco"),
   adminDance: document.getElementById("admin-dance"),
   adminLuckyClick: document.getElementById("admin-lucky-click"),
+  adminRandomFish: document.getElementById("admin-random-fish"),
+  adminCompleteFish: document.getElementById("admin-complete-fish"),
+  adminClearBoosts: document.getElementById("admin-clear-boosts"),
   clickBoostStatus: document.getElementById("click-boost-status"),
   productionBoostStatus: document.getElementById("production-boost-status"),
   adminStatus: document.getElementById("admin-status"),
@@ -195,7 +332,7 @@ function getBuildingCount(game = state) {
 }
 
 function getBuildingCost(building) {
-  return Math.floor(building.cost * Math.pow(1.15, state.buildings[building.id] || 0));
+  return Math.min(Number.MAX_VALUE, Math.floor(building.cost * Math.pow(1.15, state.buildings[building.id] || 0)));
 }
 
 function getBuildingMultiplier(id) {
@@ -203,16 +340,66 @@ function getBuildingMultiplier(id) {
     .reduce((multiplier, upgrade) => multiplier * upgrade.mult, 1);
 }
 
+function getFishRollCost() {
+  return Math.min(MAX_SPREAD_GRANT, Math.max(100, Math.floor(state.totalCookies * 0.001)));
+}
+
+function getFishDuplicateSaleValue(character) {
+  const tierIndex = getFishTierIndex(character);
+  return Math.min(MAX_SPREAD_GRANT, Math.floor(getFishRollCost() * FISH_TIER_SELL_MULTIPLIERS[tierIndex]));
+}
+
+function getFishLuckUpgradeCost() {
+  return Math.min(MAX_SPREAD_GRANT, Math.max(1000, Math.floor(state.totalCookies * 0.00001)) * Math.pow(4, state.fishLuckLevel));
+}
+
+function getFishLevelUpCost(id) {
+  const character = [...FISH_CHARACTERS, SECRET_FISH].find((item) => item.id === id);
+  if (!character) return MAX_SPREAD_GRANT;
+  const tierIndex = getFishTierIndex(character);
+  const level = state.fishLevels[id] || 1;
+  return Math.min(MAX_SPREAD_GRANT, Math.max(1000, Math.floor(getFishRollCost() * 0.1 * (tierIndex + 1) * level)));
+}
+
+function getFishProductionMultiplier() {
+  const bonusLevels = Object.entries(state.fishLevels).reduce((total, [id, level]) =>
+    total + (state.fishCollection[id] ? Math.max(0, level - 1) : 0), 0);
+  return 1 + bonusLevels * 0.01;
+}
+
+function getFishUniqueCount() {
+  return FISH_CHARACTERS.reduce((total, character) => total + (state.fishCollection[character.id] ? 1 : 0), 0);
+}
+
+function getLocalDateKey() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+}
+
+function getFishTierOdds() {
+  const level = state.fishLuckLevel;
+  return [
+    { name: "Common", chance: 50 - 4 * level },
+    { name: "Uncommon", chance: 25 },
+    { name: "Rare", chance: 15 + 3 * level },
+    { name: "Epic", chance: 7 + 0.7 * level },
+    { name: "Legendary", chance: 2.9 + 0.25 * level },
+    { name: "Mythic", chance: 0.1 + 0.05 * level }
+  ];
+}
+
 function getCookiesPerSecond() {
   const boost = Date.now() < productionBoostEndTime ? 2 : 1;
-  return BUILDINGS.reduce((sum, building) => sum + (state.buildings[building.id] || 0) * building.cps * getBuildingMultiplier(building.id), 0) * frenzyMultiplier * boost;
+  return BUILDINGS.reduce((sum, building) => sum + (state.buildings[building.id] || 0) * building.cps * getBuildingMultiplier(building.id), 0)
+    * frenzyMultiplier * boost * getFishProductionMultiplier();
 }
 
 function getCookiesPerClick() {
   const multiplier = UPGRADES.filter((upgrade) => upgrade.type === "click" && state.upgrades.includes(upgrade.id))
     .reduce((total, upgrade) => total * upgrade.mult, 1);
+  const cursor = CURSORS.find((item) => item.id === state.equippedCursor) || CURSORS[0];
   const boost = Date.now() < clickBoostEndTime ? 2 : 1;
-  return Math.max(1, Math.floor(multiplier * frenzyMultiplier * boost));
+  return Math.max(1, Math.floor(multiplier * cursor.multiplier * frenzyMultiplier * boost));
 }
 
 function saveGame() {
@@ -250,6 +437,376 @@ function launchConfetti(count = 32) {
     els.celebrationLayer.appendChild(piece);
     window.setTimeout(() => piece.remove(), 2400);
   }
+}
+
+function getFishTierClass(tierName) {
+  const tier = FISH_TIERS.find((item) => item.name === tierName);
+  return tier ? tier.className : "secret";
+}
+
+function getFishTierIndex(character) {
+  const tierIndex = FISH_TIERS.findIndex((tier) => tier.name === character.tier);
+  return tierIndex < 0 ? FISH_TIERS.length - 1 : tierIndex;
+}
+
+function getFishCharacterById(id) {
+  return [...FISH_CHARACTERS, SECRET_FISH].find((character) => character.id === id);
+}
+
+function renderFishCollection() {
+  els.fishCollection.replaceChildren();
+  const characters = [...FISH_CHARACTERS, SECRET_FISH].filter((character) =>
+    fishCollectionFilter === "all" || character.gender === fishCollectionFilter);
+  els.fishCollectionFilters.querySelectorAll("[data-fish-filter]").forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.fishFilter === fishCollectionFilter));
+  });
+  characters.forEach((character) => {
+    const copies = state.fishCollection[character.id] || 0;
+    const level = copies ? state.fishLevels[character.id] || 1 : 0;
+    const card = document.createElement("article");
+    card.className = `fish-card tier-${getFishTierClass(character.tier)}${copies ? " collected" : ""}`;
+    card.dataset.fishId = character.id;
+
+    const name = document.createElement("strong");
+    name.className = "fish-name";
+    name.textContent = copies || character.id !== SECRET_FISH.id ? character.name : "???";
+    const details = document.createElement("span");
+    details.className = "fish-card-details";
+    const genderLabel = character.gender === "girl" ? "Girl" : character.gender === "boy" ? "Boy" : "Secret";
+    details.textContent = copies
+      ? `${genderLabel} · ${character.tier} · ${copies} owned · Level ${level}`
+      : character.id === SECRET_FISH.id
+        ? "Secret · Not discovered"
+        : `${genderLabel} · ${character.tier} · Not discovered`;
+    card.append(name, details);
+
+    if (copies) {
+      if (copies > 1) {
+        const sell = document.createElement("button");
+        sell.type = "button";
+        sell.className = "fish-small-action";
+        sell.dataset.fishSell = character.id;
+        sell.textContent = `Sell duplicate (+${formatNumber(getFishDuplicateSaleValue(character))})`;
+        card.appendChild(sell);
+      }
+
+      const levelUp = document.createElement("button");
+      levelUp.type = "button";
+      levelUp.className = "fish-small-action";
+      levelUp.dataset.fishLevelUp = character.id;
+      levelUp.disabled = level >= 10 || state.cookies < getFishLevelUpCost(character.id);
+      levelUp.textContent = level >= 10
+        ? "Max level"
+        : `⬆ Level up · ${formatNumber(getFishLevelUpCost(character.id))}`;
+      card.appendChild(levelUp);
+    }
+
+    els.fishCollection.appendChild(card);
+  });
+}
+
+function updateFishTankUI() {
+  const collectionCount = getFishUniqueCount();
+  const rollCost = getFishRollCost();
+  const luckCost = getFishLuckUpgradeCost();
+  const bonusPercent = Math.round((getFishProductionMultiplier() - 1) * 100);
+  const dailyAvailable = state.fishDailyRollDate !== getLocalDateKey();
+
+  els.fishCollectionCount.textContent = `${collectionCount} / ${FISH_CHARACTERS.length}`;
+  if (state.fishCollection[SECRET_FISH.id]) {
+    els.fishCollectionCount.textContent += " + Oliva";
+  }
+  els.fishRollCount.textContent = state.fishRolls.toLocaleString();
+  els.fishProductionBonus.textContent = `+${bonusPercent}%`;
+  els.fishRollCost.textContent = `Paid roll: ${formatNumber(rollCost)} spreads · Secret Oliva chance: 0.0001%`;
+  els.fishRoll.disabled = state.cookies < rollCost;
+  els.fishDailyRoll.disabled = !dailyAvailable;
+  els.fishDailyRoll.textContent = dailyAvailable ? "🎁 Claim daily free roll" : "✅ Daily roll claimed";
+  els.fishLuckStatus.textContent = `Luck level ${state.fishLuckLevel} / 5 · Leveling characters adds 1% production each`;
+  els.fishLuckUpgrade.disabled = state.fishLuckLevel >= 5 || state.cookies < luckCost;
+  els.fishLuckUpgrade.textContent = state.fishLuckLevel >= 5
+    ? "🍀 Luck fully upgraded"
+    : `🍀 Upgrade luck · ${formatNumber(luckCost)}`;
+  els.fishTierOdds.textContent = `Tier odds: ${getFishTierOdds().map((tier) => `${tier.name} ${tier.chance.toFixed(tier.chance < 1 ? 2 : 1)}%`).join(" · ")}`;
+
+  els.fishCollection.querySelectorAll("[data-fish-sell]").forEach((button) => {
+    const character = getFishCharacterById(button.dataset.fishSell);
+    const payout = character ? getFishDuplicateSaleValue(character) : 0;
+    button.textContent = `Sell duplicate (+${formatNumber(payout)})`;
+    button.disabled = state.cookies > Number.MAX_VALUE - payout;
+  });
+  els.fishCollection.querySelectorAll("[data-fish-level-up]").forEach((button) => {
+    const id = button.dataset.fishLevelUp;
+    const level = state.fishLevels[id] || 1;
+    const cost = getFishLevelUpCost(id);
+    button.disabled = level >= 10 || state.cookies < cost;
+    button.textContent = level >= 10 ? "Max level" : `⬆ Level up · ${formatNumber(cost)}`;
+  });
+}
+
+function showFishLandingImpact(x, y, rarity) {
+  const effects = {
+    common: { size: 48, glyph: "✦", duration: 480 },
+    uncommon: { size: 64, glyph: "✧", duration: 580 },
+    rare: { size: 84, glyph: "✨", duration: 700 },
+    epic: { size: 108, glyph: "💥", duration: 840 },
+    legendary: { size: 138, glyph: "👑", duration: 1000 },
+    mythic: { size: 172, glyph: "🌟", duration: 1200 },
+    secret: { size: 220, glyph: "👑", duration: 1500 }
+  };
+  const effect = effects[rarity] || effects.common;
+  const impact = document.createElement("span");
+  impact.className = `fish-impact impact-${rarity}`;
+  impact.textContent = effect.glyph;
+  impact.setAttribute("aria-hidden", "true");
+  impact.style.left = `${x}px`;
+  impact.style.top = `${y}px`;
+  impact.style.setProperty("--impact-size", `${effect.size}px`);
+  impact.style.setProperty("--impact-duration", `${effect.duration}ms`);
+  els.fishAnimationLayer.appendChild(impact);
+
+  const removeImpact = () => impact.remove();
+  impact.addEventListener("animationend", removeImpact, { once: true });
+  window.setTimeout(removeImpact, effect.duration + 150);
+}
+
+function stopFishCamera() {
+  if (fishFlightFrame !== null) {
+    window.cancelAnimationFrame(fishFlightFrame);
+    fishFlightFrame = null;
+  }
+  if (fishScrollBehavior !== null) {
+    document.documentElement.style.scrollBehavior = fishScrollBehavior;
+    fishScrollBehavior = null;
+  }
+}
+
+function animateFishLanding(character) {
+  const card = els.fishCollection.querySelector(`[data-fish-id="${character.id}"]`);
+  if (!card) return;
+  const flightVersion = ++fishFlightVersion;
+  stopFishCamera();
+
+  const listRect = els.fishCollection.getBoundingClientRect();
+  const initialCardRect = card.getBoundingClientRect();
+  els.fishCollection.scrollTop += initialCardRect.top - listRect.top
+    - (els.fishCollection.clientHeight - card.offsetHeight) / 2;
+  const targetRect = card.getBoundingClientRect();
+  const sourceRect = els.fishRoll.getBoundingClientRect();
+  const rarity = getFishTierClass(character.tier);
+  const durations = {
+    common: 650,
+    uncommon: 800,
+    rare: 950,
+    epic: 1100,
+    legendary: 1250,
+    mythic: 1450,
+    secret: 1900
+  };
+  const duration = durations[rarity] || 650;
+  const landingClasses = ["common", "uncommon", "rare", "epic", "legendary", "mythic", "secret"];
+  card.classList.remove("fish-landing", ...landingClasses.map((tier) => `landing-${tier}`));
+  void card.offsetWidth;
+  card.classList.add("fish-landing", `landing-${rarity}`);
+  const clearLanding = () => {
+    card.classList.remove("fish-landing", `landing-${rarity}`);
+  };
+  card.addEventListener("animationend", clearLanding, { once: true });
+  window.setTimeout(clearLanding, duration + 300);
+
+  els.fishAnimationLayer.replaceChildren();
+  const sourceX = sourceRect.left + sourceRect.width / 2;
+  const sourceY = sourceRect.top + sourceRect.height / 2;
+  const targetX = targetRect.left + targetRect.width / 2;
+  const targetY = targetRect.top + targetRect.height / 2;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    showFishLandingImpact(targetX, targetY, rarity);
+    return;
+  }
+
+  const flyer = document.createElement("span");
+  flyer.className = `fish-flight flight-${rarity}`;
+  flyer.textContent = "🐟";
+  flyer.setAttribute("aria-hidden", "true");
+  flyer.style.left = `${sourceX}px`;
+  flyer.style.top = `${sourceY}px`;
+  els.fishAnimationLayer.appendChild(flyer);
+
+  if (typeof window.requestAnimationFrame !== "function") {
+    flyer.remove();
+    showFishLandingImpact(targetX, targetY, rarity);
+    return;
+  }
+
+  const startScrollX = window.scrollX;
+  const startScrollY = window.scrollY;
+  const startDocumentX = sourceX + startScrollX;
+  const startDocumentY = sourceY + startScrollY;
+  const targetDocumentX = targetX + startScrollX;
+  const targetDocumentY = targetY + startScrollY;
+  const distanceX = targetDocumentX - startDocumentX;
+  const distanceY = targetDocumentY - startDocumentY;
+  const arcHeight = Math.min(90, Math.abs(distanceY) * 0.18);
+  const cameraFollow = 0.82;
+  const startTime = performance.now();
+  fishScrollBehavior = document.documentElement.style.scrollBehavior;
+  document.documentElement.style.scrollBehavior = "auto";
+
+  let landed = false;
+  const landFish = () => {
+    if (landed || flightVersion !== fishFlightVersion) return;
+    landed = true;
+    stopFishCamera();
+    flyer.remove();
+    showFishLandingImpact(targetDocumentX - window.scrollX, targetDocumentY - window.scrollY, rarity);
+  };
+  const followFish = (timestamp) => {
+    if (flightVersion !== fishFlightVersion) return;
+    const progress = Math.min(1, (timestamp - startTime) / duration);
+    const easedProgress = 1 - Math.pow(1 - progress, 3);
+    const currentDocumentX = startDocumentX + distanceX * easedProgress;
+    const currentDocumentY = startDocumentY + distanceY * easedProgress
+      - Math.sin(Math.PI * easedProgress) * arcHeight;
+    const maxScrollY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    const nextScrollY = Math.max(0, Math.min(maxScrollY, startScrollY + (currentDocumentY - startDocumentY) * cameraFollow));
+    window.scrollTo(startScrollX, nextScrollY);
+    flyer.style.left = `${currentDocumentX - window.scrollX}px`;
+    flyer.style.top = `${currentDocumentY - window.scrollY}px`;
+    flyer.style.transform = `rotate(${360 * easedProgress}deg) scale(${1 - 0.35 * easedProgress + Math.sin(Math.PI * easedProgress) * 0.12})`;
+    flyer.style.opacity = String(1 - 0.15 * easedProgress);
+
+    if (progress === 1) {
+      landFish();
+      return;
+    }
+    fishFlightFrame = window.requestAnimationFrame(followFish);
+  };
+  fishFlightFrame = window.requestAnimationFrame(followFish);
+}
+
+function showOlivaCelebration() {
+  if (fishOlivaTimer !== null) window.clearTimeout(fishOlivaTimer);
+  const overlay = els.fishOlivaCelebration;
+  overlay.hidden = false;
+  overlay.classList.remove("active");
+  void overlay.offsetWidth;
+  overlay.classList.add("active");
+  fishOlivaTimer = window.setTimeout(() => {
+    overlay.hidden = true;
+    overlay.classList.remove("active");
+    fishOlivaTimer = null;
+  }, 5200);
+}
+
+function pickFishCharacter() {
+  if (Math.random() < 0.000001) return SECRET_FISH;
+
+  const roll = Math.random() * 100;
+  const odds = getFishTierOdds();
+  let threshold = 0;
+  const selectedTier = odds.find((tier) => {
+    threshold += tier.chance;
+    return roll < threshold;
+  }) || odds[odds.length - 1];
+  const candidates = FISH_CHARACTERS.filter((character) => character.tier === selectedTier.name);
+  return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
+function addFishSpreads(amount) {
+  if (!Number.isFinite(amount) || amount < 0) return false;
+  state.cookies = Math.min(Number.MAX_VALUE, state.cookies + amount);
+  state.totalCookies = Math.min(Number.MAX_VALUE, state.totalCookies + amount);
+  return true;
+}
+
+function checkFishCollectionReward() {
+  if (state.fishCollectionRewardClaimed || getFishUniqueCount() !== FISH_CHARACTERS.length) return false;
+  const reward = Math.min(MAX_SPREAD_GRANT, getFishRollCost() * 100);
+  if (!addFishSpreads(reward)) return false;
+  state.fishCollectionRewardClaimed = true;
+  showToast(`🏆 Full collection! You earned ${formatNumber(reward)} spreads!`);
+  launchConfetti(60);
+  return true;
+}
+
+function rollFish(useDailyRoll = false) {
+  const rollDate = getLocalDateKey();
+  if (useDailyRoll) {
+    if (state.fishDailyRollDate === rollDate) {
+      els.fishStatus.textContent = "Your daily free roll has already been claimed.";
+      return;
+    }
+  } else {
+    const rollCost = getFishRollCost();
+    if (state.cookies < rollCost) {
+      els.fishStatus.textContent = `You need ${formatNumber(rollCost)} spreads for another paid roll.`;
+      return;
+    }
+  }
+
+  els.fishCollectionDetails.open = true;
+  fishCollectionFilter = "all";
+  renderFishCollection();
+  const character = pickFishCharacter();
+  const copies = state.fishCollection[character.id] || 0;
+  if (!Number.isSafeInteger(copies + 1)) {
+    els.fishStatus.textContent = "That character collection has reached its safe storage limit.";
+    return;
+  }
+  if (useDailyRoll) {
+    state.fishDailyRollDate = rollDate;
+  } else {
+    state.cookies -= getFishRollCost();
+  }
+  state.fishCollection[character.id] = copies + 1;
+  state.fishLevels[character.id] = state.fishLevels[character.id] || 1;
+  state.fishRolls = Math.min(Number.MAX_SAFE_INTEGER, state.fishRolls + 1);
+
+  if (character.id === SECRET_FISH.id) {
+    state.cookies = Math.max(state.cookies, MAX_SPREAD_GRANT);
+    state.totalCookies = Math.max(state.totalCookies, MAX_SPREAD_GRANT);
+    els.fishStatus.textContent = "✨ SECRET! Oliva appeared! Your jar now has at least 1 Novemdecillion spreads!";
+    launchConfetti(100);
+    showToast("✨ Oliva! The secret character filled your jar with spreads!");
+  } else if (copies) {
+    els.fishStatus.textContent = `You rolled ${character.name} (${character.tier}) again. You now own ${copies + 1}.`;
+  } else {
+    els.fishStatus.textContent = `New character: ${character.name} · ${character.tier}!`;
+  }
+
+  checkFishCollectionReward();
+  refreshAfterAdminChange();
+  animateFishLanding(character);
+  if (character.id === SECRET_FISH.id) showOlivaCelebration();
+  if (character.tier === "Mythic" || character.tier === "Legendary") launchConfetti(40);
+}
+
+function sellFishDuplicate(id) {
+  const character = getFishCharacterById(id);
+  const copies = state.fishCollection[id] || 0;
+  if (!character || copies <= 1) return;
+  const payout = getFishDuplicateSaleValue(character);
+  if (!Number.isFinite(state.cookies + payout) || !Number.isFinite(state.totalCookies + payout)) {
+    els.fishStatus.textContent = "That duplicate’s sale value is too large for this save.";
+    return;
+  }
+  state.fishCollection[id]--;
+  state.cookies += payout;
+  state.totalCookies += payout;
+  els.fishStatus.textContent = `Sold a duplicate ${character.name} for ${formatNumber(payout)} spreads.`;
+  refreshAfterAdminChange();
+}
+
+function levelUpFish(id) {
+  const character = getFishCharacterById(id);
+  const copies = state.fishCollection[id] || 0;
+  const level = state.fishLevels[id] || 1;
+  const cost = getFishLevelUpCost(id);
+  if (!character || !copies || level >= 10 || state.cookies < cost) return;
+  state.cookies -= cost;
+  state.fishLevels[id] = level + 1;
+  els.fishStatus.textContent = `${character.name} reached level ${level + 1}! Your production bonus increased.`;
+  refreshAfterAdminChange();
 }
 
 function playTone(startFrequency, endFrequency, duration, volume) {
@@ -319,6 +876,8 @@ function renderShop() {
     });
   }
 
+  renderCursorShop();
+
   els.buildings.replaceChildren();
   BUILDINGS.forEach((building) => {
     const owned = state.buildings[building.id] || 0;
@@ -351,6 +910,52 @@ function renderShop() {
   shopRenderTime = 0;
 }
 
+function renderCursorShop() {
+  els.cursorShop.replaceChildren();
+  CURSORS.forEach((cursor) => {
+    const owned = Boolean(state.cursorCollection[cursor.id]);
+    const equipped = state.equippedCursor === cursor.id;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `cursor-card ${owned ? "owned" : "locked"}${equipped ? " equipped" : ""}`;
+    button.dataset.cursorId = cursor.id;
+    button.dataset.cursorCost = String(cursor.cost);
+    button.setAttribute("aria-pressed", String(equipped));
+    button.disabled = !owned && state.cookies < cursor.cost;
+    const icon = document.createElement("span");
+    icon.className = "cursor-icon";
+    icon.textContent = cursor.icon;
+    const info = document.createElement("span");
+    info.className = "cursor-info";
+    const name = document.createElement("strong");
+    name.textContent = cursor.name;
+    const bonus = document.createElement("span");
+    bonus.textContent = `${cursor.multiplier}× click power`;
+    info.append(name, bonus);
+    const action = document.createElement("span");
+    action.className = "cursor-action";
+    action.textContent = equipped ? "Equipped" : owned ? "Equip" : `${formatNumber(cursor.cost)} spreads`;
+    button.append(icon, info, action);
+    button.addEventListener("click", () => buyOrEquipCursor(cursor.id));
+    els.cursorShop.appendChild(button);
+  });
+}
+
+function buyOrEquipCursor(id) {
+  const cursor = CURSORS.find((item) => item.id === id);
+  if (!cursor) return;
+  if (!state.cursorCollection[id]) {
+    if (state.cookies < cursor.cost) return;
+    state.cookies -= cursor.cost;
+    state.cursorCollection[id] = true;
+  }
+  state.equippedCursor = id;
+  showToast(`${cursor.icon} ${cursor.name} equipped · ${cursor.multiplier}× click power!`);
+  renderShop();
+  updateShopAffordability();
+  saveGame();
+}
+
 function updateShopAffordability() {
   els.upgrades.querySelectorAll(".upgrade-btn").forEach((button) => {
     button.classList.toggle("affordable", state.cookies >= Number(button.dataset.cost));
@@ -359,6 +964,10 @@ function updateShopAffordability() {
   els.buildings.querySelectorAll(".building-card").forEach((button) => {
     button.classList.toggle("affordable", state.cookies >= Number(button.dataset.cost));
     button.classList.toggle("locked", state.cookies < Number(button.dataset.cost));
+  });
+  els.cursorShop.querySelectorAll(".cursor-card").forEach((button) => {
+    const owned = Boolean(state.cursorCollection[button.dataset.cursorId]);
+    button.disabled = !owned && state.cookies < Number(button.dataset.cursorCost);
   });
 }
 
@@ -467,14 +1076,37 @@ window.addEventListener("keydown", (event) => {
 
 function openAdminPanel() {
   els.adminPanel.hidden = false;
+  els.adminLogin.hidden = false;
+  els.adminTools.hidden = true;
+  els.adminPassword.value = "";
+  els.adminLoginStatus.textContent = "";
   els.adminStatus.textContent = "";
-  els.adminAmount.focus();
+  els.adminPassword.focus();
 }
 
 function closeAdminPanel() {
   els.adminPanel.hidden = true;
+  els.adminLogin.reset();
+  els.adminLoginStatus.textContent = "";
+  els.adminTools.hidden = true;
   els.cookieButton.focus();
 }
+
+els.adminLogin.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (els.adminPassword.value !== ADMIN_PASSWORD) {
+    els.adminLoginStatus.textContent = "That password is not correct.";
+    els.adminPassword.value = "";
+    els.adminPassword.focus();
+    return;
+  }
+  els.adminLogin.hidden = true;
+  els.adminTools.hidden = false;
+  els.adminLoginStatus.textContent = "";
+  els.adminPassword.value = "";
+  els.adminStatus.textContent = "";
+  els.adminAmount.focus();
+});
 
 function getAdminAmount() {
   const amount = els.adminAmount.valueAsNumber;
@@ -488,6 +1120,8 @@ function getAdminAmount() {
 function refreshAfterAdminChange() {
   checkAchievements();
   renderShop();
+  renderFishCollection();
+  updateFishTankUI();
   updateShopAffordability();
   updateNews();
   saveGame();
@@ -507,6 +1141,34 @@ function grantAdminSpreads(amount, message) {
 els.adminClose.addEventListener("click", closeAdminPanel);
 els.adminPanel.addEventListener("click", (event) => {
   if (event.target === els.adminPanel) closeAdminPanel();
+});
+
+els.fishRoll.addEventListener("click", () => rollFish());
+els.fishDailyRoll.addEventListener("click", () => rollFish(true));
+els.fishCollectionFilters.addEventListener("click", (event) => {
+  if (!(event.target instanceof HTMLElement)) return;
+  const button = event.target.closest("[data-fish-filter]");
+  if (!(button instanceof HTMLButtonElement)) return;
+  fishCollectionFilter = button.dataset.fishFilter;
+  renderFishCollection();
+});
+els.fishLuckUpgrade.addEventListener("click", () => {
+  const cost = getFishLuckUpgradeCost();
+  if (state.fishLuckLevel >= 5 || state.cookies < cost) return;
+  state.cookies -= cost;
+  state.fishLuckLevel++;
+  els.fishStatus.textContent = `Luck upgraded to level ${state.fishLuckLevel}! Higher tiers are more likely now.`;
+  refreshAfterAdminChange();
+});
+els.fishCollection.addEventListener("click", (event) => {
+  if (!(event.target instanceof HTMLElement)) return;
+  const sellButton = event.target.closest("[data-fish-sell]");
+  if (sellButton instanceof HTMLButtonElement) {
+    sellFishDuplicate(sellButton.dataset.fishSell);
+    return;
+  }
+  const levelButton = event.target.closest("[data-fish-level-up]");
+  if (levelButton instanceof HTMLButtonElement) levelUpFish(levelButton.dataset.fishLevelUp);
 });
 
 els.adminAdd.addEventListener("click", () => {
@@ -562,6 +1224,14 @@ els.adminEveryBuilding.addEventListener("click", () => {
     state.buildings[building.id] = (state.buildings[building.id] || 0) + 1;
   });
   els.adminStatus.textContent = "Your spreadery gained one of every building!";
+  refreshAfterAdminChange();
+});
+
+els.admin100kBuildings.addEventListener("click", () => {
+  BUILDINGS.forEach((building) => {
+    state.buildings[building.id] = (state.buildings[building.id] || 0) + 100000;
+  });
+  els.adminStatus.textContent = "Added 100,000 of every building to your spreadery!";
   refreshAfterAdminChange();
 });
 
@@ -630,6 +1300,54 @@ els.adminLuckyClick.addEventListener("click", () => {
     : "Lucky click cancelled.";
 });
 
+els.adminRandomFish.addEventListener("click", () => {
+  for (let index = 0; index < 25; index++) {
+    const character = pickFishCharacter();
+    const copies = state.fishCollection[character.id] || 0;
+    if (!Number.isSafeInteger(copies + 1)) continue;
+    state.fishCollection[character.id] = copies + 1;
+    state.fishLevels[character.id] = state.fishLevels[character.id] || 1;
+    state.fishRolls = Math.min(Number.MAX_SAFE_INTEGER, state.fishRolls + 1);
+    if (character.id === SECRET_FISH.id) {
+      state.cookies = Math.max(state.cookies, MAX_SPREAD_GRANT);
+      state.totalCookies = Math.max(state.totalCookies, MAX_SPREAD_GRANT);
+    }
+  }
+  checkFishCollectionReward();
+  els.adminStatus.textContent = "Added 25 random fish to your aquarium!";
+  refreshAfterAdminChange();
+  launchConfetti(32);
+});
+
+els.adminCompleteFish.addEventListener("click", () => {
+  FISH_CHARACTERS.forEach((character) => {
+    state.fishCollection[character.id] = Math.max(1, state.fishCollection[character.id] || 0);
+    state.fishLevels[character.id] = state.fishLevels[character.id] || 1;
+  });
+  checkFishCollectionReward();
+  els.adminStatus.textContent = "All 200 standard fish are now in your aquarium!";
+  refreshAfterAdminChange();
+  launchConfetti(60);
+});
+
+els.adminClearBoosts.addEventListener("click", () => {
+  clickBoostEndTime = 0;
+  productionBoostEndTime = 0;
+  frenzyMultiplier = 1;
+  frenzyEndTime = 0;
+  luckyClickArmed = false;
+  document.body.classList.remove("disco-mode", "dance-mode");
+  els.adminDisco.setAttribute("aria-pressed", "false");
+  els.adminDisco.textContent = "🪩 Disco mode: off";
+  els.adminDance.setAttribute("aria-pressed", "false");
+  els.adminDance.textContent = "💃 Dance mode: off";
+  els.adminLuckyClick.setAttribute("aria-pressed", "false");
+  els.adminLuckyClick.textContent = "🍀 Arm a 10× lucky click";
+  updateAdminBoosterStatus();
+  els.frenzyBanner.hidden = true;
+  els.adminStatus.textContent = "All temporary boosts and fun modes are off.";
+});
+
 function updateAdminBoosterStatus() {
   const clickSeconds = Math.max(0, Math.ceil((clickBoostEndTime - Date.now()) / 1000));
   const productionSeconds = Math.max(0, Math.ceil((productionBoostEndTime - Date.now()) / 1000));
@@ -663,6 +1381,8 @@ els.resetButton.addEventListener("click", () => {
   saveGame();
   renderShop();
   renderAchievements();
+  renderFishCollection();
+  updateFishTankUI();
   showToast("Your spreadery is ready for a fresh start!");
 });
 
@@ -701,6 +1421,7 @@ function gameLoop(now) {
     shopRenderTime = 0;
     updateShopAffordability();
     updateAdminBoosterStatus();
+    updateFishTankUI();
   }
 
   els.cookieCount.textContent = formatNumber(state.cookies);
@@ -734,6 +1455,8 @@ function startGame() {
   els.soundButton.textContent = state.soundEnabled ? "🔊 Sound on" : "🔇 Sound off";
   renderShop();
   renderAchievements();
+  renderFishCollection();
+  updateFishTankUI();
   updateNews();
   window.setInterval(saveGame, 10000);
   window.setInterval(updateNews, 10000);

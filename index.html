@@ -72,10 +72,17 @@
       <aside class="shop-column">
         <section class="panel upgrades-panel">
           <div class="section-heading">
-            <div><div class="eyebrow">MAKE IT BETTER</div><h2>Upgrades</h2></div>
+            <div><div class="eyebrow">CLICK FOR MORE</div><h2>Click Upgrades</h2></div>
             <span class="heading-icon">✨</span>
           </div>
           <div id="upgrades-container" class="upgrades-list"></div>
+        </section>
+        <section class="panel cursor-panel">
+          <div class="section-heading">
+            <div><div class="eyebrow">PICK YOUR POINTER</div><h2>Cursor Shop</h2></div>
+            <span class="heading-icon">🖱️</span>
+          </div>
+          <div id="cursor-shop-container" class="cursor-shop-list"></div>
         </section>
         <section class="panel shop-panel">
           <div class="section-heading shop-heading">
@@ -86,6 +93,48 @@
         </section>
       </aside>
     </main>
+    <section id="fish-tank" class="panel fish-tank-panel" aria-labelledby="fish-tank-title">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">AQUARIUM OF SURPRISES</div>
+          <h2 id="fish-tank-title">Spread Fish Tank</h2>
+        </div>
+        <span class="heading-icon" aria-hidden="true">🐠</span>
+      </div>
+      <p class="fish-tank-intro">Collect 100 girls and 100 boys. Your roll cost scales with all-time spreads.</p>
+      <div class="fish-tank-layout">
+        <button id="fish-roll" class="fish-aquarium" type="button" aria-label="Roll for a character">
+          <span class="aquarium-bubble bubble-one" aria-hidden="true">◦</span>
+          <span class="aquarium-bubble bubble-two" aria-hidden="true">◦</span>
+          <span class="aquarium-fish" aria-hidden="true">🐠</span>
+          <span class="aquarium-caption">Tap the tank to roll</span>
+        </button>
+        <div class="fish-tank-controls">
+          <div class="fish-stats">
+            <span>Collection<strong id="fish-collection-count">0 / 100</strong></span>
+            <span>Rolls<strong id="fish-roll-count">0</strong></span>
+            <span>Production bonus<strong id="fish-production-bonus">+0%</strong></span>
+          </div>
+          <p id="fish-roll-cost" class="fish-cost"></p>
+          <div class="fish-buttons">
+            <button id="fish-daily-roll" class="admin-action primary" type="button">🎁 Claim daily free roll</button>
+            <button id="fish-luck-upgrade" class="admin-action" type="button">🍀 Upgrade luck</button>
+          </div>
+          <p id="fish-luck-status" class="fish-detail"></p>
+          <p id="fish-tier-odds" class="fish-detail"></p>
+          <p id="fish-status" class="fish-status" role="status" aria-live="polite">Your tank is ready for its first roll!</p>
+        </div>
+      </div>
+      <details id="fish-collection-details" class="fish-collection-details">
+        <summary>Open character collection</summary>
+        <div id="fish-collection-filters" class="fish-collection-filters" role="group" aria-label="Filter characters by group">
+          <button class="fish-filter-button" type="button" data-fish-filter="all" aria-pressed="true">All (201)</button>
+          <button class="fish-filter-button" type="button" data-fish-filter="girl" aria-pressed="false">Girls (100)</button>
+          <button class="fish-filter-button" type="button" data-fish-filter="boy" aria-pressed="false">Boys (100)</button>
+        </div>
+        <div id="fish-collection" class="fish-collection" role="region" aria-label="Character collection"></div>
+      </details>
+    </section>
     <footer class="footer-note">Made with a little bit of magic.</footer>
   </div>
   <section id="admin-panel" class="admin-overlay" role="dialog" aria-modal="true" aria-labelledby="admin-title" hidden>
@@ -97,6 +146,14 @@
         </div>
         <button id="admin-close" class="icon-button" type="button" aria-label="Close admin panel">✕</button>
       </header>
+      <form id="admin-login" class="admin-login" autocomplete="on">
+        <p class="admin-intro">Sign in to open the local admin controls for this tab.</p>
+        <label class="admin-label" for="admin-password">Admin password</label>
+        <input id="admin-password" class="admin-input" type="password" name="password" autocomplete="current-password" required />
+        <button class="admin-action primary admin-login-submit" type="submit">Sign in</button>
+        <p id="admin-login-status" class="admin-status admin-login-status" role="status" aria-live="polite"></p>
+      </form>
+      <div id="admin-tools" hidden>
       <p class="admin-intro">These controls affect only this game in this browser tab.</p>
       <label class="admin-label" for="admin-amount">Spread amount</label>
       <input id="admin-amount" class="admin-input" type="number" min="0" max="1e60" step="any" inputmode="decimal" placeholder="e.g. 1000000" />
@@ -111,6 +168,7 @@
           <button class="admin-action" data-admin-grant="1000000" type="button">🪙 +1 million</button>
           <button class="admin-action" data-admin-grant="1000000000" type="button">💰 +1 billion</button>
           <button class="admin-action" data-admin-grant="1000000000000000" type="button">💎 +1 Qa</button>
+          <button class="admin-action" data-admin-grant="1e60" type="button">♾️ +1 Novemdecillion</button>
         </div>
       </section>
       <div class="admin-boosters">
@@ -128,6 +186,7 @@
         <h3>Bakery mayhem</h3>
         <div class="admin-presets">
           <button id="admin-every-building" class="admin-action" type="button">🏗️ Add one of every building</button>
+          <button id="admin-100k-buildings" class="admin-action" type="button">🏙️ Add 100,000 of every building</button>
           <button id="admin-all-upgrades" class="admin-action" type="button">✨ Unlock every upgrade</button>
           <button id="admin-sugar-frenzy" class="admin-action" type="button">🍯 Start a sugar frenzy</button>
         </div>
@@ -143,11 +202,29 @@
         </div>
         <p class="admin-help">The lucky click stays armed until you click the spread.</p>
       </section>
+      <section class="admin-toys">
+        <h3>Aquarium controls</h3>
+        <div class="admin-presets">
+          <button id="admin-random-fish" class="admin-action" type="button">🐠 Add 25 random fish</button>
+          <button id="admin-complete-fish" class="admin-action" type="button">🏆 Complete all 200 fish</button>
+          <button id="admin-clear-boosts" class="admin-action" type="button">🧹 Clear temporary effects</button>
+        </div>
+      </section>
       <p id="admin-status" class="admin-status" role="status" aria-live="polite"></p>
+      </div>
     </div>
   </section>
   <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
   <div id="celebration-layer" aria-hidden="true"></div>
+  <div id="fish-animation-layer" class="fish-animation-layer" aria-hidden="true"></div>
+  <div id="fish-oliva-celebration" class="fish-oliva-celebration" role="status" aria-live="assertive" aria-atomic="true" hidden>
+    <div class="fish-oliva-showpiece">
+      <span class="fish-oliva-crown" aria-hidden="true">👑🐠🔥</span>
+      <span class="fish-oliva-kicker">SECRET LEGEND UNLOCKED</span>
+      <strong>ULTRA TUFF<br>SIGMA TUFF TUFF!</strong>
+      <span class="fish-oliva-name">OLIVA HAS ENTERED THE TANK</span>
+    </div>
+  </div>
   <script src="Code.js"></script>
 </body>
 </html>

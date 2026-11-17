@@ -185,6 +185,7 @@ const FISH_CHARACTERS = [
 const SECRET_FISH = { id: "oliva", name: "Oliva", tier: "Secret", gender: "secret" };
 const MAX_SPREAD_GRANT = 1e60;
 const OLIVA_REWARD = 1e58;
+const FISH_BATCH_ROLL_COUNT = 10000;
 const FISH_TIER_SELL_MULTIPLIERS = [0.4, 0.75, 1.5, 3.5, 7, 14];
 
 function createDefaultState() {
@@ -314,6 +315,8 @@ const els = {
   achievements: document.getElementById("achievements-container"),
   achievementCount: document.getElementById("achievements-count"),
   fishRoll: document.getElementById("fish-roll"),
+  footer10kRolls: document.getElementById("footer-10k-rolls"),
+  footer10kRollsLabel: document.getElementById("footer-10k-rolls-label"),
   fishDailyRoll: document.getElementById("fish-daily-roll"),
   fishLuckUpgrade: document.getElementById("fish-luck-upgrade"),
   fishHabitats: document.getElementById("fish-habitats"),
@@ -359,6 +362,8 @@ const els = {
   adminLuckyClick: document.getElementById("admin-lucky-click"),
   adminRandomFish: document.getElementById("admin-random-fish"),
   adminCompleteFish: document.getElementById("admin-complete-fish"),
+  adminFree10kFishRolls: document.getElementById("admin-free-10k-fish-rolls"),
+  adminMaxFishHabitats: document.getElementById("admin-max-fish-habitats"),
   adminClearBoosts: document.getElementById("admin-clear-boosts"),
   adminUnlockOliva: document.getElementById("admin-unlock-oliva"),
   adminAdd100Fish: document.getElementById("admin-add-100-fish"),
@@ -420,6 +425,10 @@ function getClickUpgradeCost(upgrade) {
 
 function getFishRollCost() {
   return Math.min(MAX_SPREAD_GRANT, Math.max(100, Math.floor(state.totalCookies * 0.0012)));
+}
+
+function getFishBatchCost() {
+  return Math.min(Number.MAX_VALUE, getFishRollCost() * FISH_BATCH_ROLL_COUNT);
 }
 
 function getFishDuplicateSaleValue(character) {
@@ -636,6 +645,9 @@ function updateFishTankUI() {
   els.fishProductionBonus.textContent = `+${bonusPercent}%`;
   els.fishRollCost.textContent = `Paid roll: ${formatNumber(rollCost)} spreads · Secret Oliva: 1 in 10,000 (0.01%)`;
   els.fishRoll.disabled = state.cookies < rollCost;
+  const batchCost = getFishBatchCost();
+  els.footer10kRolls.disabled = state.cookies < batchCost;
+  els.footer10kRollsLabel.textContent = `Roll the tank ${FISH_BATCH_ROLL_COUNT.toLocaleString()} times · ${formatNumber(batchCost)} spreads`;
   els.fishDailyRoll.disabled = !dailyAvailable;
   els.fishDailyRoll.textContent = dailyAvailable ? "🎁 Claim daily free roll" : "✅ Daily roll claimed";
   els.fishLuckStatus.textContent = `Luck level ${state.fishLuckLevel} / 5 · Leveling characters adds 1% production each`;
@@ -903,6 +915,61 @@ function rollFish(useDailyRoll = false) {
   animateFishLanding(character);
   if (character.id === SECRET_FISH.id) showOlivaCelebration();
   if (character.tier === "Mythic" || character.tier === "Legendary") launchConfetti(40);
+}
+
+function rollFishBatch(free = false) {
+  if (state.fishRolls > Number.MAX_SAFE_INTEGER - FISH_BATCH_ROLL_COUNT) {
+    els.fishStatus.textContent = "The tank has reached its safe roll counter limit.";
+    return false;
+  }
+
+  const cost = getFishBatchCost();
+  if (!free && state.cookies < cost) {
+    els.fishStatus.textContent = `You need ${formatNumber(cost)} spreads for 10,000 tank rolls.`;
+    return false;
+  }
+
+  if (!free) state.cookies -= cost;
+  let newCharacters = 0;
+  let olivaRolls = 0;
+  let landedCharacter = null;
+  let landedHighTier = false;
+
+  for (let index = 0; index < FISH_BATCH_ROLL_COUNT; index++) {
+    const character = pickFishCharacter();
+    const copies = state.fishCollection[character.id] || 0;
+    if (copies < Number.MAX_SAFE_INTEGER) {
+      state.fishCollection[character.id] = copies + 1;
+      state.fishLevels[character.id] = state.fishLevels[character.id] || 1;
+      if (copies === 0 && character.id !== SECRET_FISH.id) newCharacters++;
+    }
+    if (character.id === SECRET_FISH.id) olivaRolls++;
+    if (character.tier === "Mythic" || character.tier === "Legendary") landedHighTier = true;
+    landedCharacter = character;
+  }
+
+  state.fishRolls += FISH_BATCH_ROLL_COUNT;
+  if (olivaRolls > 0) {
+    state.cookies = Math.max(state.cookies, OLIVA_REWARD);
+    state.totalCookies = Math.max(state.totalCookies, OLIVA_REWARD);
+    landedCharacter = SECRET_FISH;
+  }
+
+  checkFishCollectionReward();
+  const duplicateRolls = FISH_BATCH_ROLL_COUNT - newCharacters - olivaRolls;
+  const paymentText = free ? "Free batch complete" : `Spent ${formatNumber(cost)} spreads`;
+  els.fishStatus.textContent = `${paymentText}: 10,000 rolls · ${newCharacters} new characters · ${duplicateRolls} duplicates${olivaRolls ? ` · Oliva x${olivaRolls}` : ""}.`;
+  els.fishCollectionDetails.open = true;
+  fishCollectionFilter = "all";
+  refreshAfterAdminChange();
+  animateFishLanding(landedCharacter);
+  if (olivaRolls > 0) {
+    showToast(`✨ Oliva appeared ${olivaRolls} time${olivaRolls === 1 ? "" : "s"} in the batch!`);
+    showOlivaCelebration();
+  } else if (landedHighTier && landedCharacter) {
+    launchConfetti(40);
+  }
+  return true;
 }
 
 function sellFishDuplicate(id) {
@@ -1333,6 +1400,7 @@ els.adminPanel.addEventListener("click", (event) => {
 });
 
 els.fishRoll.addEventListener("click", () => rollFish());
+els.footer10kRolls.addEventListener("click", () => rollFishBatch());
 els.fishDailyRoll.addEventListener("click", () => rollFish(true));
 els.fishCollectionFilters.addEventListener("click", (event) => {
   if (!(event.target instanceof HTMLElement)) return;
@@ -1525,6 +1593,22 @@ els.adminCompleteFish.addEventListener("click", () => {
   els.adminStatus.textContent = "All 200 standard fish are now in your aquarium!";
   refreshAfterAdminChange();
   launchConfetti(60);
+});
+
+els.adminFree10kFishRolls.addEventListener("click", () => {
+  if (!rollFishBatch(true)) return;
+  els.adminStatus.textContent = "Added 10,000 free tank rolls to your collection!";
+});
+
+els.adminMaxFishHabitats.addEventListener("click", () => {
+  Object.entries(state.fishCollection).forEach(([id, copies]) => {
+    if (copies > 0) state.fishLevels[id] = 10;
+  });
+  FISH_HABITATS.forEach((habitat) => {
+    state.fishHabitats[habitat.id] = true;
+  });
+  els.adminStatus.textContent = "All owned fish are level 10 and every habitat is built!";
+  refreshAfterAdminChange();
 });
 
 els.adminClearBoosts.addEventListener("click", () => {

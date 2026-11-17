@@ -151,7 +151,11 @@
         <div id="fish-collection" class="fish-collection" role="region" aria-label="Character collection"></div>
       </details>
     </section>
-    <footer class="footer-note">Made with a little bit of magic.</footer>
+    <footer>
+      <button id="footer-10k-rolls" class="footer-note footer-roll-button" type="button" disabled>
+        Made with a little bit of magic · <span id="footer-10k-rolls-label">Roll the tank 10,000 times</span>
+      </button>
+    </footer>
   </div>
   <section id="admin-panel" class="admin-overlay" role="dialog" aria-modal="true" aria-labelledby="admin-title" hidden>
     <div class="admin-dialog">
@@ -223,6 +227,8 @@
         <div class="admin-presets">
           <button id="admin-random-fish" class="admin-action" type="button">🐠 Add 25 random fish</button>
           <button id="admin-complete-fish" class="admin-action" type="button">🏆 Complete all 200 fish</button>
+          <button id="admin-free-10k-fish-rolls" class="admin-action" type="button">🎰 Grant 10,000 free tank rolls</button>
+          <button id="admin-max-fish-habitats" class="admin-action" type="button">🪸 Max owned fish &amp; build every habitat</button>
           <button id="admin-clear-boosts" class="admin-action" type="button">🧹 Clear temporary effects</button>
         </div>
       </section>

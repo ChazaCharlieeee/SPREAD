@@ -321,7 +321,10 @@ button:focus-visible, summary:focus-visible, a:focus-visible { outline: 3px soli
 .building-meta { display: block; overflow: hidden; margin-top: 3px; color: #9e8873; font-size: .64rem; text-overflow: ellipsis; white-space: nowrap; }
 .building-cost { color: #916a45; font-weight: 700; }
 .building-count { min-width: 21px; color: #9c8875; font-family: "Playfair Display", Georgia, serif; font-size: 1.2rem; font-weight: 700; text-align: right; }
-.footer-note { padding: 8px 0 4px; color: #ad9a87; font-family: "Playfair Display", Georgia, serif; font-size: .75rem; font-style: italic; text-align: center; }
+.footer-note { display: block; width: 100%; padding: 8px 0 4px; border: 0; background: transparent; color: #ad9a87; font-family: "Playfair Display", Georgia, serif; font-size: .75rem; font-style: italic; text-align: center; }
+.footer-roll-button:not(:disabled) { color: #826744; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
+.footer-roll-button:not(:disabled):hover { color: #5c7046; }
+.footer-roll-button:disabled { cursor: not-allowed; opacity: .8; }
 
 #toast-container { position: fixed; z-index: 30; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
 .toast { max-width: min(360px, calc(100vw - 40px)); padding: 12px 16px; border: 1px solid #ead9c5; border-radius: 12px; background: #fffdf8; color: #624632; box-shadow: 0 9px 30px rgba(85,57,33,.12); font-size: .82rem; font-weight: 700; animation: toast-in .25s ease both; }

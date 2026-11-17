@@ -88,6 +88,21 @@ const HEADLINES = [
   { min: 500000, text: "Your spreadery is now visible from space." }
 ];
 
+const MILESTONES = [
+  { title: "Make 100 clicks", target: 100, unit: "clicks", value: () => state.totalClicks },
+  { title: "Make 500 clicks", target: 500, unit: "clicks", value: () => state.totalClicks },
+  { title: "Make 1,000 clicks", target: 1000, unit: "clicks", value: () => state.totalClicks },
+  { title: "Earn 1,000 spreads", target: 1000, unit: "spreads", value: () => state.totalCookies },
+  { title: "Make 5,000 clicks", target: 5000, unit: "clicks", value: () => state.totalClicks },
+  { title: "Earn 1 million spreads", target: 1000000, unit: "spreads", value: () => state.totalCookies },
+  { title: "Own 25 helpers", target: 25, unit: "helpers", value: () => getBuildingCount() },
+  { title: "Collect 10 fish", target: 10, unit: "fish", value: () => getFishUniqueCount() },
+  { title: "Earn 1 billion spreads", target: 1000000000, unit: "spreads", value: () => state.totalCookies },
+  { title: "Own 100 helpers", target: 100, unit: "helpers", value: () => getBuildingCount() },
+  { title: "Collect 50 fish", target: 50, unit: "fish", value: () => getFishUniqueCount() },
+  { title: "Collect all 200 fish", target: 200, unit: "fish", value: () => getFishUniqueCount() }
+];
+
 const FISH_TIERS = [
   { name: "Common", count: 40, className: "common" },
   { name: "Uncommon", count: 25, className: "uncommon" },
@@ -237,10 +252,16 @@ const els = {
   cookieCount: document.getElementById("cookie-count"),
   cps: document.getElementById("cps-display"),
   cpc: document.getElementById("cpc-display"),
+  milestoneTitle: document.getElementById("milestone-title"),
+  milestoneBar: document.getElementById("milestone-bar"),
+  milestoneFill: document.getElementById("milestone-fill"),
+  milestoneProgress: document.getElementById("milestone-progress"),
   total: document.getElementById("stat-total"),
   clicks: document.getElementById("stat-clicks"),
   time: document.getElementById("stat-time"),
   cookieButton: document.getElementById("cookie-btn"),
+  clickParticles: document.getElementById("click-particles"),
+  clickStreak: document.getElementById("click-streak"),
   upgrades: document.getElementById("upgrades-container"),
   cursorShop: document.getElementById("cursor-shop-container"),
   buildings: document.getElementById("buildings-container"),
@@ -292,6 +313,11 @@ const els = {
   adminRandomFish: document.getElementById("admin-random-fish"),
   adminCompleteFish: document.getElementById("admin-complete-fish"),
   adminClearBoosts: document.getElementById("admin-clear-boosts"),
+  adminUnlockOliva: document.getElementById("admin-unlock-oliva"),
+  adminAdd100Fish: document.getElementById("admin-add-100-fish"),
+  adminAllCursors: document.getElementById("admin-all-cursors"),
+  adminMaxLuck: document.getElementById("admin-max-luck"),
+  adminResetDailyRoll: document.getElementById("admin-reset-daily-roll"),
   clickBoostStatus: document.getElementById("click-boost-status"),
   productionBoostStatus: document.getElementById("production-boost-status"),
   adminStatus: document.getElementById("admin-status"),
@@ -422,6 +448,40 @@ function showToast(message) {
     toast.style.transition = "opacity .25s ease";
     window.setTimeout(() => toast.remove(), 260);
   }, 3000);
+}
+
+function updateMilestone() {
+  const milestone = MILESTONES.find((item) => item.value() < item.target);
+  if (!milestone) {
+    els.milestoneTitle.textContent = "Every milestone reached!";
+    els.milestoneProgress.textContent = "You're a spread legend.";
+    els.milestoneFill.style.width = "100%";
+    els.milestoneBar.setAttribute("aria-valuenow", "100");
+    return;
+  }
+
+  const progress = Math.max(0, Math.min(milestone.target, milestone.value()));
+  const percent = Math.floor((progress / milestone.target) * 100);
+  els.milestoneTitle.textContent = milestone.title;
+  els.milestoneProgress.textContent = `${formatNumber(progress)} / ${formatNumber(milestone.target)} ${milestone.unit}`;
+  els.milestoneFill.style.width = `${percent}%`;
+  els.milestoneBar.setAttribute("aria-valuenow", String(percent));
+}
+
+function showClickGain(amount, event, streakBonus) {
+  while (els.clickParticles.childElementCount >= 12) {
+    els.clickParticles.firstElementChild.remove();
+  }
+  const particle = document.createElement("span");
+  particle.className = `click-gain${streakBonus ? " click-gain-streak" : ""}`;
+  particle.textContent = `+${formatNumber(amount)}${streakBonus ? " streak!" : ""}`;
+  const stageRect = els.clickParticles.parentElement.getBoundingClientRect();
+  const x = event.clientX > 0 ? event.clientX - stageRect.left : stageRect.width / 2;
+  const y = event.clientY > 0 ? event.clientY - stageRect.top : stageRect.height / 2;
+  particle.style.left = `${x}px`;
+  particle.style.top = `${y}px`;
+  els.clickParticles.appendChild(particle);
+  window.setTimeout(() => particle.remove(), 1000);
 }
 
 function launchConfetti(count = 32) {
@@ -1026,6 +1086,7 @@ function startSugarFrenzy(duration = 15000) {
 
 els.cookieButton.addEventListener("click", (event) => {
   let gain = getCookiesPerClick();
+  let streakBonus = 0;
   if (luckyClickArmed) {
     gain *= 10;
     luckyClickArmed = false;
@@ -1043,7 +1104,7 @@ els.cookieButton.addEventListener("click", (event) => {
   state.totalCookies += gain;
   state.totalClicks++;
   if (state.totalClicks % 100 === 0) {
-    const streakBonus = gain * 25;
+    streakBonus = gain * 25;
     if (Number.isFinite(state.cookies + streakBonus) && Number.isFinite(state.totalCookies + streakBonus)) {
       state.cookies += streakBonus;
       state.totalCookies += streakBonus;
@@ -1051,6 +1112,10 @@ els.cookieButton.addEventListener("click", (event) => {
       launchConfetti(20);
     }
   }
+  showClickGain(gain + streakBonus, event, streakBonus > 0);
+  const clicksUntilStreak = 100 - (state.totalClicks % 100);
+  els.clickStreak.textContent = `Next streak bonus in ${clicksUntilStreak} click${clicksUntilStreak === 1 ? "" : "s"}`;
+  updateMilestone();
   els.cookieButton.classList.add("clicked");
   window.clearTimeout(spreadAnimationTimer);
   spreadAnimationTimer = window.setTimeout(() => els.cookieButton.classList.remove("clicked"), 130);
@@ -1122,6 +1187,7 @@ function refreshAfterAdminChange() {
   renderShop();
   renderFishCollection();
   updateFishTankUI();
+  updateMilestone();
   updateShopAffordability();
   updateNews();
   saveGame();
@@ -1348,6 +1414,75 @@ els.adminClearBoosts.addEventListener("click", () => {
   els.adminStatus.textContent = "All temporary boosts and fun modes are off.";
 });
 
+els.adminUnlockOliva.addEventListener("click", () => {
+  state.fishCollection[SECRET_FISH.id] = Math.max(1, state.fishCollection[SECRET_FISH.id] || 0);
+  state.fishLevels[SECRET_FISH.id] = state.fishLevels[SECRET_FISH.id] || 1;
+  state.cookies = Math.max(state.cookies, MAX_SPREAD_GRANT);
+  state.totalCookies = Math.max(state.totalCookies, MAX_SPREAD_GRANT);
+  els.fishStatus.textContent = "✨ Admin reveal! Oliva joined your collection and your jar has at least 1e60 spreads!";
+  els.adminStatus.textContent = "Oliva unlocked! The secret fish is in your collection.";
+  refreshAfterAdminChange();
+  els.fishCollectionDetails.open = true;
+  fishCollectionFilter = "all";
+  renderFishCollection();
+  const olivaCard = els.fishCollection.querySelector(`[data-fish-id="${SECRET_FISH.id}"]`);
+  if (olivaCard) {
+    olivaCard.scrollIntoView({ behavior: "smooth", block: "center" });
+    showFishLandingImpact(
+      olivaCard.getBoundingClientRect().left + olivaCard.getBoundingClientRect().width / 2,
+      olivaCard.getBoundingClientRect().top + olivaCard.getBoundingClientRect().height / 2,
+      "secret"
+    );
+  }
+  showOlivaCelebration();
+});
+
+els.adminAdd100Fish.addEventListener("click", () => {
+  let secretUnlocked = false;
+  for (let index = 0; index < 100; index++) {
+    const character = pickFishCharacter();
+    const copies = state.fishCollection[character.id] || 0;
+    if (!Number.isSafeInteger(copies + 1)) continue;
+    state.fishCollection[character.id] = copies + 1;
+    state.fishLevels[character.id] = state.fishLevels[character.id] || 1;
+    state.fishRolls = Math.min(Number.MAX_SAFE_INTEGER, state.fishRolls + 1);
+    if (character.id === SECRET_FISH.id) secretUnlocked = true;
+  }
+  if (secretUnlocked) {
+    state.cookies = Math.max(state.cookies, MAX_SPREAD_GRANT);
+    state.totalCookies = Math.max(state.totalCookies, MAX_SPREAD_GRANT);
+  }
+  checkFishCollectionReward();
+  els.adminStatus.textContent = `Added 100 random fish${secretUnlocked ? " and unlocked Oliva!" : "!"}`;
+  refreshAfterAdminChange();
+  if (secretUnlocked) showOlivaCelebration();
+  launchConfetti(50);
+});
+
+els.adminAllCursors.addEventListener("click", () => {
+  CURSORS.forEach((cursor) => {
+    state.cursorCollection[cursor.id] = true;
+  });
+  els.adminStatus.textContent = "Every cursor has been unlocked! Choose one from the Cursor Shop.";
+  renderShop();
+  updateShopAffordability();
+  saveGame();
+});
+
+els.adminMaxLuck.addEventListener("click", () => {
+  state.fishLuckLevel = 5;
+  els.fishStatus.textContent = "Admin boost! Your tank luck is maxed out.";
+  els.adminStatus.textContent = "Tank luck maxed out at level 5!";
+  refreshAfterAdminChange();
+});
+
+els.adminResetDailyRoll.addEventListener("click", () => {
+  state.fishDailyRollDate = "";
+  els.fishStatus.textContent = "Your daily free roll is ready to claim!";
+  els.adminStatus.textContent = "Today's free fish roll is ready again.";
+  refreshAfterAdminChange();
+});
+
 function updateAdminBoosterStatus() {
   const clickSeconds = Math.max(0, Math.ceil((clickBoostEndTime - Date.now()) / 1000));
   const productionSeconds = Math.max(0, Math.ceil((productionBoostEndTime - Date.now()) / 1000));
@@ -1383,6 +1518,7 @@ els.resetButton.addEventListener("click", () => {
   renderAchievements();
   renderFishCollection();
   updateFishTankUI();
+  updateMilestone();
   showToast("Your spreadery is ready for a fresh start!");
 });
 
@@ -1414,6 +1550,7 @@ function gameLoop(now) {
   if (unlockCheckTime >= 1) {
     unlockCheckTime = 0;
     checkAchievements();
+    updateMilestone();
     const eligibleCount = UPGRADES.filter((upgrade) => !state.upgrades.includes(upgrade.id) && upgrade.req(state)).length;
     if (eligibleCount !== els.upgrades.querySelectorAll(".upgrade-btn").length) renderShop();
   }
@@ -1457,6 +1594,7 @@ function startGame() {
   renderAchievements();
   renderFishCollection();
   updateFishTankUI();
+  updateMilestone();
   updateNews();
   window.setInterval(saveGame, 10000);
   window.setInterval(updateNews, 10000);

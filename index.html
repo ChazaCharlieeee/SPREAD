@@ -31,6 +31,13 @@
           <div id="cookie-count" class="cookie-count" aria-live="polite">0</div>
           <div class="cookie-label">spreads</div>
           <div class="rate-line"><span><strong id="cps-display">0</strong> per second</span><span><strong id="cpc-display">+1</strong> per click</span></div>
+          <div class="milestone-tracker">
+            <div class="milestone-heading"><span>NEXT MILESTONE</span><strong id="milestone-title">Make 100 clicks</strong></div>
+            <div id="milestone-bar" class="milestone-bar" role="progressbar" aria-label="Milestone progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span id="milestone-fill"></span>
+            </div>
+            <p id="milestone-progress" class="milestone-progress">0 / 100 clicks</p>
+          </div>
         </section>
 
         <section class="panel stats-panel">
@@ -66,6 +73,8 @@
         </div>
         <p class="click-hint">Click the picture to make <strong>more spreads</strong></p>
         <p class="surprise-hint">Keep clicking — a surprise jackpot might happen!</p>
+        <div id="click-particles" class="click-particles" aria-hidden="true"></div>
+        <p id="click-streak" class="click-streak">Click streak bonus every 100 taps</p>
         <div class="oven-status"><span class="oven-light"></span><span>Ready to spread</span><span class="status-divider">·</span><span id="building-summary">Your spreadery is just getting started</span></div>
       </section>
 
@@ -210,6 +219,16 @@
           <button id="admin-clear-boosts" class="admin-action" type="button">🧹 Clear temporary effects</button>
         </div>
       </section>
+      <section class="admin-toys">
+        <h3>Secret fish &amp; collection boosts</h3>
+        <div class="admin-presets">
+          <button id="admin-unlock-oliva" class="admin-action primary" type="button">👑 Unlock Oliva + 1e60 spreads</button>
+          <button id="admin-add-100-fish" class="admin-action" type="button">🐟 Add 100 random fish</button>
+          <button id="admin-all-cursors" class="admin-action" type="button">🖱️ Unlock every cursor</button>
+          <button id="admin-max-luck" class="admin-action" type="button">🍀 Max out tank luck</button>
+          <button id="admin-reset-daily-roll" class="admin-action" type="button">🎁 Reset today's free roll</button>
+        </div>
+      </section>
       <p id="admin-status" class="admin-status" role="status" aria-live="polite"></p>
       </div>
     </div>
@@ -221,7 +240,7 @@
     <div class="fish-oliva-showpiece">
       <span class="fish-oliva-crown" aria-hidden="true">👑🐠🔥</span>
       <span class="fish-oliva-kicker">SECRET LEGEND UNLOCKED</span>
-      <strong>ULTRA TUFF<br>SIGMA TUFF TUFF!</strong>
+      <strong>ONE-IN-A-MILLION<br>DISCOVERY!</strong>
       <span class="fish-oliva-name">OLIVA HAS ENTERED THE TANK</span>
     </div>
   </div>

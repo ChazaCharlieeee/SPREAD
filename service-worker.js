@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "spread-clicker-v21";
+const CACHE_NAME = "spread-clicker-v23";
 const APP_ASSETS = [
   "./index.html",
   "./style.css",

@@ -186,7 +186,19 @@ const SECRET_FISH = { id: "oliva", name: "Oliva", tier: "Secret", gender: "secre
 const MAX_SPREAD_GRANT = 1e60;
 const OLIVA_REWARD = 1e58;
 const FISH_BATCH_ROLL_COUNT = 10000;
+const MAX_REBIRTHS = 100;
+const CLICK_COOLDOWN_MS = 200;
 const FISH_TIER_SELL_MULTIPLIERS = [0.4, 0.75, 1.5, 3.5, 7, 14];
+
+const REBIRTH_UPGRADES = [
+  { id: "star-touched-click", name: "Star-Touched Click", icon: "✨", unlockAt: 1, cost: 1, clickMultiplier: 1.1, productionMultiplier: 1, desc: "+10% click power." },
+  { id: "steady-star-bakery", name: "Steady Star Bakery", icon: "🌠", unlockAt: 3, cost: 2, clickMultiplier: 1, productionMultiplier: 1.1, desc: "+10% building production." },
+  { id: "orbiting-fingertips", name: "Orbiting Fingertips", icon: "🪐", unlockAt: 5, cost: 3, clickMultiplier: 1.15, productionMultiplier: 1, desc: "+15% click power." },
+  { id: "nova-ovens", name: "Nova Ovens", icon: "🌌", unlockAt: 10, cost: 5, clickMultiplier: 1, productionMultiplier: 1.15, desc: "+15% building production." },
+  { id: "starlight-synergy", name: "Starlight Synergy", icon: "🌟", unlockAt: 25, cost: 10, clickMultiplier: 1.2, productionMultiplier: 1.2, desc: "+20% click power and production." },
+  { id: "galactic-recipe", name: "Galactic Recipe", icon: "🌌", unlockAt: 50, cost: 20, clickMultiplier: 1.25, productionMultiplier: 1.25, desc: "+25% click power and production." },
+  { id: "rebirth-mastery", name: "Rebirth Mastery", icon: "👑", unlockAt: 100, cost: 30, clickMultiplier: 1.35, productionMultiplier: 1.35, desc: "+35% click power and production." }
+];
 
 function createDefaultState() {
   return {
@@ -194,6 +206,11 @@ function createDefaultState() {
     totalCookies: 0,
     totalClicks: 0,
     playTimeSeconds: 0,
+    rebirthCount: 0,
+    rebirthPoints: 0,
+    rebirthUpgrades: [],
+    dailyBonusDate: "",
+    dailyBonusStreak: 0,
     buildings: {},
     upgrades: [],
     achievements: [],
@@ -224,6 +241,15 @@ function loadGame() {
     ["cookies", "totalCookies", "totalClicks", "playTimeSeconds", "lastSaved"].forEach((key) => {
       if (!Number.isFinite(state[key]) || state[key] < 0) state[key] = defaults[key];
     });
+    ["rebirthCount", "rebirthPoints"].forEach((key) => {
+      if (!Number.isSafeInteger(state[key]) || state[key] < 0) state[key] = defaults[key];
+    });
+    if (typeof state.dailyBonusDate !== "string" || (state.dailyBonusDate && !/^\d{4}-\d{2}-\d{2}$/.test(state.dailyBonusDate))) state.dailyBonusDate = "";
+    if (!Number.isInteger(state.dailyBonusStreak) || state.dailyBonusStreak < 0 || state.dailyBonusStreak > 7) state.dailyBonusStreak = 0;
+    state.rebirthCount = Math.min(MAX_REBIRTHS, state.rebirthCount);
+    if (!Array.isArray(state.rebirthUpgrades)) state.rebirthUpgrades = [];
+    const rebirthUpgradeIds = new Set(REBIRTH_UPGRADES.map((upgrade) => upgrade.id));
+    state.rebirthUpgrades = [...new Set(state.rebirthUpgrades.filter((id) => rebirthUpgradeIds.has(id)))];
     if (!state.buildings || typeof state.buildings !== "object" || Array.isArray(state.buildings)) state.buildings = {};
     if (!Array.isArray(state.upgrades)) state.upgrades = [];
     if (!Array.isArray(state.achievements)) state.achievements = [];
@@ -282,6 +308,7 @@ let audioContext = null;
 let clickBoostEndTime = 0;
 let productionBoostEndTime = 0;
 let luckyClickArmed = false;
+let lastAcceptedSpreadClickAt = 0;
 let lastFrameTime = performance.now();
 let unlockCheckTime = 0;
 let shopRenderTime = 0;
@@ -306,6 +333,16 @@ const els = {
   total: document.getElementById("stat-total"),
   clicks: document.getElementById("stat-clicks"),
   time: document.getElementById("stat-time"),
+  dailyBonusButton: document.getElementById("daily-bonus-button"),
+  dailyBonusStatus: document.getElementById("daily-bonus-status"),
+  rebirthCount: document.getElementById("rebirth-count"),
+  rebirthStars: document.getElementById("rebirth-stars"),
+  rebirthBoost: document.getElementById("rebirth-boost"),
+  rebirthPanel: document.getElementById("rebirth-menu"),
+  rebirthStatus: document.getElementById("rebirth-status"),
+  rebirthButton: document.getElementById("rebirth-button"),
+  rebirthUpgrades: document.getElementById("rebirth-upgrades"),
+  rebirthMenuShortcut: document.getElementById("rebirth-menu-shortcut"),
   cookieButton: document.getElementById("cookie-btn"),
   clickParticles: document.getElementById("click-particles"),
   clickStreak: document.getElementById("click-streak"),
@@ -370,6 +407,8 @@ const els = {
   adminAllCursors: document.getElementById("admin-all-cursors"),
   adminMaxLuck: document.getElementById("admin-max-luck"),
   adminResetDailyRoll: document.getElementById("admin-reset-daily-roll"),
+  adminResetDailyBonus: document.getElementById("admin-reset-daily-bonus"),
+  adminMaxRebirths: document.getElementById("admin-max-rebirths"),
   clickBoostStatus: document.getElementById("click-boost-status"),
   productionBoostStatus: document.getElementById("production-boost-status"),
   adminStatus: document.getElementById("admin-status"),
@@ -416,6 +455,27 @@ function getBuildingCost(building) {
 function getBuildingMultiplier(id) {
   return UPGRADES.filter((upgrade) => upgrade.type === "building" && upgrade.target === id && state.upgrades.includes(upgrade.id))
     .reduce((multiplier, upgrade) => multiplier * upgrade.mult, 1);
+}
+
+function getRebirthReward() {
+  const requiredBuildings = getRebirthBuildingRequirement();
+  return state.rebirthCount < MAX_REBIRTHS && (state.buildings.spreadstergram || 0) >= requiredBuildings ? 1 : 0;
+}
+
+function getRebirthBuildingRequirement() {
+  return state.rebirthCount === 0 ? 1 : Math.min(100, state.rebirthCount * 10);
+}
+
+function getRebirthMultiplier() {
+  return 1 + state.rebirthCount * 0.1;
+}
+
+function getRebirthUpgradeMultiplier(type) {
+  return state.rebirthUpgrades.reduce((multiplier, id) => {
+    const upgrade = REBIRTH_UPGRADES.find((item) => item.id === id);
+    if (!upgrade) return multiplier;
+    return multiplier * (type === "click" ? upgrade.clickMultiplier : upgrade.productionMultiplier);
+  }, 1);
 }
 
 function getClickUpgradeCost(upgrade) {
@@ -465,6 +525,20 @@ function getLocalDateKey() {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 }
 
+function getDailyBonusStreak() {
+  if (state.dailyBonusDate === getLocalDateKey()) return Math.max(1, state.dailyBonusStreak);
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayKey = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, "0")}-${String(yesterday.getDate()).padStart(2, "0")}`;
+  return state.dailyBonusDate === yesterdayKey ? Math.min(7, state.dailyBonusStreak + 1) : 1;
+}
+
+function getDailyBonusAmount(streak) {
+  const rawBase = getCookiesPerSecond() * 60 + getCookiesPerClick() * 25;
+  const base = Number.isFinite(rawBase) ? Math.max(100, Math.floor(rawBase)) : MAX_SPREAD_GRANT;
+  return Math.min(MAX_SPREAD_GRANT, Math.floor(base * (1 + Math.max(0, streak - 1) * 0.1)));
+}
+
 function getFishTierOdds() {
   const level = state.fishLuckLevel;
   return [
@@ -480,7 +554,7 @@ function getFishTierOdds() {
 function getCookiesPerSecond() {
   const boost = Date.now() < productionBoostEndTime ? 1.5 : 1;
   return BUILDINGS.reduce((sum, building) => sum + (state.buildings[building.id] || 0) * building.cps * getBuildingMultiplier(building.id), 0)
-    * frenzyMultiplier * boost * getFishProductionMultiplier();
+    * frenzyMultiplier * boost * getFishProductionMultiplier() * getRebirthMultiplier() * getRebirthUpgradeMultiplier("production");
 }
 
 function getCookiesPerClick() {
@@ -490,7 +564,7 @@ function getCookiesPerClick() {
   }, 1);
   const cursor = CURSORS.find((item) => item.id === state.equippedCursor) || CURSORS[0];
   const boost = Date.now() < clickBoostEndTime ? 1.5 : 1;
-  return Math.max(1, Math.floor(Math.min(1e100, multiplier * cursor.multiplier * frenzyMultiplier * boost)));
+  return Math.max(1, Math.floor(Math.min(1e100, multiplier * cursor.multiplier * frenzyMultiplier * boost * getRebirthMultiplier() * getRebirthUpgradeMultiplier("click"))));
 }
 
 function saveGame() {
@@ -531,6 +605,72 @@ function updateMilestone() {
   els.milestoneProgress.textContent = `${formatNumber(progress)} / ${formatNumber(milestone.target)} ${milestone.unit}`;
   els.milestoneFill.style.width = `${percent}%`;
   els.milestoneBar.setAttribute("aria-valuenow", String(percent));
+}
+
+function updateRebirthUI(renderUpgrades = false) {
+  const reward = getRebirthReward();
+  const requiredBuildings = getRebirthBuildingRequirement();
+  const ownedBuildings = state.buildings.spreadstergram || 0;
+  els.rebirthCount.textContent = state.rebirthCount.toLocaleString();
+  els.rebirthStars.textContent = state.rebirthPoints.toLocaleString();
+  els.rebirthBoost.textContent = `×${formatNumber(getRebirthMultiplier())}`;
+  els.rebirthButton.disabled = reward === 0;
+  els.rebirthButton.textContent = state.rebirthCount >= MAX_REBIRTHS
+    ? "🌟 All 100 rebirths complete"
+    : reward
+      ? "🌟 Rebirth · +10% money and 1 Star"
+      : `🌟 Rebirth · need ${requiredBuildings} Spreadstergram${requiredBuildings === 1 ? "" : "s"}`;
+  els.rebirthStatus.textContent = state.rebirthCount >= MAX_REBIRTHS
+    ? "You have reached the 100-rebirth limit. Your permanent rebirth bonus is +1,000%."
+    : reward
+      ? `You own ${ownedBuildings} Spreadstergram${ownedBuildings === 1 ? "" : "s"}. Rebirth resets current spreads, clicks, buildings, upgrades, and cursors, but keeps fish, habitats, and achievements.`
+      : `Own ${requiredBuildings} Spreadstergram${requiredBuildings === 1 ? "" : "s"} to rebirth (${ownedBuildings} owned). Each rebirth grants 1 Rebirth Star and +10% permanent click and production power.`;
+  if (renderUpgrades) renderRebirthUpgrades();
+}
+
+function updateDailyBonusUI() {
+  const claimed = state.dailyBonusDate === getLocalDateKey();
+  const streak = getDailyBonusStreak();
+  const amount = getDailyBonusAmount(streak);
+  els.dailyBonusButton.disabled = claimed;
+  els.dailyBonusButton.textContent = claimed
+    ? "✅ Daily bonus claimed"
+    : `🎁 Claim ${formatNumber(amount)} spreads`;
+  els.dailyBonusStatus.textContent = claimed
+    ? `Day ${streak}/7 claimed. Come back tomorrow to keep the streak going.`
+    : `Day ${streak}/7 streak · +10% each consecutive day, up to +60%.`;
+}
+
+function renderRebirthUpgrades() {
+  els.rebirthUpgrades.replaceChildren();
+  REBIRTH_UPGRADES.forEach((upgrade) => {
+    const purchased = state.rebirthUpgrades.includes(upgrade.id);
+    const unlocked = state.rebirthCount >= upgrade.unlockAt;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `rebirth-upgrade-card${purchased ? " purchased" : ""}`;
+    button.dataset.rebirthUpgradeId = upgrade.id;
+    button.disabled = purchased || !unlocked || state.rebirthPoints < upgrade.cost;
+    const icon = document.createElement("span");
+    icon.className = "rebirth-upgrade-icon";
+    icon.textContent = upgrade.icon;
+    const info = document.createElement("span");
+    info.className = "rebirth-upgrade-info";
+    const name = document.createElement("strong");
+    name.textContent = upgrade.name;
+    const description = document.createElement("span");
+    description.textContent = upgrade.desc;
+    info.append(name, description);
+    const action = document.createElement("span");
+    action.className = "rebirth-upgrade-action";
+    action.textContent = purchased
+      ? "Owned"
+      : unlocked
+        ? `${upgrade.cost} Star${upgrade.cost === 1 ? "" : "s"}`
+        : `Rebirth ${upgrade.unlockAt}`;
+    button.append(icon, info, action);
+    els.rebirthUpgrades.appendChild(button);
+  });
 }
 
 function showClickGain(amount, event, streakBonus) {
@@ -1268,13 +1408,90 @@ function buyClickUpgrade(id) {
   refreshAfterAdminChange();
 }
 
+function buyRebirthUpgrade(id) {
+  const upgrade = REBIRTH_UPGRADES.find((item) => item.id === id);
+  if (!upgrade
+    || state.rebirthCount < upgrade.unlockAt
+    || state.rebirthUpgrades.includes(id)
+    || state.rebirthPoints < upgrade.cost) return;
+  state.rebirthPoints -= upgrade.cost;
+  state.rebirthUpgrades.push(id);
+  showToast(`🌟 ${upgrade.name} unlocked!`);
+  refreshAfterAdminChange();
+}
+
 function startSugarFrenzy(duration = 15000) {
   frenzyMultiplier = 5;
   frenzyEndTime = Date.now() + duration;
   showToast(`🍯 Sugar rush! 5× production for ${Math.ceil(duration / 1000)} seconds!`);
 }
 
+function performRebirth() {
+  const reward = getRebirthReward();
+  if (!reward) return;
+  const confirmed = window.confirm(
+    `Rebirth for ${reward} Spread Star${reward === 1 ? "" : "s"}? Your current spreads, clicks, buildings, upgrades, and cursors will reset. Fish, habitats, and achievements will stay.`
+  );
+  if (!confirmed) return;
+
+  const retainedProgress = {
+    rebirthCount: state.rebirthCount + 1,
+    rebirthPoints: state.rebirthPoints + reward,
+    rebirthUpgrades: state.rebirthUpgrades,
+    achievements: state.achievements,
+    soundEnabled: state.soundEnabled,
+    fishCollection: state.fishCollection,
+    fishLevels: state.fishLevels,
+    fishHabitats: state.fishHabitats,
+    fishLuckLevel: state.fishLuckLevel,
+    fishRolls: state.fishRolls,
+    fishDailyRollDate: state.fishDailyRollDate,
+    fishCollectionRewardClaimed: state.fishCollectionRewardClaimed
+  };
+  if (!Number.isSafeInteger(retainedProgress.rebirthCount) || !Number.isSafeInteger(retainedProgress.rebirthPoints)) {
+    showToast("Rebirth points have reached their safe storage limit.");
+    return;
+  }
+
+  state = { ...createDefaultState(), ...retainedProgress };
+  frenzyMultiplier = 1;
+  frenzyEndTime = 0;
+  clickBoostEndTime = 0;
+  productionBoostEndTime = 0;
+  luckyClickArmed = false;
+  document.body.classList.remove("disco-mode", "dance-mode");
+  els.adminLuckyClick.setAttribute("aria-pressed", "false");
+  els.adminLuckyClick.textContent = "🍀 Arm a 5× lucky click";
+  els.adminDisco.setAttribute("aria-pressed", "false");
+  els.adminDisco.textContent = "🪩 Disco mode: off";
+  els.adminDance.setAttribute("aria-pressed", "false");
+  els.adminDance.textContent = "💃 Dance mode: off";
+  els.frenzyBanner.hidden = true;
+  els.clickStreak.textContent = "Click streak bonus every 100 taps";
+  updateAdminBoosterStatus();
+  renderShop();
+  renderAchievements();
+  renderFishCollection();
+  updateFishTankUI();
+  updateRebirthUI(true);
+  updateMilestone();
+  updateShopAffordability();
+  updateNews();
+  saveGame();
+  showToast(`🌟 Rebirth ${state.rebirthCount} complete! You now have ${formatNumber(state.rebirthPoints)} Spread Stars.`);
+}
+
+els.rebirthButton.addEventListener("click", performRebirth);
+els.rebirthUpgrades.addEventListener("click", (event) => {
+  if (!(event.target instanceof HTMLElement)) return;
+  const button = event.target.closest("[data-rebirth-upgrade-id]");
+  if (button instanceof HTMLButtonElement) buyRebirthUpgrade(button.dataset.rebirthUpgradeId);
+});
+
 els.cookieButton.addEventListener("click", (event) => {
+  const now = Date.now();
+  if (now - lastAcceptedSpreadClickAt < CLICK_COOLDOWN_MS) return;
+  lastAcceptedSpreadClickAt = now;
   let gain = getCookiesPerClick();
   let streakBonus = 0;
   if (luckyClickArmed) {
@@ -1377,6 +1594,7 @@ function refreshAfterAdminChange() {
   renderShop();
   renderFishCollection();
   updateFishTankUI();
+  updateRebirthUI(true);
   updateMilestone();
   updateShopAffordability();
   updateNews();
@@ -1712,6 +1930,10 @@ els.soundButton.addEventListener("click", () => {
   saveGame();
 });
 
+els.rebirthMenuShortcut.addEventListener("click", () => {
+  els.rebirthPanel.scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
 els.resetButton.addEventListener("click", () => {
   if (!window.confirm("Start a fresh spreadery? This will erase your saved progress.")) return;
   state = createDefaultState();
@@ -1733,6 +1955,7 @@ els.resetButton.addEventListener("click", () => {
   renderAchievements();
   renderFishCollection();
   updateFishTankUI();
+  updateRebirthUI(true);
   updateMilestone();
   showToast("Your spreadery is ready for a fresh start!");
 });
@@ -1775,6 +1998,7 @@ function gameLoop(now) {
     updateShopAffordability();
     updateAdminBoosterStatus();
     updateFishTankUI();
+    updateRebirthUI();
   }
 
   els.cookieCount.textContent = formatNumber(state.cookies);
@@ -1810,6 +2034,7 @@ function startGame() {
   renderAchievements();
   renderFishCollection();
   updateFishTankUI();
+  updateRebirthUI(true);
   updateMilestone();
   updateNews();
   window.setInterval(saveGame, 10000);

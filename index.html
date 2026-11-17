@@ -19,6 +19,7 @@
         <p id="news-text">Fresh spreads, straight from the jar.</p>
       </div>
       <div class="top-controls">
+        <button id="rebirth-menu-shortcut" class="icon-button" type="button" aria-label="Jump to the rebirth menu">🌟 Rebirth</button>
         <button id="toggle-sfx-btn" class="icon-button" type="button" aria-pressed="true" title="Toggle sound">🔊 Sound on</button>
         <button id="reset-btn" class="icon-button reset-button" type="button" title="Reset all progress">↺ Reset</button>
       </div>
@@ -43,10 +44,37 @@
         <section class="panel stats-panel">
           <h2>Your spreadery</h2>
           <ul class="stats-list">
-            <li><span>Spread all time</span><strong id="stat-total">0</strong></li>
+            <li><span>Spreads this run</span><strong id="stat-total">0</strong></li>
             <li><span>Manual clicks</span><strong id="stat-clicks">0</strong></li>
             <li><span>Time spreading</span><strong id="stat-time">0s</strong></li>
           </ul>
+        </section>
+
+        <section class="panel daily-bonus-panel" aria-labelledby="daily-bonus-title">
+          <div class="section-heading">
+            <div><div class="eyebrow">COME BACK TOMORROW</div><h2 id="daily-bonus-title">Daily Spread Jar</h2></div>
+            <span class="heading-icon" aria-hidden="true">🎁</span>
+          </div>
+          <p id="daily-bonus-status" class="daily-bonus-status" role="status" aria-live="polite"></p>
+          <button id="daily-bonus-button" class="admin-action primary daily-bonus-button" type="button">🎁 Claim daily bonus</button>
+        </section>
+
+        <section id="rebirth-menu" class="panel rebirth-panel" aria-labelledby="rebirth-title">
+          <div class="section-heading">
+            <div><div class="eyebrow">START AGAIN, STRONGER</div><h2 id="rebirth-title">Rebirth</h2></div>
+            <span class="heading-icon" aria-hidden="true">🌟</span>
+          </div>
+          <div class="rebirth-stats">
+            <span>Rebirths<strong id="rebirth-count">0</strong></span>
+            <span>Rebirth Stars<strong id="rebirth-stars">0</strong></span>
+            <span>Permanent boost<strong id="rebirth-boost">×1</strong></span>
+          </div>
+          <p id="rebirth-status" class="rebirth-status" role="status" aria-live="polite"></p>
+          <button id="rebirth-button" class="admin-action primary rebirth-button" type="button" disabled>🌟 Rebirth</button>
+          <div class="rebirth-upgrade-shop">
+            <h3>Rebirth upgrades</h3>
+            <div id="rebirth-upgrades" class="rebirth-upgrades"></div>
+          </div>
         </section>
 
         <section class="panel achievement-panel">
@@ -67,11 +95,11 @@
         <div id="frenzy-banner" class="frenzy-banner hidden" role="status">🍯 Sugar rush! <span id="frenzy-timer">15s</span> · 5× production</div>
         <div class="cookie-wrap">
           <div class="cookie-glow"></div>
-          <button id="cookie-btn" class="cookie-button" type="button" aria-label="Click the picture to make a spread">
+          <button id="cookie-btn" class="cookie-button" type="button" aria-label="Click the picture to make a spread, once per second">
             <img src="spread-clicker.jpg" alt="" aria-hidden="true" />
           </button>
         </div>
-        <p class="click-hint">Click the picture to make <strong>more spreads</strong></p>
+        <p class="click-hint">Click once per second to make <strong>more spreads</strong></p>
         <p class="surprise-hint">Keep clicking — a surprise jackpot might happen!</p>
         <div id="click-particles" class="click-particles" aria-hidden="true"></div>
         <p id="click-streak" class="click-streak">Click streak bonus every 100 taps</p>
@@ -240,6 +268,13 @@
           <button id="admin-all-cursors" class="admin-action" type="button">🖱️ Unlock every cursor</button>
           <button id="admin-max-luck" class="admin-action" type="button">🍀 Max out tank luck</button>
           <button id="admin-reset-daily-roll" class="admin-action" type="button">🎁 Reset today's free roll</button>
+        </div>
+      </section>
+      <section class="admin-toys">
+        <h3>Progress tools</h3>
+        <div class="admin-presets">
+          <button id="admin-reset-daily-bonus" class="admin-action" type="button">🎁 Reset daily bonus timer</button>
+          <button id="admin-max-rebirths" class="admin-action" type="button">🌟 Max rebirths &amp; unlock all rebirth upgrades</button>
         </div>
       </section>
       <p id="admin-status" class="admin-status" role="status" aria-live="polite"></p>

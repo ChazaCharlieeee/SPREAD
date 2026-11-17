@@ -120,6 +120,25 @@ button:focus-visible, summary:focus-visible, a:focus-visible { outline: 3px soli
 .stats-list { display: grid; gap: 12px; margin: 16px 0 0; padding: 0; list-style: none; }
 .stats-list li { display: flex; justify-content: space-between; gap: 8px; color: #9b8878; font-size: .75rem; }
 .stats-list strong { color: #5b4332; font-weight: 700; }
+.rebirth-panel { padding: 17px 18px; }
+.rebirth-stats { display: grid; gap: 8px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 13px; }
+.rebirth-stats span { display: grid; gap: 4px; min-width: 0; padding: 8px 6px; border: 1px solid #eee2d1; border-radius: 10px; color: #9b8878; font-size: .6rem; text-align: center; }
+.rebirth-stats strong { overflow: hidden; color: #745a35; font-size: .8rem; text-overflow: ellipsis; }
+.rebirth-status { min-height: 42px; margin: 11px 0; color: #8f7a67; font-size: .68rem; line-height: 1.5; }
+.rebirth-button { width: 100%; }
+.rebirth-button:disabled { cursor: not-allowed; opacity: .58; }
+.rebirth-upgrade-shop { margin-top: 15px; padding-top: 12px; border-top: 1px solid #eee5d9; }
+.rebirth-upgrade-shop h3 { margin: 0 0 8px; color: #745a35; font-family: "Playfair Display", Georgia, serif; font-size: .88rem; }
+.rebirth-upgrades { display: grid; gap: 7px; }
+.rebirth-upgrade-card { display: flex; min-width: 0; align-items: center; gap: 8px; padding: 8px; border: 1px solid #ebdfcd; border-radius: 10px; background: #fffdf9; color: var(--ink); cursor: pointer; text-align: left; }
+.rebirth-upgrade-card:not(:disabled):hover { border-color: #d3b77f; background: #fff8e9; }
+.rebirth-upgrade-card:disabled { cursor: not-allowed; opacity: .62; }
+.rebirth-upgrade-card.purchased { border-color: #c6d9bb; background: #f1f7ed; opacity: 1; }
+.rebirth-upgrade-icon { flex: 0 0 24px; font-size: 1.15rem; text-align: center; }
+.rebirth-upgrade-info { display: grid; flex: 1; min-width: 0; gap: 3px; }
+.rebirth-upgrade-info strong { overflow: hidden; color: #624632; font-size: .66rem; text-overflow: ellipsis; white-space: nowrap; }
+.rebirth-upgrade-info span { color: #998572; font-size: .58rem; line-height: 1.3; }
+.rebirth-upgrade-action { flex: 0 0 auto; max-width: 62px; color: #846b45; font-size: .57rem; font-weight: 800; text-align: right; }
 .section-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .section-heading h2 { margin-top: 3px; }
 .achievement-count { color: #a18b77; font-size: .7rem; font-weight: 700; }

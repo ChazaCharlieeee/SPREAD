@@ -147,6 +147,20 @@ button:focus-visible, summary:focus-visible, a:focus-visible { outline: 3px soli
 .fish-buttons .admin-action { flex: 1; }
 .fish-detail { margin: 0; color: #8f7a67; font-size: .7rem; line-height: 1.55; }
 .fish-status { min-height: 20px; margin: 0; color: #526e3e; font-size: .78rem; font-weight: 800; }
+.fish-habitat-shop { margin-top: 18px; padding: 14px; border: 1px solid #dce8df; border-radius: 14px; background: linear-gradient(135deg, #f3fbf7, #f5f8ee); }
+.fish-habitat-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 12px; margin-bottom: 10px; }
+.fish-habitat-heading h3 { margin: 0; color: #416662; font-family: "Playfair Display", Georgia, serif; font-size: .98rem; }
+.fish-habitat-heading span { color: #82988c; font-size: .67rem; font-weight: 700; }
+.fish-habitats { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px; }
+.habitat-card { display: flex; min-width: 0; align-items: center; gap: 9px; padding: 9px; border: 1px solid #dce8df; border-radius: 11px; background: rgba(255,255,255,.82); color: var(--ink); cursor: pointer; text-align: left; transition: transform .16s, border-color .16s, background .16s; }
+.habitat-card:not(:disabled):hover { transform: translateY(-1px); border-color: #9dc0ae; background: #fff; }
+.habitat-card:disabled { cursor: not-allowed; opacity: .58; }
+.habitat-card.built { border-color: #b6d2b8; background: #f0f8eb; }
+.habitat-icon { display: grid; width: 36px; height: 36px; flex: 0 0 36px; place-items: center; border-radius: 10px; background: #e8f2eb; font-size: 1.25rem; }
+.habitat-info { display: grid; flex: 1; min-width: 0; gap: 3px; }
+.habitat-info strong { overflow: hidden; color: #4a665a; font-size: .72rem; text-overflow: ellipsis; white-space: nowrap; }
+.habitat-info span { color: #8b9b8e; font-size: .61rem; line-height: 1.35; }
+.habitat-action { flex: 0 0 auto; max-width: 95px; color: #758b6d; font-size: .62rem; font-weight: 800; text-align: right; }
 .fish-collection-details { margin-top: 18px; border-top: 1px solid #eee5d9; padding-top: 13px; }
 .fish-collection-details summary { color: #674a34; cursor: pointer; font-size: .82rem; font-weight: 800; }
 .fish-collection-filters { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }

@@ -1,6 +1,6 @@
 "use strict";
 
-const SAVE_KEY = "cookie_clicker_save_v1";
+const SAVE_KEY = "cookie_clicker_save_v2";
 
 const BUILDINGS = [
   { id: "cursor", name: "Spread Cursor", icon: "👆", cost: 15, cps: 0.085, desc: "Clicks the spread for you." },
@@ -57,21 +57,21 @@ const FISH_HABITATS = [
 ];
 
 const CLICK_UPGRADES = [
-  { id: "strong-fingers", name: "Spread Strong Fingers", icon: "💪", cost: 200, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalClicks >= 10, mult: 1.25 },
-  { id: "butter-cookie", name: "Spread Butter", icon: "🧈", cost: 2000, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalCookies >= 250, mult: 1.25 },
-  { id: "chocolate-chips", name: "Spread Extra Toppings", icon: "🍫", cost: 8000, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalClicks >= 100, mult: 1.25 },
-  { id: "sugar-rush", name: "Spread Sugar Rush", icon: "🍬", cost: 40000, desc: "Each purchase adds 50% more spreads per click.", req: (s) => s.totalCookies >= 5000, mult: 1.5 },
-  { id: "quick-tap", name: "Quick-Tap Practice", icon: "⚡", cost: 1200, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalClicks >= 25, mult: 1.25 },
-  { id: "sticky-fingers", name: "Sticky Fingers", icon: "🫳", cost: 4800, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalClicks >= 60, mult: 1.25 },
-  { id: "spread-sling", name: "Spread Sling", icon: "🥄", cost: 14400, desc: "Each purchase adds 50% more spreads per click.", req: (s) => s.totalClicks >= 120, mult: 1.5 },
-  { id: "turbo-thumb", name: "Turbo Thumb", icon: "👍", cost: 36000, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalClicks >= 250, mult: 1.25 },
-  { id: "power-palm", name: "Power Palm", icon: "🖐️", cost: 80000, desc: "Each purchase adds 50% more spreads per click.", req: (s) => s.totalClicks >= 500, mult: 1.5 },
-  { id: "double-tap", name: "Double-Tap Technique", icon: "✌️", cost: 176000, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalClicks >= 900, mult: 1.25 },
-  { id: "mega-mitts", name: "Mega Mitts", icon: "🥊", cost: 384000, desc: "Each purchase adds 50% more spreads per click.", req: (s) => s.totalClicks >= 1500, mult: 1.5 },
-  { id: "lightning-click", name: "Lightning Click", icon: "🌩️", cost: 800000, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalClicks >= 2500, mult: 1.25 },
-  { id: "spread-storm", name: "Spreadstorm", icon: "🌪️", cost: 1760000, desc: "Each purchase adds 50% more spreads per click.", req: (s) => s.totalClicks >= 4000, mult: 1.5 },
-  { id: "click-cannon", name: "Click Cannon", icon: "🚀", cost: 3600000, desc: "Each purchase adds 25% more spreads per click.", req: (s) => s.totalClicks >= 6500, mult: 1.25 },
-  { id: "golden-touch-upgrade", name: "Golden Touch", icon: "✨", cost: 7200000, desc: "Each purchase multiplies spreads per click by 2.", req: (s) => s.totalClicks >= 10000, mult: 2 }
+  { id: "strong-fingers", name: "Spread Strong Fingers", icon: "💪", cost: 400, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalClicks >= 10, mult: 1.05 },
+  { id: "butter-cookie", name: "Spread Butter", icon: "🧈", cost: 4000, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalCookies >= 250, mult: 1.05 },
+  { id: "chocolate-chips", name: "Spread Extra Toppings", icon: "🍫", cost: 16000, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalClicks >= 100, mult: 1.05 },
+  { id: "sugar-rush", name: "Spread Sugar Rush", icon: "🍬", cost: 80000, desc: "Each purchase adds 10% more spreads per click.", req: (s) => s.totalCookies >= 5000, mult: 1.1 },
+  { id: "quick-tap", name: "Quick-Tap Practice", icon: "⚡", cost: 2400, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalClicks >= 25, mult: 1.05 },
+  { id: "sticky-fingers", name: "Sticky Fingers", icon: "🫳", cost: 9600, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalClicks >= 60, mult: 1.05 },
+  { id: "spread-sling", name: "Spread Sling", icon: "🥄", cost: 28800, desc: "Each purchase adds 10% more spreads per click.", req: (s) => s.totalClicks >= 120, mult: 1.1 },
+  { id: "turbo-thumb", name: "Turbo Thumb", icon: "👍", cost: 72000, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalClicks >= 250, mult: 1.05 },
+  { id: "power-palm", name: "Power Palm", icon: "🖐️", cost: 160000, desc: "Each purchase adds 10% more spreads per click.", req: (s) => s.totalClicks >= 500, mult: 1.1 },
+  { id: "double-tap", name: "Double-Tap Technique", icon: "✌️", cost: 352000, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalClicks >= 900, mult: 1.05 },
+  { id: "mega-mitts", name: "Mega Mitts", icon: "🥊", cost: 768000, desc: "Each purchase adds 10% more spreads per click.", req: (s) => s.totalClicks >= 1500, mult: 1.1 },
+  { id: "lightning-click", name: "Lightning Click", icon: "🌩️", cost: 1600000, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalClicks >= 2500, mult: 1.05 },
+  { id: "spread-storm", name: "Spreadstorm", icon: "🌪️", cost: 3520000, desc: "Each purchase adds 10% more spreads per click.", req: (s) => s.totalClicks >= 4000, mult: 1.1 },
+  { id: "click-cannon", name: "Click Cannon", icon: "🚀", cost: 7200000, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalClicks >= 6500, mult: 1.05 },
+  { id: "golden-touch-upgrade", name: "Golden Touch", icon: "✨", cost: 14400000, desc: "Each purchase multiplies spreads per click by 1.2.", req: (s) => s.totalClicks >= 10000, mult: 1.2 }
 ];
 
 const UPGRADES = [
@@ -420,7 +420,7 @@ function getBuildingMultiplier(id) {
 
 function getClickUpgradeCost(upgrade) {
   const level = state.clickUpgradeLevels[upgrade.id] || 0;
-  return Math.min(MAX_SPREAD_GRANT, Math.floor(upgrade.cost * Math.pow(2.4, level)));
+  return Math.min(MAX_SPREAD_GRANT, Math.floor(upgrade.cost * Math.pow(2.8, level)));
 }
 
 function getFishRollCost() {

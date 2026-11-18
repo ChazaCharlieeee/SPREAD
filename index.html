@@ -4,8 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#f6eee1" />
+  <meta name="description" content="Spread Clicker — artisanal spread-making clicker game with flavors, rebirths, golden jars, and an aquarium of surprises." />
   <title>Spread Clicker</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=39" />
 </head>
 <body>
   <div class="game-shell">
@@ -15,48 +19,47 @@
         <span><strong>SPREAD</strong><small>CLICKER</small></span>
       </a>
       <div class="ticker" aria-live="polite">
-        <span class="ticker-dot"></span>
         <p id="news-text">Fresh spreads, straight from the jar.</p>
       </div>
-      <div class="top-controls">
+      <nav class="top-controls" aria-label="Quick actions">
+        <a class="nav-link" href="#fish-tank">Aquarium</a>
         <button id="rebirth-menu-shortcut" class="icon-button" type="button" aria-label="Jump to the rebirth menu">🌟 Rebirth</button>
-        <button id="toggle-sfx-btn" class="icon-button" type="button" aria-pressed="true" title="Toggle sound">🔊 Sound on</button>
+        <button id="theme-toggle-btn" class="icon-button" type="button" title="Switch color theme">🎨 Warm</button>
+        <button id="toggle-sfx-btn" class="icon-button" type="button" aria-pressed="true" title="Toggle sound effects">🔊 Sound on</button>
+        <button id="toggle-voice-btn" class="icon-button" type="button" aria-pressed="false" title="Toggle spoken word on click">🗣️ Voice off</button>
         <button id="reset-btn" class="icon-button reset-button" type="button" title="Reset all progress">↺ Reset</button>
-      </div>
+      </nav>
     </header>
 
     <main class="game-grid">
       <aside class="left-column">
         <section class="panel score-panel">
           <div class="eyebrow">YOUR SPREAD JAR</div>
-          <div id="cookie-count" class="cookie-count" aria-live="polite">0</div>
+          <div id="cookie-count" class="cookie-count tabular-nums" aria-live="polite">0</div>
           <div class="cookie-label">spreads</div>
-          <div class="rate-line"><span><strong id="cps-display">0</strong> per second</span><span><strong id="cpc-display">+1</strong> per click</span></div>
+          <div class="rate-line tabular-nums">
+            <span><strong id="cps-display">0</strong> per second</span>
+            <span><strong id="cpc-display">+1</strong> per click</span>
+          </div>
           <div class="milestone-tracker">
             <div class="milestone-heading"><span>NEXT MILESTONE</span><strong id="milestone-title">Make 100 clicks</strong></div>
             <div id="milestone-bar" class="milestone-bar" role="progressbar" aria-label="Milestone progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
               <span id="milestone-fill"></span>
             </div>
-            <p id="milestone-progress" class="milestone-progress">0 / 100 clicks</p>
+            <p id="milestone-progress" class="milestone-progress tabular-nums">0 / 100 clicks</p>
           </div>
         </section>
 
         <section class="panel stats-panel">
           <h2>Your spreadery</h2>
-          <ul class="stats-list">
+          <ul class="stats-list tabular-nums">
             <li><span>Spreads this run</span><strong id="stat-total">0</strong></li>
             <li><span>Manual clicks</span><strong id="stat-clicks">0</strong></li>
+            <li><span>Golden jars caught</span><strong id="stat-golden">0</strong></li>
+            <li><span>Best combo</span><strong id="stat-best-combo">×1.0</strong></li>
+            <li><span>Achievement mastery</span><strong id="stat-mastery">+0%</strong></li>
             <li><span>Time spreading</span><strong id="stat-time">0s</strong></li>
           </ul>
-        </section>
-
-        <section class="panel daily-bonus-panel" aria-labelledby="daily-bonus-title">
-          <div class="section-heading">
-            <div><div class="eyebrow">COME BACK TOMORROW</div><h2 id="daily-bonus-title">Daily Spread Jar</h2></div>
-            <span class="heading-icon" aria-hidden="true">🎁</span>
-          </div>
-          <p id="daily-bonus-status" class="daily-bonus-status" role="status" aria-live="polite"></p>
-          <button id="daily-bonus-button" class="admin-action primary daily-bonus-button" type="button">🎁 Claim daily bonus</button>
         </section>
 
         <section id="rebirth-menu" class="panel rebirth-panel" aria-labelledby="rebirth-title">
@@ -64,7 +67,7 @@
             <div><div class="eyebrow">START AGAIN, STRONGER</div><h2 id="rebirth-title">Rebirth</h2></div>
             <span class="heading-icon" aria-hidden="true">🌟</span>
           </div>
-          <div class="rebirth-stats">
+          <div class="rebirth-stats tabular-nums">
             <span>Rebirths<strong id="rebirth-count">0</strong></span>
             <span>Rebirth Stars<strong id="rebirth-stars">0</strong></span>
             <span>Permanent boost<strong id="rebirth-boost">×1</strong></span>
@@ -79,57 +82,116 @@
 
         <section class="panel achievement-panel">
           <div class="section-heading">
-            <h2>Little victories</h2>
-            <span id="achievements-count" class="achievement-count">0 / 0</span>
+            <div>
+              <div class="eyebrow">+2% PRODUCTION EACH</div>
+              <h2>Little victories</h2>
+            </div>
+            <span id="achievements-count" class="achievement-count tabular-nums">0 / 0</span>
           </div>
           <div id="achievements-container" class="achievements-grid"></div>
+          <p id="achievement-detail" class="achievement-detail">Select any victory tile to inspect its requirement.</p>
         </section>
       </aside>
 
-      <section class="bake-stage" aria-label="Spread making area">
-        <div class="stage-heading">
-          <span class="stage-kicker">THE LITTLE SPREADERY</span>
-          <h1>Make something spread.</h1>
-          <p>Every great spread starts with one click.</p>
-        </div>
-        <div id="frenzy-banner" class="frenzy-banner hidden" role="status">🍯 Sugar rush! <span id="frenzy-timer">15s</span> · 5× production</div>
-        <div class="cookie-wrap">
-          <div class="cookie-glow"></div>
-          <button id="cookie-btn" class="cookie-button" type="button" aria-label="Click the picture to make a spread, once per second">
-            <img src="spread-clicker.jpg" alt="" aria-hidden="true" />
-          </button>
-        </div>
-        <p class="click-hint">Click once per second to make <strong>more spreads</strong></p>
-        <p class="surprise-hint">Keep clicking — a surprise jackpot might happen!</p>
-        <div id="click-particles" class="click-particles" aria-hidden="true"></div>
-        <p id="click-streak" class="click-streak">Click streak bonus every 100 taps</p>
-        <div class="oven-status"><span class="oven-light"></span><span>Ready to spread</span><span class="status-divider">·</span><span id="building-summary">Your spreadery is just getting started</span></div>
-      </section>
+      <div class="center-column">
+        <section id="bake-stage" class="bake-stage" aria-label="Spread making area">
+          <div id="ambient-sparks" class="ambient-sparks" aria-hidden="true"></div>
+          <div id="golden-spread-layer" class="golden-spread-layer" aria-live="polite"></div>
+
+          <div class="stage-heading">
+            <span class="stage-kicker">THE LITTLE SPREADERY</span>
+            <h1>Make something spread.</h1>
+            <p id="stage-subtitle">Every great spread starts with one click.</p>
+          </div>
+
+          <div id="frenzy-banner" class="frenzy-banner hidden" role="status">
+            🍯 Sugar rush! <span id="frenzy-timer" class="tabular-nums">15s</span> · 5× production
+          </div>
+
+          <div class="cookie-wrap">
+            <div class="cookie-glow"></div>
+            <div id="orbit-cursors" class="orbit-cursors" aria-hidden="true"></div>
+            <button id="cookie-btn" class="cookie-button" type="button" aria-label="Click the spread jar to make spreads">
+              <img src="spread-clicker.jpg" alt="Artisanal jar of sweet spread" referrerPolicy="no-referrer" />
+            </button>
+            <div id="equipped-cursor-badge" class="equipped-cursor-badge" aria-live="polite" title="Currently equipped cursor">👆 Starter</div>
+          </div>
+
+          <div id="combo-meter" class="combo-meter" aria-live="polite">
+            <div class="combo-header">
+              <span>SPREAD COMBO</span>
+              <strong id="combo-badge" class="tabular-nums">×1.0 · Ready</strong>
+            </div>
+            <div class="combo-track"><span id="combo-fill"></span></div>
+          </div>
+
+          <p id="click-cooldown-status" class="click-cooldown-status tabular-nums" aria-live="polite">Ready to spread</p>
+          <p id="click-hint" class="click-hint">Click once every 10 seconds (or press <kbd>Space</kbd>) to build your <strong>combo multiplier</strong></p>
+          <p class="surprise-hint">Catch floating Golden Jars for sugar rushes, bursts &amp; free aquarium rolls!</p>
+          <div id="click-particles" class="click-particles" aria-hidden="true"></div>
+          <p id="click-streak" class="click-streak tabular-nums">Click streak bonus every 100 taps</p>
+          <div class="oven-status">
+            <span id="flavor-summary">Classic Hazelnut</span>
+            <span class="status-divider">·</span>
+            <span id="building-summary">Your spreadery is just getting started</span>
+          </div>
+        </section>
+
+        <section class="panel flavor-panel" aria-labelledby="flavors-title">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">CRAFT YOUR SIGNATURE RECIPE</div>
+              <h2 id="flavors-title">Kitchen Flavors</h2>
+            </div>
+            <span id="flavor-bonus-label" class="flavor-bonus-label">Active: +10% Clicks</span>
+          </div>
+          <p class="flavor-intro">Unlock artisan spread flavors as your spreadery grows and swap them anytime to match your playstyle.</p>
+          <div id="flavors-container" class="flavors-grid"></div>
+        </section>
+
+        <section class="panel orders-panel" aria-labelledby="orders-title">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">ACTIVE CHALLENGES</div>
+              <h2 id="orders-title">Spread Orders</h2>
+            </div>
+            <span id="orders-completed-count" class="achievement-count tabular-nums">0 completed</span>
+          </div>
+          <p class="flavor-intro">Complete orders for bonus spread bursts, free aquarium roll tokens, and instant rushes.</p>
+          <div id="orders-container" class="orders-grid"></div>
+        </section>
+      </div>
 
       <aside class="shop-column">
         <section class="panel upgrades-panel">
           <div class="section-heading">
             <div><div class="eyebrow">CLICK FOR MORE</div><h2>Click Upgrades</h2></div>
-            <span class="heading-icon">✨</span>
+            <span class="heading-icon" aria-hidden="true">✨</span>
           </div>
           <div id="upgrades-container" class="upgrades-list"></div>
         </section>
         <section class="panel cursor-panel">
           <div class="section-heading">
             <div><div class="eyebrow">PICK YOUR POINTER</div><h2>Cursor Shop</h2></div>
-            <span class="heading-icon">🖱️</span>
+            <span class="heading-icon" aria-hidden="true">🖱️</span>
           </div>
           <div id="cursor-shop-container" class="cursor-shop-list"></div>
         </section>
         <section class="panel shop-panel">
           <div class="section-heading shop-heading">
             <div><div class="eyebrow">GROW YOUR SPREADERY</div><h2>Shop</h2></div>
-            <span class="shop-tag">BUILDINGS</span>
+            <div id="bulk-buy-controls" class="bulk-buy-controls" role="group" aria-label="Bulk buy quantity">
+              <button type="button" class="bulk-btn" data-bulk="1" aria-pressed="true">1×</button>
+              <button type="button" class="bulk-btn" data-bulk="10" aria-pressed="false">10×</button>
+              <button type="button" class="bulk-btn" data-bulk="100" aria-pressed="false">100×</button>
+              <button type="button" class="bulk-btn" data-bulk="max" aria-pressed="false">Max</button>
+            </div>
           </div>
           <div id="buildings-container" class="buildings-list"></div>
         </section>
       </aside>
     </main>
+
     <section id="fish-tank" class="panel fish-tank-panel" aria-labelledby="fish-tank-title">
       <div class="section-heading">
         <div>
@@ -138,53 +200,89 @@
         </div>
         <span class="heading-icon" aria-hidden="true">🐠</span>
       </div>
-      <p class="fish-tank-intro">Collect 100 girls and 100 boys. Oliva is a secret 1-in-10,000 roll!</p>
+      <p class="fish-tank-intro">Collect 100 girls and 100 boys, build habitats, and level fish up to boost your spreads per click and production. Oliva is a secret 1-in-10,000 roll!</p>
       <div class="fish-tank-layout">
         <button id="fish-roll" class="fish-aquarium" type="button" aria-label="Roll for a character">
+          <span class="aquarium-caustics" aria-hidden="true"></span>
           <span class="aquarium-bubble bubble-one" aria-hidden="true">◦</span>
           <span class="aquarium-bubble bubble-two" aria-hidden="true">◦</span>
+          <span class="aquarium-bubble bubble-three" aria-hidden="true">◦</span>
+          <span class="aquarium-bubble bubble-four" aria-hidden="true">◦</span>
+          <span id="aquarium-swimmers" class="aquarium-swimmers" aria-hidden="true"></span>
           <span class="aquarium-fish" aria-hidden="true">🐠</span>
           <span class="aquarium-caption">Tap the tank to roll</span>
         </button>
         <div class="fish-tank-controls">
-          <div class="fish-stats">
+          <div class="fish-stats tabular-nums">
             <span>Collection<strong id="fish-collection-count">0 / 200</strong></span>
             <span>Rolls<strong id="fish-roll-count">0</strong></span>
+            <span>Click bonus<strong id="fish-click-bonus">+0 · +0%</strong></span>
             <span>Production bonus<strong id="fish-production-bonus">+0%</strong></span>
           </div>
-          <p id="fish-roll-cost" class="fish-cost"></p>
+          <p id="fish-roll-cost" class="fish-cost tabular-nums"></p>
           <div class="fish-buttons">
             <button id="fish-daily-roll" class="admin-action primary" type="button">🎁 Claim daily free roll</button>
+            <button id="fish-free-roll-btn" class="admin-action" type="button" hidden>🎟️ Use free roll token (<span id="fish-free-tokens">0</span>)</button>
             <button id="fish-luck-upgrade" class="admin-action" type="button">🍀 Upgrade luck</button>
           </div>
-          <p id="fish-luck-status" class="fish-detail"></p>
-          <p id="fish-tier-odds" class="fish-detail"></p>
+          <p id="fish-luck-status" class="fish-detail tabular-nums"></p>
+          <p id="fish-tier-odds" class="fish-detail tabular-nums"></p>
           <p id="fish-status" class="fish-status" role="status" aria-live="polite">Your tank is ready for its first roll!</p>
         </div>
       </div>
       <div class="fish-habitat-shop">
         <div class="fish-habitat-heading">
           <h3>Build your aquarium</h3>
-          <span>Permanent production boosts</span>
+          <span>Permanent click &amp; production boosts</span>
         </div>
         <div id="fish-habitats" class="fish-habitats"></div>
       </div>
       <details id="fish-collection-details" class="fish-collection-details">
         <summary>Open character collection</summary>
-        <div id="fish-collection-filters" class="fish-collection-filters" role="group" aria-label="Filter characters by group">
-          <button class="fish-filter-button" type="button" data-fish-filter="all" aria-pressed="true">All (201)</button>
-          <button class="fish-filter-button" type="button" data-fish-filter="girl" aria-pressed="false">Girls (100)</button>
-          <button class="fish-filter-button" type="button" data-fish-filter="boy" aria-pressed="false">Boys (100)</button>
+        <div class="fish-toolbar">
+          <div id="fish-collection-filters" class="fish-collection-filters" role="group" aria-label="Filter characters by group">
+            <button class="fish-filter-button" type="button" data-fish-filter="all" aria-pressed="true">All (201)</button>
+            <button class="fish-filter-button" type="button" data-fish-filter="girl" aria-pressed="false">Girls (100)</button>
+            <button class="fish-filter-button" type="button" data-fish-filter="boy" aria-pressed="false">Boys (100)</button>
+            <button class="fish-filter-button" type="button" data-fish-filter="owned" aria-pressed="false">Collected</button>
+            <button class="fish-filter-button" type="button" data-fish-filter="missing" aria-pressed="false">Missing</button>
+          </div>
+          <div class="fish-search-actions">
+            <input id="fish-search-input" class="fish-search-input" type="search" placeholder="Search name or tier..." aria-label="Search fish collection" />
+            <button id="fish-level-all" class="fish-small-action" type="button" disabled>⬆ Level up affordable</button>
+            <button id="fish-sell-duplicates" class="fish-small-action fish-sell-all" type="button" disabled>Sell all duplicates</button>
+          </div>
         </div>
         <div id="fish-collection" class="fish-collection" role="region" aria-label="Character collection"></div>
       </details>
     </section>
+
     <footer>
       <button id="footer-10k-rolls" class="footer-note footer-roll-button" type="button" disabled>
         Made with a little bit of magic · <span id="footer-10k-rolls-label">Roll the tank 10,000 times</span>
       </button>
     </footer>
   </div>
+
+  <!-- Confirmation Modal -->
+  <section id="confirm-modal" class="admin-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-title" hidden>
+    <div class="admin-dialog confirm-dialog">
+      <header class="admin-header">
+        <div>
+          <div class="eyebrow">CONFIRM ACTION</div>
+          <h2 id="confirm-title">Are you sure?</h2>
+        </div>
+        <button id="confirm-close" class="icon-button" type="button" aria-label="Close confirmation dialog">✕</button>
+      </header>
+      <p id="confirm-message" class="admin-intro"></p>
+      <div class="admin-actions">
+        <button id="confirm-cancel" class="admin-action" type="button">Cancel</button>
+        <button id="confirm-accept" class="admin-action primary" type="button">Confirm</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Secret Admin Modal -->
   <section id="admin-panel" class="admin-overlay" role="dialog" aria-modal="true" aria-labelledby="admin-title" hidden>
     <div class="admin-dialog">
       <header class="admin-header">
@@ -211,76 +309,93 @@
         <button id="admin-random" class="admin-action random" type="button">🎲 Random gain or loss</button>
       </div>
       <section class="admin-toys">
-        <h3>Quick grants</h3>
+        <h3>Quick grants &amp; economy</h3>
         <div class="admin-presets">
           <button class="admin-action" data-admin-grant="1000000" type="button">🪙 +1 million</button>
           <button class="admin-action" data-admin-grant="1000000000" type="button">💰 +1 billion</button>
           <button class="admin-action" data-admin-grant="1000000000000000" type="button">💎 +1 Qa</button>
           <button class="admin-action" data-admin-grant="1e60" type="button">♾️ +1 Novemdecillion</button>
+          <button id="admin-mult-10x" class="admin-action" type="button">✖️ Multiply jar ×10</button>
+          <button id="admin-set-1e90" class="admin-action" type="button">🌌 Set jar to 1e90</button>
+          <button id="admin-zero-jar" class="admin-action" type="button">🫧 Reset jar to 0</button>
         </div>
       </section>
       <div class="admin-boosters">
-        <h3>Temporary boosters</h3>
+        <h3>Clicker, cooldown &amp; boosters</h3>
         <button id="admin-click-boost" class="admin-action booster-action" type="button">
-          <span>⚡ Double click power · 60 sec</span>
+          <span>⚡ 1.5× click power · 60 sec</span>
           <strong id="click-boost-status">Ready</strong>
         </button>
         <button id="admin-production-boost" class="admin-action booster-action" type="button">
-          <span>🏭 Double production · 60 sec</span>
+          <span>🏭 1.5× production · 60 sec</span>
           <strong id="production-boost-status">Ready</strong>
         </button>
+        <div class="admin-presets">
+          <button id="admin-toggle-cooldown" class="admin-action" type="button" aria-pressed="false">⏱️ Cooldown: 10s (Remove)</button>
+          <button id="admin-max-combo" class="admin-action" type="button">🔥 Max Combo Fever (×2.5)</button>
+          <button id="admin-click-frenzy" class="admin-action" type="button">⚡ 5× Click Frenzy (30s)</button>
+          <button id="admin-sugar-frenzy" class="admin-action" type="button">🍯 5× Sugar Rush (15s)</button>
+          <button id="admin-spawn-golden" class="admin-action" type="button">✨ Spawn Golden Jar now</button>
+          <button id="admin-golden-rain" class="admin-action" type="button">🌧️ Golden Jar Rain (10×)</button>
+        </div>
       </div>
       <section class="admin-toys">
-        <h3>Bakery mayhem</h3>
+        <h3>Animation Showcase Studio</h3>
         <div class="admin-presets">
-          <button id="admin-every-building" class="admin-action" type="button">🏗️ Add one of every building</button>
-          <button id="admin-100k-buildings" class="admin-action" type="button">🏙️ Add 100,000 of every building</button>
-          <button id="admin-all-upgrades" class="admin-action" type="button">✨ Unlock every upgrade</button>
-          <button id="admin-sugar-frenzy" class="admin-action" type="button">🍯 Start a sugar frenzy</button>
+          <button id="admin-fx-all" class="admin-action primary random" type="button">✨ TRIGGER ALL ANIMATIONS!</button>
+          <button id="admin-fx-fireworks" class="admin-action" type="button">🎆 Fireworks Show</button>
+          <button id="admin-fx-spread-rain" class="admin-action" type="button">🫙 Spread Rain Storm</button>
+          <button id="admin-fx-shockwave" class="admin-action" type="button">🌟 Supernova Shockwave</button>
+          <button id="admin-confetti" class="admin-action" type="button">🎉 Mega Confetti Cannon</button>
+          <button id="admin-disco" class="admin-action" type="button" aria-pressed="false">🪩 Disco mode: off</button>
+          <button id="admin-dance" class="admin-action" type="button" aria-pressed="false">💃 Dance mode: off</button>
+          <button id="admin-spin-mode" class="admin-action" type="button" aria-pressed="false">🌀 Hyper-spin jar: off</button>
+          <button id="admin-rainbow-mode" class="admin-action" type="button" aria-pressed="false">🌈 Rainbow aura: off</button>
         </div>
       </section>
       <section class="admin-toys">
-        <h3>Extra fun</h3>
+        <h3>Bakery mayhem</h3>
         <div class="admin-presets">
+          <button id="admin-every-building" class="admin-action" type="button">🏗️ +1 of every building</button>
+          <button id="admin-100k-buildings" class="admin-action" type="button">🏙️ +100,000 of every building</button>
+          <button id="admin-all-upgrades" class="admin-action" type="button">✨ Unlock every upgrade</button>
+          <button id="admin-all-cursors" class="admin-action" type="button">🖱️ Unlock every cursor</button>
+          <button id="admin-all-flavors" class="admin-action" type="button">🍓 Unlock all Kitchen Flavors</button>
           <button id="admin-mystery" class="admin-action" type="button">🎁 Open a mystery jar</button>
-          <button id="admin-confetti" class="admin-action" type="button">🎉 Confetti party</button>
-          <button id="admin-disco" class="admin-action" type="button" aria-pressed="false">🪩 Disco mode: off</button>
-          <button id="admin-dance" class="admin-action" type="button" aria-pressed="false">💃 Dance mode: off</button>
           <button id="admin-lucky-click" class="admin-action" type="button" aria-pressed="false">🍀 Arm a 5× lucky click</button>
         </div>
         <p class="admin-help">The lucky click stays armed until you click the spread.</p>
       </section>
       <section class="admin-toys">
-        <h3>Aquarium controls</h3>
+        <h3>Aquarium &amp; secret fish controls</h3>
         <div class="admin-presets">
           <button id="admin-random-fish" class="admin-action" type="button">🐠 Add 25 random fish</button>
-          <button id="admin-complete-fish" class="admin-action" type="button">🏆 Complete all 200 fish</button>
-          <button id="admin-free-10k-fish-rolls" class="admin-action" type="button">🎰 Grant 10,000 free tank rolls</button>
-          <button id="admin-max-fish-habitats" class="admin-action" type="button">🪸 Max owned fish &amp; build every habitat</button>
-          <button id="admin-clear-boosts" class="admin-action" type="button">🧹 Clear temporary effects</button>
-        </div>
-      </section>
-      <section class="admin-toys">
-        <h3>Secret fish &amp; collection boosts</h3>
-        <div class="admin-presets">
-          <button id="admin-unlock-oliva" class="admin-action primary" type="button">👑 Unlock Oliva + 1e60 spreads</button>
           <button id="admin-add-100-fish" class="admin-action" type="button">🐟 Add 100 random fish</button>
-          <button id="admin-all-cursors" class="admin-action" type="button">🖱️ Unlock every cursor</button>
+          <button id="admin-complete-fish" class="admin-action" type="button">🏆 Complete all 200 fish</button>
+          <button id="admin-free-10k-fish-rolls" class="admin-action" type="button">🎰 10,000 free tank rolls</button>
+          <button id="admin-max-fish-habitats" class="admin-action" type="button">🪸 Max fish &amp; all habitats</button>
+          <button id="admin-unlock-oliva" class="admin-action primary" type="button">👑 Unlock Oliva + 1e60 spreads</button>
+          <button id="admin-grant-tokens" class="admin-action" type="button">🎟️ +50 Free roll tokens</button>
           <button id="admin-max-luck" class="admin-action" type="button">🍀 Max out tank luck</button>
           <button id="admin-reset-daily-roll" class="admin-action" type="button">🎁 Reset today's free roll</button>
         </div>
       </section>
       <section class="admin-toys">
-        <h3>Progress tools</h3>
+        <h3>Progress &amp; reset tools</h3>
         <div class="admin-presets">
-          <button id="admin-reset-daily-bonus" class="admin-action" type="button">🎁 Reset daily bonus timer</button>
-          <button id="admin-max-rebirths" class="admin-action" type="button">🌟 Max rebirths &amp; unlock all rebirth upgrades</button>
+          <button id="admin-max-rebirths" class="admin-action" type="button">🌟 Max rebirths &amp; upgrades</button>
+          <button id="admin-all-achievements" class="admin-action" type="button">🥇 Unlock all achievements</button>
+          <button id="admin-complete-orders" class="admin-action" type="button">📜 Complete active orders</button>
+          <button id="admin-clear-boosts" class="admin-action" type="button">🧹 Clear temporary effects</button>
         </div>
       </section>
       <p id="admin-status" class="admin-status" role="status" aria-live="polite"></p>
       </div>
     </div>
   </section>
+
+  <canvas id="fx-canvas" class="fx-canvas" aria-hidden="true"></canvas>
+  <div id="stage-flash" class="stage-flash" aria-hidden="true"></div>
   <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
   <div id="celebration-layer" aria-hidden="true"></div>
   <div id="fish-animation-layer" class="fish-animation-layer" aria-hidden="true"></div>
@@ -292,6 +407,6 @@
       <span class="fish-oliva-name">OLIVA HAS ENTERED THE TANK</span>
     </div>
   </div>
-  <script src="Code.js"></script>
+  <script src="Code.js?v=39"></script>
 </body>
 </html>

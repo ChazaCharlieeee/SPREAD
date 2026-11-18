@@ -4,7 +4,7 @@ const fs = require("node:fs");
 const http = require("node:http");
 const path = require("node:path");
 
-const PORT = Number(process.env.PORT) || 8080;
+const PORT = Number(process.env.PORT) || 3000;
 const APP_ROOT = __dirname;
 const PUBLIC_FILES = new Map([
   ["/", "index.html"],

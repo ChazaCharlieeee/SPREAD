@@ -1,17 +1,23 @@
 "use strict";
 
-const CACHE_NAME = "spread-clicker-v33";
+const CACHE_NAME = "spread-clicker-v39";
 const APP_ASSETS = [
   "./index.html",
-  "./style.css",
-  "./Code.js",
+  "./style.css?v=39",
+  "./Code.js?v=39",
   "./spread-clicker.jpg"
 ];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_ASSETS))
+      .then((cache) => Promise.all(
+        APP_ASSETS.map((asset) =>
+          fetch(asset, { cache: "no-store" }).then((response) => {
+            if (response.ok) return cache.put(asset, response);
+          })
+        )
+      ))
       .then(() => self.skipWaiting())
   );
 });
@@ -30,20 +36,22 @@ self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET" || new URL(event.request.url).origin !== self.location.origin) return;
 
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) return cachedResponse;
-      return fetch(event.request).then((response) => {
+    fetch(event.request, { cache: "no-store" })
+      .then((response) => {
         if (response.ok) {
           const responseCopy = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseCopy));
         }
         return response;
-      }).catch((error) => {
-        if (event.request.mode === "navigate") {
-          return caches.match(new URL("./index.html", self.registration.scope).href);
-        }
-        throw error;
-      });
-    })
+      })
+      .catch(() =>
+        caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) return cachedResponse;
+          if (event.request.mode === "navigate") {
+            return caches.match(new URL("./index.html", self.registration.scope).href);
+          }
+          return Response.error();
+        })
+      )
   );
 });

@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "dev": "node server.js",
+    "build": "node --check server.js && node --check Code.js && node --check service-worker.js",
+    "lint": "node --check server.js && node --check Code.js && node --check service-worker.js",
     "start": "node server.js"
   },
   "engines": {

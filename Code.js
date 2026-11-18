@@ -49,11 +49,26 @@ const CURSORS = [
   { id: "apex", name: "Apex Cursor", icon: "🏆", cost: 1e61, multiplier: 4800 }
 ];
 
+const FLAVORS = [
+  { id: "hazelnut", name: "Classic Hazelnut", icon: "🌰", bonusLabel: "+10% Clicks", clickMult: 1.1, prodMult: 1, goldenSpeed: 1, desc: "Rich roasted hazelnut butter.", reqText: "Unlocked at start", req: () => true },
+  { id: "salted-caramel", name: "Salted Caramel", icon: "🍮", bonusLabel: "+15% Production", clickMult: 1, prodMult: 1.15, goldenSpeed: 1, desc: "Silky caramel for busy helpers.", reqText: "Make 500 total spreads", req: (s) => s.totalCookies >= 500 },
+  { id: "strawberry-jam", name: "Strawberry Jam", icon: "🍓", bonusLabel: "+20% Clicks", clickMult: 1.2, prodMult: 1, goldenSpeed: 1, desc: "Bright berry burst for fast tappers.", reqText: "Make 200 manual clicks", req: (s) => s.totalClicks >= 200 },
+  { id: "pistachio-cream", name: "Pistachio Cream", icon: "💚", bonusLabel: "+25% Production", clickMult: 1, prodMult: 1.25, goldenSpeed: 1, desc: "Velvety green cream for factories.", reqText: "Own 15 helpers", req: (s) => getBuildingCount(s) >= 15 },
+  { id: "golden-truffle", name: "Golden Truffle", icon: "🍯", bonusLabel: "Faster Golden Jars +15%", clickMult: 1.15, prodMult: 1.15, goldenSpeed: 1.35, desc: "Lures Golden Jars 35% more often.", reqText: "Catch 2 Golden Jars or 100K spreads", req: (s) => s.goldenJarsCaught >= 2 || s.totalCookies >= 100000 },
+  { id: "cosmic-honey", name: "Cosmic Honey", icon: "🌌", bonusLabel: "+30% All Power", clickMult: 1.3, prodMult: 1.3, goldenSpeed: 1.2, desc: "Starlight nectar for late runs.", reqText: "1+ Rebirth or 25 unique fish", req: (s) => s.rebirthCount >= 1 || getFishUniqueCount(s) >= 25 },
+  { id: "matcha-swirl", name: "Matcha Swirl", icon: "🍵", bonusLabel: "+35% Production", clickMult: 1.05, prodMult: 1.35, goldenSpeed: 1.1, desc: "Zen ceremonial cream for unstoppable helpers.", reqText: "Make 1 million total spreads", req: (s) => s.totalCookies >= 1000000 },
+  { id: "spiced-chai", name: "Spiced Chai", icon: "🫖", bonusLabel: "+45% Clicks", clickMult: 1.45, prodMult: 1.1, goldenSpeed: 1.15, desc: "Warm cinnamon-ginger whip for massive taps.", reqText: "Make 1,500 manual clicks", req: (s) => s.totalClicks >= 1500 },
+  { id: "diamond-glaze", name: "Diamond Glaze", icon: "💎", bonusLabel: "+60% All Power", clickMult: 1.6, prodMult: 1.6, goldenSpeed: 1.25, desc: "Faceted sugar crystal frosting.", reqText: "3+ Rebirths or 1T total spreads", req: (s) => s.rebirthCount >= 3 || s.totalCookies >= 1e12 },
+  { id: "nebula-butter", name: "Nebula Butter", icon: "🌠", bonusLabel: "+100% Power & Fast Jars", clickMult: 2, prodMult: 2, goldenSpeed: 1.5, desc: "Cosmic whipped gold forged between stars.", reqText: "10+ Rebirths or 120 unique fish", req: (s) => s.rebirthCount >= 10 || getFishUniqueCount(s) >= 120 }
+];
+
 const FISH_HABITATS = [
-  { id: "coral-garden", name: "Coral Garden", icon: "🪸", cost: 125000, bonus: 0.04, desc: "Coral comforts your fish. +4% production." },
-  { id: "bubble-castle", name: "Bubble Castle", icon: "🫧", cost: 2500000, bonus: 0.08, desc: "A bubbly home for your collection. +8% production." },
-  { id: "sunken-ship", name: "Sunken Treasure Ship", icon: "🚢", cost: 62500000, bonus: 0.16, desc: "Treasures inspire the whole tank. +16% production." },
-  { id: "rainbow-reef", name: "Rainbow Reef", icon: "🌈", cost: 1250000000, bonus: 0.28, desc: "A legendary reef energizes your fish. +28% production." }
+  { id: "coral-garden", name: "Coral Garden", icon: "🪸", cost: 125000, bonus: 0.04, desc: "Coral comforts your fish. +4% click & production." },
+  { id: "bubble-castle", name: "Bubble Castle", icon: "🫧", cost: 2500000, bonus: 0.08, desc: "A bubbly home for your collection. +8% click & production." },
+  { id: "sunken-ship", name: "Sunken Treasure Ship", icon: "🚢", cost: 62500000, bonus: 0.16, desc: "Treasures inspire the whole tank. +16% click & production." },
+  { id: "rainbow-reef", name: "Rainbow Reef", icon: "🌈", cost: 1250000000, bonus: 0.28, desc: "A legendary reef energizes your fish. +28% click & production." },
+  { id: "atlantis-vault", name: "Atlantis Vault", icon: "🔱", cost: 50000000000, bonus: 0.45, desc: "Ancient sea wisdom surges through every tap. +45% click & production." },
+  { id: "celestial-lagoon", name: "Celestial Lagoon", icon: "🌠", cost: 2500000000000, bonus: 0.8, desc: "Starlight waters supercharge the entire tank. +80% click & production." }
 ];
 
 const CLICK_UPGRADES = [
@@ -97,12 +112,31 @@ const UPGRADES = [
 const ACHIEVEMENTS = [
   { id: "first-cookie", icon: "✨", name: "First spread", desc: "Make your first spread.", check: (s) => s.totalClicks >= 1 },
   { id: "busy-hands", icon: "👆", name: "Busy hands", desc: "Make 100 clicks.", check: (s) => s.totalClicks >= 100 },
+  { id: "combo-chef", icon: "🔥", name: "Rhythm spreader", desc: "Reach a ×2.0 click combo.", check: (s) => s.bestCombo >= 2 },
+  { id: "combo-master", icon: "⚡", name: "Fever pitch", desc: "Reach a ×2.5 max click combo.", check: (s) => s.bestCombo >= 2.5 },
   { id: "dozen", icon: "🥣", name: "Making a batch", desc: "Make 1,000 spreads total.", check: (s) => s.totalCookies >= 1000 },
   { id: "cookie-mogul", icon: "🧁", name: "Spread mogul", desc: "Make 100,000 spreads total.", check: (s) => s.totalCookies >= 100000 },
   { id: "sweet-empire", icon: "🏰", name: "Spread empire", desc: "Make 10 million spreads total.", check: (s) => s.totalCookies >= 10000000 },
-  { id: "big-bakery", icon: "🏠", name: "Big spreadery", desc: "Own 25 buildings.", check: (s) => getBuildingCount(s) >= 25 },
   { id: "spread-billionaire", icon: "💎", name: "Spread Billionaire", desc: "Make 1 billion spreads total.", check: (s) => s.totalCookies >= 1000000000 },
-  { id: "spread-collector", icon: "🏪", name: "Spread Collector", desc: "Own 50 buildings.", check: (s) => getBuildingCount(s) >= 50 }
+  { id: "spread-trillionaire", icon: "👑", name: "Spread Trillionaire", desc: "Make 1 trillion spreads total.", check: (s) => s.totalCookies >= 1000000000000 },
+  { id: "big-bakery", icon: "🏠", name: "Big spreadery", desc: "Own 25 helpers.", check: (s) => getBuildingCount(s) >= 25 },
+  { id: "spread-collector", icon: "🏪", name: "Spread Collector", desc: "Own 50 helpers.", check: (s) => getBuildingCount(s) >= 50 },
+  { id: "metropolis", icon: "🌆", name: "Spreadopolis", desc: "Own 150 helpers.", check: (s) => getBuildingCount(s) >= 150 },
+  { id: "golden-spotter", icon: "🍯", name: "Golden eye", desc: "Catch your first Golden Jar.", check: (s) => s.goldenJarsCaught >= 1 },
+  { id: "golden-hunter", icon: "🪙", name: "Jar catcher", desc: "Catch 10 Golden Jars.", check: (s) => s.goldenJarsCaught >= 10 },
+  { id: "flavor-artisan", icon: "🍓", name: "Flavor artisan", desc: "Unlock 4 Kitchen Flavors.", check: (s) => s.unlockedFlavors.length >= 4 },
+  { id: "fish-friend", icon: "🐠", name: "Aquarium starter", desc: "Collect 10 unique fish.", check: (s) => getFishUniqueCount(s) >= 10 },
+  { id: "fish-curator", icon: "🫧", name: "Tank curator", desc: "Collect 50 unique fish.", check: (s) => getFishUniqueCount(s) >= 50 },
+  { id: "fish-encyclopedia", icon: "🏆", name: "Master angler", desc: "Collect all 200 standard fish.", check: (s) => getFishUniqueCount(s) >= 200 },
+  { id: "first-rebirth", icon: "🌟", name: "Born anew", desc: "Complete your first Rebirth.", check: (s) => s.rebirthCount >= 1 },
+  { id: "oliva-chosen", icon: "👑", name: "Chosen by Oliva", desc: "Discover the secret fish Oliva.", check: (s) => Boolean(s.fishCollection[SECRET_FISH.id]) },
+  { id: "order-runner", icon: "📜", name: "Order runner", desc: "Complete 5 Spread Orders.", check: (s) => s.ordersCompleted >= 5 },
+  { id: "order-legend", icon: "🎖️", name: "Master caterer", desc: "Complete 25 Spread Orders.", check: (s) => s.ordersCompleted >= 25 },
+  { id: "fish-level-master", icon: "🧬", name: "Fish trainer", desc: "Reach level 10 on any fish.", check: (s) => Object.values(s.fishLevels).some((lvl) => lvl >= 10) },
+  { id: "habitat-architect", icon: "🪸", name: "Reef architect", desc: "Build all 6 aquarium habitats.", check: (s) => FISH_HABITATS.every((h) => Boolean(s.fishHabitats[h.id])) },
+  { id: "flavor-connoisseur", icon: "🍵", name: "Flavor connoisseur", desc: "Unlock all 10 Kitchen Flavors.", check: (s) => s.unlockedFlavors.length >= FLAVORS.length },
+  { id: "rebirth-veteran", icon: "🌠", name: "Star voyager", desc: "Complete 10 Rebirths.", check: (s) => s.rebirthCount >= 10 },
+  { id: "rebirth-immortal", icon: "♾️", name: "Spread immortal", desc: "Complete 100 Rebirths.", check: (s) => s.rebirthCount >= 100 }
 ];
 
 const HEADLINES = [
@@ -111,7 +145,8 @@ const HEADLINES = [
   { min: 500, text: "Grandmas everywhere report a sudden rise in spread demand." },
   { min: 5000, text: "Spread farms flourish as the world's taste for spreads grows." },
   { min: 50000, text: "Experts confirm: there is no such thing as too many spreads." },
-  { min: 500000, text: "Your spreadery is now visible from space." }
+  { min: 500000, text: "Your spreadery is now visible from space." },
+  { min: 100000000, text: "Economists adopt the Spread Standard across three continents." }
 ];
 
 const MILESTONES = [
@@ -187,8 +222,31 @@ const MAX_SPREAD_GRANT = 1e60;
 const OLIVA_REWARD = 1e58;
 const FISH_BATCH_ROLL_COUNT = 10000;
 const MAX_REBIRTHS = 100;
-const CLICK_COOLDOWN_MS = 200;
+const CLICK_COOLDOWN_MS = 10000;
 const FISH_TIER_SELL_MULTIPLIERS = [0.4, 0.75, 1.5, 3.5, 7, 14];
+const FISH_TIER_CLICK_FLAT = {
+  Common: 1,
+  Uncommon: 2,
+  Rare: 5,
+  Epic: 12,
+  Legendary: 30,
+  Mythic: 75,
+  Secret: 500
+};
+const FISH_TIER_CLICK_PERCENT = {
+  Common: 0.01,
+  Uncommon: 0.015,
+  Rare: 0.025,
+  Epic: 0.04,
+  Legendary: 0.07,
+  Mythic: 0.12,
+  Secret: 0.5
+};
+const THEMES = [
+  { id: "warm", label: "🎨 Warm", className: "" },
+  { id: "espresso", label: "🌙 Espresso", className: "theme-espresso" },
+  { id: "matcha", label: "🍵 Matcha", className: "theme-matcha" }
+];
 
 const REBIRTH_UPGRADES = [
   { id: "star-touched-click", name: "Star-Touched Click", icon: "✨", unlockAt: 1, cost: 1, clickMultiplier: 1.1, productionMultiplier: 1, desc: "+10% click power." },
@@ -209,12 +267,18 @@ function createDefaultState() {
     rebirthCount: 0,
     rebirthPoints: 0,
     rebirthUpgrades: [],
-    dailyBonusDate: "",
-    dailyBonusStreak: 0,
     buildings: {},
     upgrades: [],
     achievements: [],
     soundEnabled: true,
+    voiceEnabled: false,
+    theme: "warm",
+    goldenJarsCaught: 0,
+    bestCombo: 1,
+    equippedFlavor: "hazelnut",
+    unlockedFlavors: ["hazelnut"],
+    freeFishRollTokens: 0,
+    bulkBuyMode: "1",
     clickUpgradeLevels: {},
     cursorCollection: { starter: true },
     equippedCursor: "starter",
@@ -225,76 +289,96 @@ function createDefaultState() {
     fishRolls: 0,
     fishDailyRollDate: "",
     fishCollectionRewardClaimed: false,
+    ordersCompleted: 0,
+    activeOrders: [],
     lastSaved: Date.now()
   };
+}
+
+function sanitizeStateObject(saved) {
+  if (!saved || typeof saved !== "object" || Array.isArray(saved)) throw new Error("Save data is not an object.");
+  const defaults = createDefaultState();
+  const s = { ...defaults, ...saved };
+  delete s.goldenCaught;
+  delete s.dailyBonusDate;
+  delete s.dailyBonusStreak;
+  ["cookies", "totalCookies", "totalClicks", "playTimeSeconds", "lastSaved"].forEach((key) => {
+    if (!Number.isFinite(s[key]) || s[key] < 0) s[key] = defaults[key];
+  });
+  ["rebirthCount", "rebirthPoints", "goldenJarsCaught", "freeFishRollTokens", "ordersCompleted"].forEach((key) => {
+    if (!Number.isSafeInteger(s[key]) || s[key] < 0) s[key] = defaults[key];
+  });
+  if (!Number.isFinite(s.bestCombo) || s.bestCombo < 1) s.bestCombo = 1;
+  s.rebirthCount = Math.min(MAX_REBIRTHS, s.rebirthCount);
+  if (!Array.isArray(s.rebirthUpgrades)) s.rebirthUpgrades = [];
+  const rebirthUpgradeIds = new Set(REBIRTH_UPGRADES.map((upgrade) => upgrade.id));
+  s.rebirthUpgrades = [...new Set(s.rebirthUpgrades.filter((id) => rebirthUpgradeIds.has(id)))];
+  if (!s.buildings || typeof s.buildings !== "object" || Array.isArray(s.buildings)) s.buildings = {};
+  if (!Array.isArray(s.upgrades)) s.upgrades = [];
+  if (!Array.isArray(s.achievements)) s.achievements = [];
+  const validAchIds = new Set(ACHIEVEMENTS.map((a) => a.id));
+  s.achievements = [...new Set(s.achievements.filter((id) => validAchIds.has(id)))];
+  s.soundEnabled = Boolean(s.soundEnabled);
+  s.voiceEnabled = Boolean(s.voiceEnabled);
+  if (!THEMES.some((t) => t.id === s.theme)) s.theme = "warm";
+  if (!["1", "10", "100", "max"].includes(String(s.bulkBuyMode))) s.bulkBuyMode = "1";
+  const validFlavorIds = new Set(FLAVORS.map((f) => f.id));
+  if (!Array.isArray(s.unlockedFlavors)) s.unlockedFlavors = ["hazelnut"];
+  s.unlockedFlavors = [...new Set(["hazelnut", ...s.unlockedFlavors.filter((id) => validFlavorIds.has(id))])];
+  if (!validFlavorIds.has(s.equippedFlavor) || !s.unlockedFlavors.includes(s.equippedFlavor)) s.equippedFlavor = "hazelnut";
+
+  if (!s.clickUpgradeLevels || typeof s.clickUpgradeLevels !== "object" || Array.isArray(s.clickUpgradeLevels)) s.clickUpgradeLevels = {};
+  const clickUpgradeIds = new Set(CLICK_UPGRADES.map((upgrade) => upgrade.id));
+  Object.keys(s.clickUpgradeLevels).forEach((id) => {
+    const level = s.clickUpgradeLevels[id];
+    if (!clickUpgradeIds.has(id) || !Number.isSafeInteger(level) || level < 0) delete s.clickUpgradeLevels[id];
+  });
+  CLICK_UPGRADES.forEach((upgrade) => {
+    if (s.upgrades.includes(upgrade.id)) {
+      s.clickUpgradeLevels[upgrade.id] = Math.max(1, s.clickUpgradeLevels[upgrade.id] || 0);
+    }
+  });
+  s.upgrades = s.upgrades.filter((id) => !clickUpgradeIds.has(id));
+  if (!s.cursorCollection || typeof s.cursorCollection !== "object" || Array.isArray(s.cursorCollection)) s.cursorCollection = { starter: true };
+  const validCursorIds = new Set(CURSORS.map((cursor) => cursor.id));
+  Object.keys(s.cursorCollection).forEach((id) => {
+    if (!validCursorIds.has(id) || typeof s.cursorCollection[id] !== "boolean") delete s.cursorCollection[id];
+  });
+  s.cursorCollection.starter = true;
+  if (!validCursorIds.has(s.equippedCursor) || !s.cursorCollection[s.equippedCursor]) s.equippedCursor = "starter";
+  if (!s.fishCollection || typeof s.fishCollection !== "object" || Array.isArray(s.fishCollection)) s.fishCollection = {};
+  if (!s.fishLevels || typeof s.fishLevels !== "object" || Array.isArray(s.fishLevels)) s.fishLevels = {};
+  if (!s.fishHabitats || typeof s.fishHabitats !== "object" || Array.isArray(s.fishHabitats)) s.fishHabitats = {};
+  const validHabitatIds = new Set(FISH_HABITATS.map((habitat) => habitat.id));
+  Object.keys(s.fishHabitats).forEach((id) => {
+    if (!validHabitatIds.has(id) || typeof s.fishHabitats[id] !== "boolean") delete s.fishHabitats[id];
+  });
+  const validFishIds = new Set([...FISH_CHARACTERS.map((character) => character.id), SECRET_FISH.id]);
+  Object.keys(s.fishCollection).forEach((id) => {
+    const count = s.fishCollection[id];
+    if (!validFishIds.has(id) || !Number.isSafeInteger(count) || count < 0) delete s.fishCollection[id];
+  });
+  Object.keys(s.fishLevels).forEach((id) => {
+    const level = s.fishLevels[id];
+    if (!validFishIds.has(id) || !Number.isInteger(level) || level < 1 || level > 10) delete s.fishLevels[id];
+  });
+  if (!Number.isInteger(s.fishLuckLevel) || s.fishLuckLevel < 0 || s.fishLuckLevel > 5) s.fishLuckLevel = 0;
+  if (!Number.isSafeInteger(s.fishRolls) || s.fishRolls < 0) s.fishRolls = 0;
+  if (typeof s.fishDailyRollDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(s.fishDailyRollDate)) s.fishDailyRollDate = "";
+  s.fishCollectionRewardClaimed = Boolean(s.fishCollectionRewardClaimed);
+  if (!Array.isArray(s.activeOrders)) s.activeOrders = [];
+  s.activeOrders = s.activeOrders
+    .filter((order) => order && typeof order.id === "string" && typeof order.kind === "string"
+      && Number.isFinite(order.target) && order.target > 0 && Number.isFinite(order.baseline))
+    .slice(0, 3);
+  return s;
 }
 
 function loadGame() {
   try {
     const raw = localStorage.getItem(SAVE_KEY);
     if (!raw) return createDefaultState();
-    const saved = JSON.parse(raw);
-    if (!saved || typeof saved !== "object" || Array.isArray(saved)) throw new Error("Save data is not an object.");
-    const defaults = createDefaultState();
-    const state = { ...defaults, ...saved };
-    delete state.goldenCaught;
-    ["cookies", "totalCookies", "totalClicks", "playTimeSeconds", "lastSaved"].forEach((key) => {
-      if (!Number.isFinite(state[key]) || state[key] < 0) state[key] = defaults[key];
-    });
-    ["rebirthCount", "rebirthPoints"].forEach((key) => {
-      if (!Number.isSafeInteger(state[key]) || state[key] < 0) state[key] = defaults[key];
-    });
-    if (typeof state.dailyBonusDate !== "string" || (state.dailyBonusDate && !/^\d{4}-\d{2}-\d{2}$/.test(state.dailyBonusDate))) state.dailyBonusDate = "";
-    if (!Number.isInteger(state.dailyBonusStreak) || state.dailyBonusStreak < 0 || state.dailyBonusStreak > 7) state.dailyBonusStreak = 0;
-    state.rebirthCount = Math.min(MAX_REBIRTHS, state.rebirthCount);
-    if (!Array.isArray(state.rebirthUpgrades)) state.rebirthUpgrades = [];
-    const rebirthUpgradeIds = new Set(REBIRTH_UPGRADES.map((upgrade) => upgrade.id));
-    state.rebirthUpgrades = [...new Set(state.rebirthUpgrades.filter((id) => rebirthUpgradeIds.has(id)))];
-    if (!state.buildings || typeof state.buildings !== "object" || Array.isArray(state.buildings)) state.buildings = {};
-    if (!Array.isArray(state.upgrades)) state.upgrades = [];
-    if (!Array.isArray(state.achievements)) state.achievements = [];
-    state.achievements = state.achievements.filter((id) => id !== "golden-touch");
-    state.soundEnabled = Boolean(state.soundEnabled);
-    if (!state.clickUpgradeLevels || typeof state.clickUpgradeLevels !== "object" || Array.isArray(state.clickUpgradeLevels)) state.clickUpgradeLevels = {};
-    const clickUpgradeIds = new Set(CLICK_UPGRADES.map((upgrade) => upgrade.id));
-    Object.keys(state.clickUpgradeLevels).forEach((id) => {
-      const level = state.clickUpgradeLevels[id];
-      if (!clickUpgradeIds.has(id) || !Number.isSafeInteger(level) || level < 0) delete state.clickUpgradeLevels[id];
-    });
-    CLICK_UPGRADES.forEach((upgrade) => {
-      if (state.upgrades.includes(upgrade.id)) {
-        state.clickUpgradeLevels[upgrade.id] = Math.max(1, state.clickUpgradeLevels[upgrade.id] || 0);
-      }
-    });
-    state.upgrades = state.upgrades.filter((id) => !clickUpgradeIds.has(id));
-    if (!state.cursorCollection || typeof state.cursorCollection !== "object" || Array.isArray(state.cursorCollection)) state.cursorCollection = { starter: true };
-    const validCursorIds = new Set(CURSORS.map((cursor) => cursor.id));
-    Object.keys(state.cursorCollection).forEach((id) => {
-      if (!validCursorIds.has(id) || typeof state.cursorCollection[id] !== "boolean") delete state.cursorCollection[id];
-    });
-    state.cursorCollection.starter = true;
-    if (!validCursorIds.has(state.equippedCursor) || !state.cursorCollection[state.equippedCursor]) state.equippedCursor = "starter";
-    if (!state.fishCollection || typeof state.fishCollection !== "object" || Array.isArray(state.fishCollection)) state.fishCollection = {};
-    if (!state.fishLevels || typeof state.fishLevels !== "object" || Array.isArray(state.fishLevels)) state.fishLevels = {};
-    if (!state.fishHabitats || typeof state.fishHabitats !== "object" || Array.isArray(state.fishHabitats)) state.fishHabitats = {};
-    const validHabitatIds = new Set(FISH_HABITATS.map((habitat) => habitat.id));
-    Object.keys(state.fishHabitats).forEach((id) => {
-      if (!validHabitatIds.has(id) || typeof state.fishHabitats[id] !== "boolean") delete state.fishHabitats[id];
-    });
-    const validFishIds = new Set([...FISH_CHARACTERS.map((character) => character.id), SECRET_FISH.id]);
-    Object.keys(state.fishCollection).forEach((id) => {
-      const count = state.fishCollection[id];
-      if (!validFishIds.has(id) || !Number.isSafeInteger(count) || count < 0) delete state.fishCollection[id];
-    });
-    Object.keys(state.fishLevels).forEach((id) => {
-      const level = state.fishLevels[id];
-      if (!validFishIds.has(id) || !Number.isInteger(level) || level < 1 || level > 10) delete state.fishLevels[id];
-    });
-    if (!Number.isInteger(state.fishLuckLevel) || state.fishLuckLevel < 0 || state.fishLuckLevel > 5) state.fishLuckLevel = 0;
-    if (!Number.isSafeInteger(state.fishRolls) || state.fishRolls < 0) state.fishRolls = 0;
-    if (typeof state.fishDailyRollDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(state.fishDailyRollDate)) state.fishDailyRollDate = "";
-    state.fishCollectionRewardClaimed = Boolean(state.fishCollectionRewardClaimed);
-    return state;
+    return sanitizeStateObject(JSON.parse(raw));
   } catch (error) {
     console.warn("Could not load the game save; starting a fresh game.", error);
     return createDefaultState();
@@ -304,22 +388,43 @@ function loadGame() {
 let state = loadGame();
 let frenzyMultiplier = 1;
 let frenzyEndTime = 0;
+let clickFrenzyMultiplier = 1;
+let clickFrenzyEndTime = 0;
 let audioContext = null;
 let clickBoostEndTime = 0;
 let productionBoostEndTime = 0;
 let luckyClickArmed = false;
 let lastAcceptedSpreadClickAt = 0;
+let clickCooldownRemoved = false;
 let lastFrameTime = performance.now();
 let unlockCheckTime = 0;
 let shopRenderTime = 0;
 let spreadAnimationTimer;
 let cheatInput = "";
 let fishCollectionFilter = "all";
+let fishSearchQuery = "";
 let fishFlightFrame = null;
 let fishFlightVersion = 0;
 let fishScrollBehavior = null;
 let fishOlivaTimer = null;
+let selectedAchievementId = null;
+let displayedCookies = state.cookies;
+
+// Combo & Golden Jar state
+let comboCharge = 0;
+let lastComboClickAt = 0;
+let goldenJarSpawnTimer = null;
+let goldenJarDespawnTimer = null;
+let confirmActionCallback = null;
+
+// Full-screen 60fps Canvas FX particle queue
+const fxParticles = [];
+let fxWidth = window.innerWidth;
+let fxHeight = window.innerHeight;
+let fxDpr = Math.min(2, window.devicePixelRatio || 1);
+
 const SPREAD_CHEAT_CODE = "TimmyTuffJeff";
+const REMOVE_COOLDOWN_CODE = "removethis";
 const ADMIN_PASSWORD = "charlie12032012franke";
 
 const els = {
@@ -332,9 +437,10 @@ const els = {
   milestoneProgress: document.getElementById("milestone-progress"),
   total: document.getElementById("stat-total"),
   clicks: document.getElementById("stat-clicks"),
+  goldenStat: document.getElementById("stat-golden"),
+  bestComboStat: document.getElementById("stat-best-combo"),
+  masteryStat: document.getElementById("stat-mastery"),
   time: document.getElementById("stat-time"),
-  dailyBonusButton: document.getElementById("daily-bonus-button"),
-  dailyBonusStatus: document.getElementById("daily-bonus-status"),
   rebirthCount: document.getElementById("rebirth-count"),
   rebirthStars: document.getElementById("rebirth-stars"),
   rebirthBoost: document.getElementById("rebirth-boost"),
@@ -343,25 +449,49 @@ const els = {
   rebirthButton: document.getElementById("rebirth-button"),
   rebirthUpgrades: document.getElementById("rebirth-upgrades"),
   rebirthMenuShortcut: document.getElementById("rebirth-menu-shortcut"),
+  bakeStage: document.getElementById("bake-stage"),
+  ambientSparks: document.getElementById("ambient-sparks"),
+  orbitCursors: document.getElementById("orbit-cursors"),
   cookieButton: document.getElementById("cookie-btn"),
+  equippedCursorBadge: document.getElementById("equipped-cursor-badge"),
+  goldenSpreadLayer: document.getElementById("golden-spread-layer"),
+  comboMeter: document.getElementById("combo-meter"),
+  comboBadge: document.getElementById("combo-badge"),
+  comboFill: document.getElementById("combo-fill"),
+  clickCooldownStatus: document.getElementById("click-cooldown-status"),
+  clickHint: document.getElementById("click-hint"),
   clickParticles: document.getElementById("click-particles"),
   clickStreak: document.getElementById("click-streak"),
+  flavorSummary: document.getElementById("flavor-summary"),
+  flavorBonusLabel: document.getElementById("flavor-bonus-label"),
+  flavorsContainer: document.getElementById("flavors-container"),
+  ordersCompletedCount: document.getElementById("orders-completed-count"),
+  ordersContainer: document.getElementById("orders-container"),
   upgrades: document.getElementById("upgrades-container"),
   cursorShop: document.getElementById("cursor-shop-container"),
+  bulkBuyControls: document.getElementById("bulk-buy-controls"),
   buildings: document.getElementById("buildings-container"),
   achievements: document.getElementById("achievements-container"),
   achievementCount: document.getElementById("achievements-count"),
+  achievementDetail: document.getElementById("achievement-detail"),
   fishRoll: document.getElementById("fish-roll"),
+  aquariumSwimmers: document.getElementById("aquarium-swimmers"),
   footer10kRolls: document.getElementById("footer-10k-rolls"),
   footer10kRollsLabel: document.getElementById("footer-10k-rolls-label"),
   fishDailyRoll: document.getElementById("fish-daily-roll"),
+  fishFreeRollBtn: document.getElementById("fish-free-roll-btn"),
+  fishFreeTokens: document.getElementById("fish-free-tokens"),
   fishLuckUpgrade: document.getElementById("fish-luck-upgrade"),
   fishHabitats: document.getElementById("fish-habitats"),
   fishCollection: document.getElementById("fish-collection"),
   fishCollectionDetails: document.getElementById("fish-collection-details"),
   fishCollectionFilters: document.getElementById("fish-collection-filters"),
+  fishSearchInput: document.getElementById("fish-search-input"),
+  fishLevelAll: document.getElementById("fish-level-all"),
+  fishSellDuplicates: document.getElementById("fish-sell-duplicates"),
   fishCollectionCount: document.getElementById("fish-collection-count"),
   fishRollCount: document.getElementById("fish-roll-count"),
+  fishClickBonus: document.getElementById("fish-click-bonus"),
   fishProductionBonus: document.getElementById("fish-production-bonus"),
   fishRollCost: document.getElementById("fish-roll-cost"),
   fishLuckStatus: document.getElementById("fish-luck-status"),
@@ -373,9 +503,17 @@ const els = {
   news: document.getElementById("news-text"),
   frenzyBanner: document.getElementById("frenzy-banner"),
   frenzyTimer: document.getElementById("frenzy-timer"),
+  themeToggleBtn: document.getElementById("theme-toggle-btn"),
   soundButton: document.getElementById("toggle-sfx-btn"),
+  voiceButton: document.getElementById("toggle-voice-btn"),
   resetButton: document.getElementById("reset-btn"),
   buildingSummary: document.getElementById("building-summary"),
+  confirmModal: document.getElementById("confirm-modal"),
+  confirmTitle: document.getElementById("confirm-title"),
+  confirmMessage: document.getElementById("confirm-message"),
+  confirmAccept: document.getElementById("confirm-accept"),
+  confirmCancel: document.getElementById("confirm-cancel"),
+  confirmClose: document.getElementById("confirm-close"),
   adminPanel: document.getElementById("admin-panel"),
   adminLogin: document.getElementById("admin-login"),
   adminPassword: document.getElementById("admin-password"),
@@ -386,11 +524,26 @@ const els = {
   adminAdd: document.getElementById("admin-add"),
   adminRemove: document.getElementById("admin-remove"),
   adminRandom: document.getElementById("admin-random"),
+  adminMult10x: document.getElementById("admin-mult-10x"),
+  adminSet1e90: document.getElementById("admin-set-1e90"),
+  adminZeroJar: document.getElementById("admin-zero-jar"),
   adminClickBoost: document.getElementById("admin-click-boost"),
   adminProductionBoost: document.getElementById("admin-production-boost"),
+  adminToggleCooldown: document.getElementById("admin-toggle-cooldown"),
+  adminMaxCombo: document.getElementById("admin-max-combo"),
+  adminClickFrenzy: document.getElementById("admin-click-frenzy"),
+  adminSpawnGolden: document.getElementById("admin-spawn-golden"),
+  adminGoldenRain: document.getElementById("admin-golden-rain"),
+  adminFxAll: document.getElementById("admin-fx-all"),
+  adminFxFireworks: document.getElementById("admin-fx-fireworks"),
+  adminFxSpreadRain: document.getElementById("admin-fx-spread-rain"),
+  adminFxShockwave: document.getElementById("admin-fx-shockwave"),
+  adminSpinMode: document.getElementById("admin-spin-mode"),
+  adminRainbowMode: document.getElementById("admin-rainbow-mode"),
   adminEveryBuilding: document.getElementById("admin-every-building"),
   admin100kBuildings: document.getElementById("admin-100k-buildings"),
   adminAllUpgrades: document.getElementById("admin-all-upgrades"),
+  adminAllFlavors: document.getElementById("admin-all-flavors"),
   adminSugarFrenzy: document.getElementById("admin-sugar-frenzy"),
   adminMystery: document.getElementById("admin-mystery"),
   adminConfetti: document.getElementById("admin-confetti"),
@@ -405,15 +558,20 @@ const els = {
   adminUnlockOliva: document.getElementById("admin-unlock-oliva"),
   adminAdd100Fish: document.getElementById("admin-add-100-fish"),
   adminAllCursors: document.getElementById("admin-all-cursors"),
+  adminGrantTokens: document.getElementById("admin-grant-tokens"),
   adminMaxLuck: document.getElementById("admin-max-luck"),
   adminResetDailyRoll: document.getElementById("admin-reset-daily-roll"),
-  adminResetDailyBonus: document.getElementById("admin-reset-daily-bonus"),
   adminMaxRebirths: document.getElementById("admin-max-rebirths"),
+  adminAllAchievements: document.getElementById("admin-all-achievements"),
+  adminCompleteOrders: document.getElementById("admin-complete-orders"),
   clickBoostStatus: document.getElementById("click-boost-status"),
   productionBoostStatus: document.getElementById("production-boost-status"),
   adminStatus: document.getElementById("admin-status"),
-  celebrationLayer: document.getElementById("celebration-layer")
+  celebrationLayer: document.getElementById("celebration-layer"),
+  fxCanvas: document.getElementById("fx-canvas"),
+  stageFlash: document.getElementById("stage-flash")
 };
+const fxCtx = els.fxCanvas ? els.fxCanvas.getContext("2d") : null;
 
 function formatNumber(value) {
   if (!Number.isFinite(value)) return "0";
@@ -448,8 +606,35 @@ function getBuildingCount(game = state) {
   return Object.values(game.buildings).reduce((sum, count) => sum + (Number.isFinite(count) ? count : 0), 0);
 }
 
+function getBuildingCostAt(building, owned) {
+  return Math.min(Number.MAX_VALUE, Math.floor(building.cost * Math.pow(1.16, owned)));
+}
+
 function getBuildingCost(building) {
-  return Math.min(Number.MAX_VALUE, Math.floor(building.cost * Math.pow(1.16, state.buildings[building.id] || 0)));
+  return getBuildingCostAt(building, state.buildings[building.id] || 0);
+}
+
+function getBulkPurchaseInfo(building, mode = state.bulkBuyMode) {
+  const owned = state.buildings[building.id] || 0;
+  if (mode === "1") {
+    const cost = getBuildingCostAt(building, owned);
+    return { count: 1, cost, affordable: state.cookies >= cost };
+  }
+  const limit = mode === "max" ? 500 : Number(mode);
+  let totalCost = 0;
+  let bought = 0;
+  for (let i = 0; i < limit; i++) {
+    const nextCost = getBuildingCostAt(building, owned + i);
+    if (!Number.isFinite(totalCost + nextCost)) break;
+    if (mode === "max" && totalCost + nextCost > state.cookies) break;
+    totalCost += nextCost;
+    bought++;
+  }
+  if (mode === "max" && bought === 0) {
+    const oneCost = getBuildingCostAt(building, owned);
+    return { count: 1, cost: oneCost, affordable: state.cookies >= oneCost };
+  }
+  return { count: bought, cost: totalCost, affordable: bought > 0 && state.cookies >= totalCost };
 }
 
 function getBuildingMultiplier(id) {
@@ -457,13 +642,29 @@ function getBuildingMultiplier(id) {
     .reduce((multiplier, upgrade) => multiplier * upgrade.mult, 1);
 }
 
-function getRebirthReward() {
-  const requiredBuildings = getRebirthBuildingRequirement();
-  return state.rebirthCount < MAX_REBIRTHS && (state.buildings.spreadstergram || 0) >= requiredBuildings ? 1 : 0;
+function getActiveFlavor() {
+  return FLAVORS.find((f) => f.id === state.equippedFlavor) || FLAVORS[0];
+}
+
+function getAchievementMasteryMultiplier() {
+  return 1 + state.achievements.length * 0.02;
+}
+
+function getComboMultiplier() {
+  if (comboCharge >= 90) return 2.5;
+  if (comboCharge >= 70) return 2.0;
+  if (comboCharge >= 45) return 1.5;
+  if (comboCharge >= 20) return 1.25;
+  return 1.0;
 }
 
 function getRebirthBuildingRequirement() {
   return state.rebirthCount === 0 ? 1 : Math.min(100, state.rebirthCount * 10);
+}
+
+function getRebirthReward() {
+  const requiredBuildings = getRebirthBuildingRequirement();
+  return state.rebirthCount < MAX_REBIRTHS && (state.buildings.spreadstergram || 0) >= requiredBuildings ? 1 : 0;
 }
 
 function getRebirthMultiplier() {
@@ -508,35 +709,46 @@ function getFishLevelUpCost(id) {
   return Math.min(MAX_SPREAD_GRANT, Math.max(1000, Math.floor(getFishRollCost() * 0.12 * (tierIndex + 1) * level)));
 }
 
+function getFishHabitatMultiplier() {
+  const habitatBonus = FISH_HABITATS.reduce((total, habitat) =>
+    total + (state.fishHabitats[habitat.id] ? habitat.bonus : 0), 0);
+  return 1 + habitatBonus;
+}
+
 function getFishProductionMultiplier() {
   const bonusLevels = Object.entries(state.fishLevels).reduce((total, [id, level]) =>
     total + (state.fishCollection[id] ? Math.max(0, level - 1) : 0), 0);
-  const habitatBonus = FISH_HABITATS.reduce((total, habitat) =>
-    total + (state.fishHabitats[habitat.id] ? habitat.bonus : 0), 0);
-  return (1 + bonusLevels * 0.008) * (1 + habitatBonus);
+  return (1 + bonusLevels * 0.008) * getFishHabitatMultiplier();
 }
 
-function getFishUniqueCount() {
-  return FISH_CHARACTERS.reduce((total, character) => total + (state.fishCollection[character.id] ? 1 : 0), 0);
+function getFishFlatClickBonus() {
+  return Object.entries(state.fishCollection).reduce((total, [id, copies]) => {
+    if (!copies) return total;
+    const character = getFishCharacterById(id);
+    const level = state.fishLevels[id] || 1;
+    const perLevel = character ? (FISH_TIER_CLICK_FLAT[character.tier] || 1) : 1;
+    return total + perLevel * level;
+  }, 0);
+}
+
+function getFishClickMultiplier() {
+  const percentBonus = Object.entries(state.fishCollection).reduce((total, [id, copies]) => {
+    if (!copies) return total;
+    const character = getFishCharacterById(id);
+    const level = state.fishLevels[id] || 1;
+    const perLevel = character ? (FISH_TIER_CLICK_PERCENT[character.tier] || 0.01) : 0.01;
+    return total + perLevel * level;
+  }, 0);
+  return (1 + percentBonus) * getFishHabitatMultiplier();
+}
+
+function getFishUniqueCount(game = state) {
+  return FISH_CHARACTERS.reduce((total, character) => total + (game.fishCollection[character.id] ? 1 : 0), 0);
 }
 
 function getLocalDateKey() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-}
-
-function getDailyBonusStreak() {
-  if (state.dailyBonusDate === getLocalDateKey()) return Math.max(1, state.dailyBonusStreak);
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayKey = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, "0")}-${String(yesterday.getDate()).padStart(2, "0")}`;
-  return state.dailyBonusDate === yesterdayKey ? Math.min(7, state.dailyBonusStreak + 1) : 1;
-}
-
-function getDailyBonusAmount(streak) {
-  const rawBase = getCookiesPerSecond() * 60 + getCookiesPerClick() * 25;
-  const base = Number.isFinite(rawBase) ? Math.max(100, Math.floor(rawBase)) : MAX_SPREAD_GRANT;
-  return Math.min(MAX_SPREAD_GRANT, Math.floor(base * (1 + Math.max(0, streak - 1) * 0.1)));
 }
 
 function getFishTierOdds() {
@@ -551,20 +763,48 @@ function getFishTierOdds() {
   ];
 }
 
-function getCookiesPerSecond() {
+function getBaseBuildingCps(building) {
   const boost = Date.now() < productionBoostEndTime ? 1.5 : 1;
-  return BUILDINGS.reduce((sum, building) => sum + (state.buildings[building.id] || 0) * building.cps * getBuildingMultiplier(building.id), 0)
-    * frenzyMultiplier * boost * getFishProductionMultiplier() * getRebirthMultiplier() * getRebirthUpgradeMultiplier("production");
+  const flavor = getActiveFlavor();
+  return building.cps
+    * getBuildingMultiplier(building.id)
+    * frenzyMultiplier
+    * boost
+    * getFishProductionMultiplier()
+    * getRebirthMultiplier()
+    * getRebirthUpgradeMultiplier("production")
+    * getAchievementMasteryMultiplier()
+    * flavor.prodMult;
+}
+
+function getCookiesPerSecond() {
+  return BUILDINGS.reduce((sum, building) => sum + (state.buildings[building.id] || 0) * getBaseBuildingCps(building), 0);
 }
 
 function getCookiesPerClick() {
+  const baseClick = 1 + getFishFlatClickBonus();
   const multiplier = CLICK_UPGRADES.reduce((total, upgrade) => {
     const level = state.clickUpgradeLevels[upgrade.id] || 0;
     return Math.min(1e100, total * Math.pow(upgrade.mult, level));
   }, 1);
   const cursor = CURSORS.find((item) => item.id === state.equippedCursor) || CURSORS[0];
+  const flavor = getActiveFlavor();
   const boost = Date.now() < clickBoostEndTime ? 1.5 : 1;
-  return Math.max(1, Math.floor(Math.min(1e100, multiplier * cursor.multiplier * frenzyMultiplier * boost * getRebirthMultiplier() * getRebirthUpgradeMultiplier("click"))));
+  return Math.max(1, Math.floor(Math.min(
+    1e100,
+    baseClick
+    * multiplier
+    * cursor.multiplier
+    * frenzyMultiplier
+    * clickFrenzyMultiplier
+    * boost
+    * getComboMultiplier()
+    * getFishClickMultiplier()
+    * getRebirthMultiplier()
+    * getRebirthUpgradeMultiplier("click")
+    * getAchievementMasteryMultiplier()
+    * flavor.clickMult
+  )));
 }
 
 function saveGame() {
@@ -578,15 +818,57 @@ function saveGame() {
 }
 
 function showToast(message) {
+  while (els.toastContainer.childElementCount >= 4) {
+    els.toastContainer.firstElementChild.remove();
+  }
   const toast = document.createElement("div");
   toast.className = "toast";
   toast.textContent = message;
   els.toastContainer.appendChild(toast);
   window.setTimeout(() => {
     toast.style.opacity = "0";
-    toast.style.transition = "opacity .25s ease";
+    toast.style.transition = "opacity 0.25s ease";
     window.setTimeout(() => toast.remove(), 260);
   }, 3000);
+}
+
+function applyTheme(themeId) {
+  const theme = THEMES.find((t) => t.id === themeId) || THEMES[0];
+  state.theme = theme.id;
+  document.body.classList.remove("theme-espresso", "theme-matcha");
+  if (theme.className) document.body.classList.add(theme.className);
+  els.themeToggleBtn.textContent = theme.label;
+}
+
+function showConfirmModal(title, message, acceptLabel, onAccept) {
+  els.confirmTitle.textContent = title;
+  els.confirmMessage.textContent = message;
+  els.confirmAccept.textContent = acceptLabel;
+  confirmActionCallback = onAccept;
+  els.confirmModal.hidden = false;
+  els.confirmAccept.focus();
+}
+
+function closeConfirmModal() {
+  els.confirmModal.hidden = true;
+  confirmActionCallback = null;
+}
+
+function updateEquippedCursorBadge() {
+  const cursor = CURSORS.find((item) => item.id === state.equippedCursor) || CURSORS[0];
+  els.equippedCursorBadge.textContent = `${cursor.icon} ${cursor.name.replace(/\s+(Cursor|Pointer)$/, "")}`;
+}
+
+function updateComboUI() {
+  const mult = getComboMultiplier();
+  const label = mult >= 2.5 ? "FEVER!" : mult >= 2.0 ? "Blazing" : mult >= 1.5 ? "Hot" : mult > 1 ? "Warming" : "Ready";
+  els.comboBadge.textContent = `×${mult.toFixed(mult % 1 === 0 ? 1 : 2)} · ${label}`;
+  els.comboFill.style.width = `${Math.min(100, Math.max(0, comboCharge))}%`;
+  els.comboMeter.classList.toggle("hot", mult >= 2.0);
+  if (mult > state.bestCombo) {
+    state.bestCombo = mult;
+    checkAchievements();
+  }
 }
 
 function updateMilestone() {
@@ -618,27 +900,42 @@ function updateRebirthUI(renderUpgrades = false) {
   els.rebirthButton.textContent = state.rebirthCount >= MAX_REBIRTHS
     ? "🌟 All 100 rebirths complete"
     : reward
-      ? "🌟 Rebirth · +10% money and 1 Star"
+      ? "🌟 Rebirth · +10% power and 1 Star"
       : `🌟 Rebirth · need ${requiredBuildings} Spreadstergram${requiredBuildings === 1 ? "" : "s"}`;
   els.rebirthStatus.textContent = state.rebirthCount >= MAX_REBIRTHS
     ? "You have reached the 100-rebirth limit. Your permanent rebirth bonus is +1,000%."
     : reward
-      ? `You own ${ownedBuildings} Spreadstergram${ownedBuildings === 1 ? "" : "s"}. Rebirth resets current spreads, clicks, buildings, upgrades, and cursors, but keeps fish, habitats, and achievements.`
+      ? `You own ${ownedBuildings} Spreadstergram${ownedBuildings === 1 ? "" : "s"}. Rebirth resets current spreads, clicks, buildings, upgrades, and cursors, while keeping fish, habitats, flavors, and achievements.`
       : `Own ${requiredBuildings} Spreadstergram${requiredBuildings === 1 ? "" : "s"} to rebirth (${ownedBuildings} owned). Each rebirth grants 1 Rebirth Star and +10% permanent click and production power.`;
   if (renderUpgrades) renderRebirthUpgrades();
 }
 
-function updateDailyBonusUI() {
-  const claimed = state.dailyBonusDate === getLocalDateKey();
-  const streak = getDailyBonusStreak();
-  const amount = getDailyBonusAmount(streak);
-  els.dailyBonusButton.disabled = claimed;
-  els.dailyBonusButton.textContent = claimed
-    ? "✅ Daily bonus claimed"
-    : `🎁 Claim ${formatNumber(amount)} spreads`;
-  els.dailyBonusStatus.textContent = claimed
-    ? `Day ${streak}/7 claimed. Come back tomorrow to keep the streak going.`
-    : `Day ${streak}/7 streak · +10% each consecutive day, up to +60%.`;
+function syncCooldownHint() {
+  if (clickCooldownRemoved) {
+    els.clickHint.innerHTML = 'Tap fast or press <kbd>Space</kbd> to build your <strong>combo multiplier</strong>';
+    els.adminToggleCooldown.setAttribute("aria-pressed", "true");
+    els.adminToggleCooldown.textContent = "⏱️ Cooldown: Removed (Restore 10s)";
+  } else {
+    els.clickHint.innerHTML = 'Click once every 10 seconds (or press <kbd>Space</kbd>) to build your <strong>combo multiplier</strong>';
+    els.adminToggleCooldown.setAttribute("aria-pressed", "false");
+    els.adminToggleCooldown.textContent = "⏱️ Cooldown: 10s (Remove)";
+  }
+}
+
+function updateClickCooldownUI(currentTime = Date.now()) {
+  if (clickCooldownRemoved) {
+    els.cookieButton.classList.remove("cooling");
+    els.clickCooldownStatus.classList.remove("cooling");
+    els.clickCooldownStatus.textContent = "Cooldown removed · Ready!";
+    return;
+  }
+  const remainingMs = Math.max(0, CLICK_COOLDOWN_MS - (currentTime - lastAcceptedSpreadClickAt));
+  const isCooling = remainingMs > 0;
+  els.cookieButton.classList.toggle("cooling", isCooling);
+  els.clickCooldownStatus.classList.toggle("cooling", isCooling);
+  els.clickCooldownStatus.textContent = isCooling
+    ? `Next spread in ${(remainingMs / 1000).toFixed(1)}s`
+    : "Ready to spread";
 }
 
 function renderRebirthUpgrades() {
@@ -673,23 +970,453 @@ function renderRebirthUpgrades() {
   });
 }
 
-function showClickGain(amount, event, streakBonus) {
-  while (els.clickParticles.childElementCount >= 12) {
+function checkFlavorUnlocks() {
+  let unlockedAny = false;
+  FLAVORS.forEach((flavor) => {
+    if (!state.unlockedFlavors.includes(flavor.id) && flavor.req(state)) {
+      state.unlockedFlavors.push(flavor.id);
+      showToast(`${flavor.icon} New flavor unlocked: ${flavor.name}!`);
+      unlockedAny = true;
+    }
+  });
+  if (unlockedAny) renderFlavors();
+}
+
+function renderFlavors() {
+  const active = getActiveFlavor();
+  els.flavorSummary.textContent = `${active.icon} ${active.name}`;
+  els.flavorBonusLabel.textContent = `Active: ${active.bonusLabel}`;
+  els.flavorsContainer.replaceChildren();
+
+  FLAVORS.forEach((flavor) => {
+    const unlocked = state.unlockedFlavors.includes(flavor.id);
+    const equipped = state.equippedFlavor === flavor.id;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = `flavor-card${equipped ? " equipped" : ""}`;
+    btn.disabled = !unlocked;
+    btn.title = unlocked ? flavor.desc : `Locked: ${flavor.reqText}`;
+    btn.setAttribute("aria-pressed", String(equipped));
+
+    const icon = document.createElement("span");
+    icon.className = "flavor-icon";
+    icon.textContent = flavor.icon;
+    const info = document.createElement("span");
+    info.className = "flavor-info";
+    const name = document.createElement("strong");
+    name.textContent = flavor.name;
+    const desc = document.createElement("span");
+    desc.textContent = unlocked ? (equipped ? `${flavor.bonusLabel} · Equipped` : flavor.bonusLabel) : flavor.reqText;
+    info.append(name, desc);
+    btn.append(icon, info);
+
+    btn.addEventListener("click", () => {
+      if (!unlocked || state.equippedFlavor === flavor.id) return;
+      state.equippedFlavor = flavor.id;
+      playTone(540, 760, 0.12, 0.09);
+      showToast(`${flavor.icon} Switched to ${flavor.name} (${flavor.bonusLabel})!`);
+      renderFlavors();
+      renderShop();
+      saveGame();
+    });
+    els.flavorsContainer.appendChild(btn);
+  });
+}
+
+function popElement(el) {
+  if (!el) return;
+  el.classList.remove("purchase-pop");
+  void el.offsetWidth;
+  el.classList.add("purchase-pop");
+}
+
+function resizeFxCanvas() {
+  if (!els.fxCanvas || !fxCtx) return;
+  fxDpr = Math.min(2, window.devicePixelRatio || 1);
+  fxWidth = window.innerWidth;
+  fxHeight = window.innerHeight;
+  els.fxCanvas.width = Math.floor(fxWidth * fxDpr);
+  els.fxCanvas.height = Math.floor(fxHeight * fxDpr);
+  fxCtx.setTransform(fxDpr, 0, 0, fxDpr, 0, 0);
+}
+
+function spawnFireworkBurst(x, y, count = 42) {
+  if (!fxCtx || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const palette = ["#ffcf56", "#ff7d5d", "#6de19c", "#6eb8ff", "#d48cff", "#ff72b6"];
+  const baseColor = palette[Math.floor(Math.random() * palette.length)];
+  fxParticles.push({
+    kind: "ring",
+    x,
+    y,
+    radius: 8,
+    maxRadius: 110 + Math.random() * 60,
+    color: baseColor,
+    life: 0,
+    maxLife: 0.65
+  });
+  for (let i = 0; i < count; i++) {
+    const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.25;
+    const speed = 130 + Math.random() * 290;
+    fxParticles.push({
+      kind: "spark",
+      x,
+      y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 40,
+      size: 2.2 + Math.random() * 3.2,
+      color: Math.random() < 0.65 ? baseColor : palette[Math.floor(Math.random() * palette.length)],
+      life: 0,
+      maxLife: 0.9 + Math.random() * 0.6
+    });
+  }
+}
+
+function launchFireworks(burstCount = 5) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  for (let i = 0; i < burstCount; i++) {
+    window.setTimeout(() => {
+      const x = fxWidth * (0.16 + Math.random() * 0.68);
+      const y = fxHeight * (0.14 + Math.random() * 0.44);
+      spawnFireworkBurst(x, y, 44);
+      playTone(460 + i * 70, 880 + i * 90, 0.14, 0.055, "triangle");
+    }, i * 180);
+  }
+}
+
+function launchSpreadRain(count = 48) {
+  if (!fxCtx || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const glyphs = ["🫙", "🍯", "🍓", "🌰", "✨", "🌟", "🥐", "🍰"];
+  for (let i = 0; i < count; i++) {
+    fxParticles.push({
+      kind: "rain",
+      glyph: glyphs[Math.floor(Math.random() * glyphs.length)],
+      x: Math.random() * fxWidth,
+      y: -30 - Math.random() * 240,
+      vx: (Math.random() - 0.5) * 80,
+      vy: 180 + Math.random() * 240,
+      rot: Math.random() * Math.PI * 2,
+      vrot: (Math.random() - 0.5) * 6,
+      size: 20 + Math.random() * 14,
+      life: 0,
+      maxLife: 3.2 + Math.random() * 1.4
+    });
+  }
+}
+
+function triggerShockwave(shake = true) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (els.stageFlash) {
+    els.stageFlash.classList.remove("active");
+    void els.stageFlash.offsetWidth;
+    els.stageFlash.classList.add("active");
+  }
+  if (shake && els.bakeStage) {
+    els.bakeStage.classList.remove("stage-shake");
+    void els.bakeStage.offsetWidth;
+    els.bakeStage.classList.add("stage-shake");
+  }
+  if (els.cookieButton) {
+    const rect = els.cookieButton.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    spawnFireworkBurst(cx, cy, 38);
+    if (fxCtx) {
+      fxParticles.push({
+        kind: "ring",
+        x: cx,
+        y: cy,
+        radius: 20,
+        maxRadius: Math.max(fxWidth, fxHeight) * 0.55,
+        color: "#ffd86b",
+        life: 0,
+        maxLife: 0.9
+      });
+    }
+  }
+}
+
+function triggerAllAnimations() {
+  launchFireworks(6);
+  launchConfetti(85);
+  launchSpreadRain(56);
+  triggerShockwave(true);
+  playChime([523.25, 659.25, 783.99, 1046.5, 1318.51]);
+}
+
+function updateFxCanvas(delta) {
+  if (!fxCtx || fxParticles.length === 0) return;
+  fxCtx.clearRect(0, 0, fxWidth, fxHeight);
+  for (let i = fxParticles.length - 1; i >= 0; i--) {
+    const p = fxParticles[i];
+    p.life += delta;
+    if (p.life >= p.maxLife) {
+      fxParticles.splice(i, 1);
+      continue;
+    }
+    const progress = p.life / p.maxLife;
+    const alpha = Math.max(0, 1 - progress);
+    fxCtx.save();
+    fxCtx.globalAlpha = alpha;
+    if (p.kind === "spark") {
+      p.vy += 320 * delta;
+      p.vx *= Math.pow(0.96, delta * 60);
+      p.x += p.vx * delta;
+      p.y += p.vy * delta;
+      fxCtx.fillStyle = p.color;
+      fxCtx.shadowColor = p.color;
+      fxCtx.shadowBlur = 10;
+      fxCtx.beginPath();
+      fxCtx.arc(p.x, p.y, p.size * (1 - progress * 0.45), 0, Math.PI * 2);
+      fxCtx.fill();
+    } else if (p.kind === "ring") {
+      const r = p.radius + (p.maxRadius - p.radius) * (1 - Math.pow(1 - progress, 3));
+      fxCtx.strokeStyle = p.color;
+      fxCtx.lineWidth = Math.max(1.5, 6 * (1 - progress));
+      fxCtx.beginPath();
+      fxCtx.arc(p.x, p.y, r, 0, Math.PI * 2);
+      fxCtx.stroke();
+    } else if (p.kind === "rain") {
+      p.x += p.vx * delta;
+      p.y += p.vy * delta;
+      p.rot += p.vrot * delta;
+      fxCtx.translate(p.x, p.y);
+      fxCtx.rotate(p.rot);
+      fxCtx.font = `${p.size}px "Plus Jakarta Sans", sans-serif`;
+      fxCtx.textAlign = "center";
+      fxCtx.textBaseline = "middle";
+      fxCtx.fillText(p.glyph, 0, 0);
+    }
+    fxCtx.restore();
+  }
+  if (fxParticles.length === 0) fxCtx.clearRect(0, 0, fxWidth, fxHeight);
+}
+
+function initAmbientSparks() {
+  if (!els.ambientSparks) return;
+  els.ambientSparks.replaceChildren();
+  const glyphs = ["✦", "🍯", "✨", "🍓", "🌰"];
+  for (let i = 0; i < 14; i++) {
+    const spark = document.createElement("span");
+    spark.className = "ambient-spark";
+    spark.textContent = glyphs[i % glyphs.length];
+    spark.style.left = `${(i * 7.3 + 4) % 94}%`;
+    spark.style.setProperty("--spark-duration", `${6.5 + (i % 5) * 1.4}s`);
+    spark.style.setProperty("--spark-delay", `${-(i * 0.7).toFixed(2)}s`);
+    spark.style.setProperty("--drift-x", `${((i % 2 === 0 ? 1 : -1) * (16 + (i % 4) * 10))}px`);
+    els.ambientSparks.appendChild(spark);
+  }
+}
+
+function renderOrbitCursors() {
+  if (!els.orbitCursors) return;
+  els.orbitCursors.replaceChildren();
+  const totalOwnedCursors = CURSORS.filter((c) => state.cursorCollection[c.id]);
+  const buildingOrbiterCount = Math.min(8, Math.floor(getBuildingCount() / 10));
+  const items = [];
+  totalOwnedCursors.slice(0, 8).forEach((c) => items.push(c.icon));
+  for (let i = 0; i < buildingOrbiterCount && items.length < 12; i++) {
+    items.push("✨");
+  }
+  items.forEach((glyph, idx) => {
+    const orb = document.createElement("span");
+    orb.className = "orbit-cursor-item";
+    orb.textContent = glyph;
+    orb.style.setProperty("--orbit-angle", `${(360 / items.length) * idx}deg`);
+    els.orbitCursors.appendChild(orb);
+  });
+}
+
+const ORDER_TEMPLATES = [
+  { kind: "clicks", title: "Tap Sprint", label: "manual clicks", base: 15 },
+  { kind: "spreads", title: "Sweet Batch", label: "new spreads earned", base: 400 },
+  { kind: "helpers", title: "Crew Expansion", label: "more helpers hired", base: 3 },
+  { kind: "golden", title: "Jar Hunter", label: "Golden Jar caught", base: 1 },
+  { kind: "fish", title: "Aquarium Scout", label: "tank rolls made", base: 3 }
+];
+
+function getOrderMetricValue(kind) {
+  if (kind === "clicks") return state.totalClicks;
+  if (kind === "spreads") return state.totalCookies;
+  if (kind === "helpers") return getBuildingCount();
+  if (kind === "golden") return state.goldenJarsCaught;
+  return state.fishRolls;
+}
+
+function createOrder(seedOffset = 0) {
+  const index = (state.ordersCompleted + seedOffset) % ORDER_TEMPLATES.length;
+  const tmpl = ORDER_TEMPLATES[index];
+  const scale = 1 + Math.floor((state.ordersCompleted + seedOffset) / ORDER_TEMPLATES.length);
+  let target = tmpl.base;
+  if (tmpl.kind === "clicks") target = Math.min(500, 12 + scale * 8);
+  else if (tmpl.kind === "spreads") target = Math.max(250, Math.floor((getCookiesPerSecond() * 18 + getCookiesPerClick() * 6) * (1 + scale * 0.2)));
+  else if (tmpl.kind === "helpers") target = Math.min(50, 2 + scale * 2);
+  else if (tmpl.kind === "golden") target = 1;
+  else if (tmpl.kind === "fish") target = Math.min(25, 2 + scale);
+
+  return {
+    id: `order-${Date.now()}-${Math.floor(Math.random() * 10000)}-${seedOffset}`,
+    kind: tmpl.kind,
+    title: `${tmpl.title} #${state.ordersCompleted + seedOffset + 1}`,
+    label: tmpl.label,
+    baseline: getOrderMetricValue(tmpl.kind),
+    target,
+    rewardTokens: tmpl.kind === "golden" || scale % 2 === 0 ? 1 : 0
+  };
+}
+
+function ensureActiveOrders() {
+  if (!Array.isArray(state.activeOrders)) state.activeOrders = [];
+  let added = false;
+  while (state.activeOrders.length < 3) {
+    state.activeOrders.push(createOrder(state.activeOrders.length));
+    added = true;
+  }
+  return added;
+}
+
+function getOrderProgress(order) {
+  const delta = Math.max(0, getOrderMetricValue(order.kind) - order.baseline);
+  return {
+    current: Math.min(order.target, delta),
+    complete: delta >= order.target,
+    pct: Math.min(100, Math.floor((delta / order.target) * 100))
+  };
+}
+
+function claimOrder(orderId) {
+  const idx = state.activeOrders.findIndex((o) => o.id === orderId);
+  if (idx < 0) return;
+  const order = state.activeOrders[idx];
+  const progress = getOrderProgress(order);
+  if (!progress.complete) return;
+
+  const spreadReward = Math.min(MAX_SPREAD_GRANT, Math.max(500, Math.floor(getCookiesPerSecond() * 35 + getCookiesPerClick() * 25)));
+  state.cookies = Math.min(Number.MAX_VALUE, state.cookies + spreadReward);
+  state.totalCookies = Math.min(Number.MAX_VALUE, state.totalCookies + spreadReward);
+  if (order.rewardTokens > 0) state.freeFishRollTokens += order.rewardTokens;
+  state.ordersCompleted++;
+  state.activeOrders.splice(idx, 1);
+  ensureActiveOrders();
+
+  playChime([523.25, 659.25, 783.99, 1046.5]);
+  launchFireworks(2);
+  launchConfetti(28);
+  const tokenText = order.rewardTokens ? ` + ${order.rewardTokens} 🎟️ Token!` : "";
+  showToast(`📜 Order "${order.title}" claimed! +${formatNumber(spreadReward)} spreads${tokenText}`);
+  refreshAfterAdminChange();
+}
+
+function renderOrders() {
+  if (!els.ordersContainer || !els.ordersCompletedCount) return;
+  ensureActiveOrders();
+  els.ordersCompletedCount.textContent = `${state.ordersCompleted.toLocaleString()} completed`;
+  els.ordersContainer.replaceChildren();
+
+  state.activeOrders.forEach((order) => {
+    const progress = getOrderProgress(order);
+    const card = document.createElement("article");
+    card.className = `order-card${progress.complete ? " ready" : ""}`;
+    card.dataset.orderId = order.id;
+
+    const head = document.createElement("div");
+    head.className = "order-card-head";
+    const title = document.createElement("strong");
+    title.className = "order-card-title";
+    title.textContent = order.title;
+    const reward = document.createElement("span");
+    reward.className = "order-card-reward";
+    reward.textContent = order.rewardTokens ? "Burst + 🎟️" : "Spread Burst";
+    head.append(title, reward);
+
+    const progressWrap = document.createElement("div");
+    progressWrap.className = "order-progress-wrap";
+    const bar = document.createElement("div");
+    bar.className = "order-progress-bar";
+    const fill = document.createElement("span");
+    fill.style.width = `${progress.pct}%`;
+    bar.appendChild(fill);
+    const text = document.createElement("span");
+    text.className = "order-progress-text tabular-nums";
+    text.textContent = `${formatNumber(progress.current)} / ${formatNumber(order.target)} ${order.label}`;
+    progressWrap.append(bar, text);
+
+    const claimBtn = document.createElement("button");
+    claimBtn.type = "button";
+    claimBtn.className = "order-claim-btn";
+    claimBtn.disabled = !progress.complete;
+    claimBtn.textContent = progress.complete ? "✨ Claim reward" : `${progress.pct}%`;
+    claimBtn.addEventListener("click", () => claimOrder(order.id));
+
+    card.append(head, progressWrap, claimBtn);
+    els.ordersContainer.appendChild(card);
+  });
+}
+
+function updateOrdersProgress() {
+  if (!els.ordersContainer) return;
+  state.activeOrders.forEach((order) => {
+    const card = els.ordersContainer.querySelector(`[data-order-id="${order.id}"]`);
+    if (!card) return;
+    const progress = getOrderProgress(order);
+    card.classList.toggle("ready", progress.complete);
+    const fill = card.querySelector(".order-progress-bar span");
+    if (fill) fill.style.width = `${progress.pct}%`;
+    const text = card.querySelector(".order-progress-text");
+    if (text) text.textContent = `${formatNumber(progress.current)} / ${formatNumber(order.target)} ${order.label}`;
+    const btn = card.querySelector(".order-claim-btn");
+    if (btn) {
+      btn.disabled = !progress.complete;
+      btn.textContent = progress.complete ? "✨ Claim reward" : `${progress.pct}%`;
+    }
+  });
+}
+
+function showClickGain(amount, event, streakBonus, isJackpot = false) {
+  while (els.clickParticles.childElementCount >= 32) {
     els.clickParticles.firstElementChild.remove();
   }
-  const particle = document.createElement("span");
-  particle.className = `click-gain${streakBonus ? " click-gain-streak" : ""}`;
-  particle.textContent = `+${formatNumber(amount)}${streakBonus ? " streak!" : ""}`;
   const stageRect = els.clickParticles.parentElement.getBoundingClientRect();
-  const x = event.clientX > 0 ? event.clientX - stageRect.left : stageRect.width / 2;
-  const y = event.clientY > 0 ? event.clientY - stageRect.top : stageRect.height / 2;
+  const hasPointer = event && typeof event.clientX === "number" && event.clientX > 0;
+  const x = hasPointer ? event.clientX - stageRect.left : stageRect.width / 2 + (Math.random() - 0.5) * 40;
+  const y = hasPointer ? event.clientY - stageRect.top : stageRect.height * 0.44 + (Math.random() - 0.5) * 24;
+
+  const ripple = document.createElement("span");
+  ripple.className = `click-ripple${isJackpot || streakBonus ? " mega" : ""}`;
+  ripple.style.left = `${x}px`;
+  ripple.style.top = `${y}px`;
+  els.clickParticles.appendChild(ripple);
+  window.setTimeout(() => ripple.remove(), 750);
+
+  const flavor = getActiveFlavor();
+  const sparkGlyphs = [flavor.icon, "✨", "🍯", "🌟", "💫"];
+  const sparkCount = isJackpot || streakBonus ? 16 : 9;
+  for (let i = 0; i < sparkCount; i++) {
+    const spark = document.createElement("span");
+    spark.className = "click-spark";
+    spark.textContent = sparkGlyphs[i % sparkGlyphs.length];
+    const angle = (Math.PI * 2 * i) / sparkCount + (Math.random() - 0.5) * 0.4;
+    const distance = (isJackpot || streakBonus ? 75 : 44) + Math.random() * 68;
+    spark.style.left = `${x}px`;
+    spark.style.top = `${y}px`;
+    spark.style.setProperty("--px", `${Math.cos(angle) * distance}px`);
+    spark.style.setProperty("--py", `${Math.sin(angle) * distance - 18}px`);
+    spark.style.setProperty("--prot", `${Math.round((Math.random() - 0.5) * 320)}deg`);
+    spark.style.setProperty("--pscale", `${(0.8 + Math.random() * 0.65).toFixed(2)}`);
+    els.clickParticles.appendChild(spark);
+    window.setTimeout(() => spark.remove(), 780);
+  }
+
+  const particle = document.createElement("span");
+  particle.className = `click-gain${streakBonus || isJackpot ? " click-gain-streak" : ""}`;
+  particle.textContent = `+${formatNumber(amount)}${streakBonus ? " streak!" : isJackpot ? " JACKPOT!" : ""}`;
   particle.style.left = `${x}px`;
   particle.style.top = `${y}px`;
   els.clickParticles.appendChild(particle);
-  window.setTimeout(() => particle.remove(), 1000);
+  window.setTimeout(() => particle.remove(), 900);
 }
 
 function launchConfetti(count = 32) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const colors = ["#d97d55", "#e7b84f", "#83a66d", "#8d7ac4", "#e58aa0"];
   for (let index = 0; index < count; index++) {
     const piece = document.createElement("span");
@@ -702,6 +1429,80 @@ function launchConfetti(count = 32) {
     els.celebrationLayer.appendChild(piece);
     window.setTimeout(() => piece.remove(), 2400);
   }
+}
+
+function scheduleNextGoldenJar() {
+  if (goldenJarSpawnTimer) window.clearTimeout(goldenJarSpawnTimer);
+  const flavor = getActiveFlavor();
+  const baseDelay = (35000 + Math.random() * 30000) / flavor.goldenSpeed;
+  goldenJarSpawnTimer = window.setTimeout(() => {
+    spawnGoldenJar(false);
+  }, baseDelay);
+}
+
+function spawnGoldenJar(allowMultiple = false) {
+  if (!allowMultiple && els.goldenSpreadLayer.childElementCount > 0) {
+    scheduleNextGoldenJar();
+    return;
+  }
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "golden-jar-btn";
+  btn.setAttribute("aria-label", "Catch Golden Spread Jar for a bonus");
+  btn.textContent = "🍯";
+  btn.style.left = `${10 + Math.random() * 76}%`;
+  btn.style.top = `${14 + Math.random() * 62}%`;
+  els.goldenSpreadLayer.appendChild(btn);
+
+  const despawnTimer = window.setTimeout(() => {
+    btn.remove();
+    if (!allowMultiple) scheduleNextGoldenJar();
+  }, allowMultiple ? 14000 : 10500);
+  if (!allowMultiple) goldenJarDespawnTimer = despawnTimer;
+
+  btn.addEventListener("click", () => {
+    window.clearTimeout(despawnTimer);
+    const rect = btn.getBoundingClientRect();
+    btn.remove();
+    state.goldenJarsCaught++;
+    playChime([659.25, 783.99, 987.77, 1318.51]);
+    launchConfetti(36);
+    spawnFireworkBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 34);
+    triggerShockwave(false);
+
+    const roll = Math.random();
+    if (roll < 0.30) {
+      startSugarFrenzy(15000);
+    } else if (roll < 0.60) {
+      const burst = Math.min(MAX_SPREAD_GRANT, Math.max(250, Math.floor(getCookiesPerSecond() * 25 + getCookiesPerClick() * 40)));
+      state.cookies = Math.min(Number.MAX_VALUE, state.cookies + burst);
+      state.totalCookies = Math.min(Number.MAX_VALUE, state.totalCookies + burst);
+      showToast(`🍯 Golden Jar burst! +${formatNumber(burst)} spreads!`);
+    } else if (roll < 0.85) {
+      clickFrenzyMultiplier = 5;
+      clickFrenzyEndTime = Date.now() + 12000;
+      showToast("⚡ Golden Click Frenzy! 5× click power for 12 seconds!");
+    } else {
+      state.freeFishRollTokens++;
+      showToast("🎟️ Golden Jar gift! +1 Free Fish Tank Roll Token!");
+    }
+
+    checkAchievements();
+    checkFlavorUnlocks();
+    updateOrdersProgress();
+    updateFishTankUI();
+    updateShopAffordability();
+    saveGame();
+    if (!allowMultiple) scheduleNextGoldenJar();
+  });
+}
+
+function spawnGoldenJarRain(count = 10) {
+  for (let i = 0; i < count; i++) {
+    window.setTimeout(() => spawnGoldenJar(true), i * 110);
+  }
+  launchFireworks(3);
+  showToast(`🌧️ Golden Jar Rain! Catch ${count} Golden Jars!`);
 }
 
 function getFishTierClass(tierName) {
@@ -718,13 +1519,79 @@ function getFishCharacterById(id) {
   return [...FISH_CHARACTERS, SECRET_FISH].find((character) => character.id === id);
 }
 
+function getTotalDuplicateSaleInfo() {
+  let count = 0;
+  let totalPayout = 0;
+  Object.entries(state.fishCollection).forEach(([id, copies]) => {
+    if (copies > 1) {
+      const char = getFishCharacterById(id);
+      if (!char) return;
+      const extra = copies - 1;
+      const val = getFishDuplicateSaleValue(char) * extra;
+      if (Number.isFinite(totalPayout + val)) {
+        count += extra;
+        totalPayout += val;
+      }
+    }
+  });
+  return { count, totalPayout };
+}
+
+function renderAquariumSwimmers() {
+  els.aquariumSwimmers.replaceChildren();
+  const ownedIds = Object.keys(state.fishCollection).filter((id) => state.fishCollection[id] > 0);
+  if (ownedIds.length === 0) return;
+
+  const priority = { Secret: 6, Mythic: 5, Legendary: 4, Epic: 3, Rare: 2, Uncommon: 1, Common: 0 };
+  const topFish = ownedIds
+    .map((id) => getFishCharacterById(id))
+    .filter(Boolean)
+    .sort((a, b) => (priority[b.tier] || 0) - (priority[a.tier] || 0))
+    .slice(0, 12);
+
+  topFish.forEach((fish, idx) => {
+    const swimmer = document.createElement("span");
+    swimmer.className = `aquarium-swimmer${idx % 2 === 1 ? " reverse" : ""}`;
+    swimmer.textContent = fish.id === SECRET_FISH.id ? "👑" : fish.tier === "Mythic" ? "🐡" : fish.tier === "Legendary" ? "🦈" : fish.tier === "Epic" ? "🐬" : "🐟";
+    swimmer.style.left = `${8 + ((idx * 13) % 78)}%`;
+    swimmer.style.top = `${12 + ((idx * 19) % 72)}%`;
+    swimmer.style.animationDuration = `${4.8 + (idx % 4) * 1.1}s`;
+    swimmer.style.animationDelay = `${(idx * 0.55).toFixed(2)}s`;
+    els.aquariumSwimmers.appendChild(swimmer);
+  });
+}
+
 function renderFishCollection() {
   els.fishCollection.replaceChildren();
-  const characters = [...FISH_CHARACTERS, SECRET_FISH].filter((character) =>
-    fishCollectionFilter === "all" || character.gender === fishCollectionFilter);
+  const query = fishSearchQuery.trim().toLowerCase();
+  const characters = [...FISH_CHARACTERS, SECRET_FISH].filter((character) => {
+    const copies = state.fishCollection[character.id] || 0;
+    if (fishCollectionFilter === "girl" || fishCollectionFilter === "boy") {
+      if (character.gender !== fishCollectionFilter) return false;
+    } else if (fishCollectionFilter === "owned") {
+      if (copies === 0) return false;
+    } else if (fishCollectionFilter === "missing") {
+      if (copies > 0) return false;
+    }
+    if (query) {
+      const displayName = copies || character.id !== SECRET_FISH.id ? character.name.toLowerCase() : "???";
+      if (!displayName.includes(query) && !character.tier.toLowerCase().includes(query)) return false;
+    }
+    return true;
+  });
+
   els.fishCollectionFilters.querySelectorAll("[data-fish-filter]").forEach((button) => {
     button.setAttribute("aria-pressed", String(button.dataset.fishFilter === fishCollectionFilter));
   });
+
+  if (characters.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "empty-msg";
+    empty.textContent = "No characters match your current filter.";
+    els.fishCollection.appendChild(empty);
+    return;
+  }
+
   characters.forEach((character) => {
     const copies = state.fishCollection[character.id] || 0;
     const level = copies ? state.fishLevels[character.id] || 1 : 0;
@@ -739,7 +1606,7 @@ function renderFishCollection() {
     details.className = "fish-card-details";
     const genderLabel = character.gender === "girl" ? "Girl" : character.gender === "boy" ? "Boy" : "Secret";
     details.textContent = copies
-      ? `${genderLabel} · ${character.tier} · ${copies} owned · Level ${level}`
+      ? `${genderLabel} · ${character.tier} · ${copies} owned · Lv ${level}`
       : character.id === SECRET_FISH.id
         ? "Secret · Not discovered"
         : `${genderLabel} · ${character.tier} · Not discovered`;
@@ -775,6 +1642,8 @@ function updateFishTankUI() {
   const rollCost = getFishRollCost();
   const luckCost = getFishLuckUpgradeCost();
   const bonusPercent = Math.round((getFishProductionMultiplier() - 1) * 100);
+  const flatClickBonus = getFishFlatClickBonus();
+  const clickBonusPercent = Math.round((getFishClickMultiplier() - 1) * 100);
   const dailyAvailable = state.fishDailyRollDate !== getLocalDateKey();
 
   els.fishCollectionCount.textContent = `${collectionCount} / ${FISH_CHARACTERS.length}`;
@@ -782,6 +1651,7 @@ function updateFishTankUI() {
     els.fishCollectionCount.textContent += " + Oliva";
   }
   els.fishRollCount.textContent = state.fishRolls.toLocaleString();
+  els.fishClickBonus.textContent = `+${formatNumber(flatClickBonus)} · +${clickBonusPercent}%`;
   els.fishProductionBonus.textContent = `+${bonusPercent}%`;
   els.fishRollCost.textContent = `Paid roll: ${formatNumber(rollCost)} spreads · Secret Oliva: 1 in 10,000 (0.01%)`;
   els.fishRoll.disabled = state.cookies < rollCost;
@@ -790,12 +1660,23 @@ function updateFishTankUI() {
   els.footer10kRollsLabel.textContent = `Roll the tank ${FISH_BATCH_ROLL_COUNT.toLocaleString()} times · ${formatNumber(batchCost)} spreads`;
   els.fishDailyRoll.disabled = !dailyAvailable;
   els.fishDailyRoll.textContent = dailyAvailable ? "🎁 Claim daily free roll" : "✅ Daily roll claimed";
-  els.fishLuckStatus.textContent = `Luck level ${state.fishLuckLevel} / 5 · Leveling characters adds 1% production each`;
+
+  els.fishFreeRollBtn.hidden = state.freeFishRollTokens <= 0;
+  els.fishFreeTokens.textContent = state.freeFishRollTokens.toLocaleString();
+
+  els.fishLuckStatus.textContent = `Luck level ${state.fishLuckLevel} / 5 · Owning & leveling fish boosts spreads per click and production`;
   els.fishLuckUpgrade.disabled = state.fishLuckLevel >= 5 || state.cookies < luckCost;
   els.fishLuckUpgrade.textContent = state.fishLuckLevel >= 5
     ? "🍀 Luck fully upgraded"
     : `🍀 Upgrade luck · ${formatNumber(luckCost)}`;
   els.fishTierOdds.textContent = `Tier odds: ${getFishTierOdds().map((tier) => `${tier.name} ${tier.chance.toFixed(tier.chance < 1 ? 2 : 1)}%`).join(" · ")}`;
+
+  const dupInfo = getTotalDuplicateSaleInfo();
+  els.fishSellDuplicates.disabled = dupInfo.count === 0;
+  els.fishSellDuplicates.textContent = dupInfo.count > 0
+    ? `Sell ${dupInfo.count.toLocaleString()} duplicates (+${formatNumber(dupInfo.totalPayout)})`
+    : "No duplicates to sell";
+
   els.fishHabitats.querySelectorAll("[data-habitat-id]").forEach((button) => {
     const habitat = FISH_HABITATS.find((item) => item.id === button.dataset.habitatId);
     if (!habitat) return;
@@ -818,6 +1699,27 @@ function updateFishTankUI() {
     button.disabled = level >= 10 || state.cookies < cost;
     button.textContent = level >= 10 ? "Max level" : `⬆ Level up · ${formatNumber(cost)}`;
   });
+
+  if (els.fishLevelAll) {
+    let budget = state.cookies;
+    let affordableCount = 0;
+    const ownedUpgradeable = Object.entries(state.fishCollection)
+      .filter(([id, copies]) => copies > 0 && (state.fishLevels[id] || 1) < 10)
+      .map(([id]) => ({ id, cost: getFishLevelUpCost(id) }))
+      .sort((a, b) => a.cost - b.cost);
+    for (const entry of ownedUpgradeable) {
+      if (budget >= entry.cost) {
+        budget -= entry.cost;
+        affordableCount++;
+      } else {
+        break;
+      }
+    }
+    els.fishLevelAll.disabled = affordableCount === 0;
+    els.fishLevelAll.textContent = affordableCount > 0
+      ? `⬆ Level up ${affordableCount} affordable`
+      : "⬆ Level up affordable";
+  }
 }
 
 function showFishLandingImpact(x, y, rarity) {
@@ -1005,11 +1907,17 @@ function checkFishCollectionReward() {
   return true;
 }
 
-function rollFish(useDailyRoll = false) {
+function rollFish(mode = "paid") {
   const rollDate = getLocalDateKey();
-  if (useDailyRoll) {
+  if (mode === "daily" || mode === true) {
+    mode = "daily";
     if (state.fishDailyRollDate === rollDate) {
       els.fishStatus.textContent = "Your daily free roll has already been claimed.";
+      return;
+    }
+  } else if (mode === "token") {
+    if (state.freeFishRollTokens <= 0) {
+      els.fishStatus.textContent = "You have no free roll tokens left.";
       return;
     }
   } else {
@@ -1022,6 +1930,8 @@ function rollFish(useDailyRoll = false) {
 
   els.fishCollectionDetails.open = true;
   fishCollectionFilter = "all";
+  fishSearchQuery = "";
+  els.fishSearchInput.value = "";
   renderFishCollection();
   const character = pickFishCharacter();
   const copies = state.fishCollection[character.id] || 0;
@@ -1029,14 +1939,18 @@ function rollFish(useDailyRoll = false) {
     els.fishStatus.textContent = "That character collection has reached its safe storage limit.";
     return;
   }
-  if (useDailyRoll) {
+  if (mode === "daily") {
     state.fishDailyRollDate = rollDate;
+  } else if (mode === "token") {
+    state.freeFishRollTokens--;
   } else {
     state.cookies -= getFishRollCost();
   }
   state.fishCollection[character.id] = copies + 1;
   state.fishLevels[character.id] = state.fishLevels[character.id] || 1;
   state.fishRolls = Math.min(Number.MAX_SAFE_INTEGER, state.fishRolls + 1);
+
+  playTone(460, 740, 0.14, 0.09);
 
   if (character.id === SECRET_FISH.id) {
     state.cookies = Math.max(state.cookies, OLIVA_REWARD);
@@ -1101,6 +2015,8 @@ function rollFishBatch(free = false) {
   els.fishStatus.textContent = `${paymentText}: 10,000 rolls · ${newCharacters} new characters · ${duplicateRolls} duplicates${olivaRolls ? ` · Oliva x${olivaRolls}` : ""}.`;
   els.fishCollectionDetails.open = true;
   fishCollectionFilter = "all";
+  fishSearchQuery = "";
+  els.fishSearchInput.value = "";
   refreshAfterAdminChange();
   animateFishLanding(landedCharacter);
   if (olivaRolls > 0) {
@@ -1118,13 +2034,32 @@ function sellFishDuplicate(id) {
   if (!character || copies <= 1) return;
   const payout = getFishDuplicateSaleValue(character);
   if (!Number.isFinite(state.cookies + payout) || !Number.isFinite(state.totalCookies + payout)) {
-    els.fishStatus.textContent = "That duplicate’s sale value is too large for this save.";
+    els.fishStatus.textContent = "That duplicate's sale value is too large for this save.";
     return;
   }
   state.fishCollection[id]--;
   state.cookies += payout;
   state.totalCookies += payout;
+  playTone(540, 820, 0.1, 0.08);
   els.fishStatus.textContent = `Sold a duplicate ${character.name} for ${formatNumber(payout)} spreads.`;
+  refreshAfterAdminChange();
+}
+
+function sellAllDuplicates() {
+  const { count, totalPayout } = getTotalDuplicateSaleInfo();
+  if (count === 0) return;
+  if (!Number.isFinite(state.cookies + totalPayout) || !Number.isFinite(state.totalCookies + totalPayout)) {
+    els.fishStatus.textContent = "Duplicate sale total exceeds safe number limits.";
+    return;
+  }
+  Object.keys(state.fishCollection).forEach((id) => {
+    if (state.fishCollection[id] > 1) state.fishCollection[id] = 1;
+  });
+  state.cookies += totalPayout;
+  state.totalCookies += totalPayout;
+  playChime([523.25, 659.25, 783.99]);
+  els.fishStatus.textContent = `Sold ${count.toLocaleString()} duplicate fish for ${formatNumber(totalPayout)} spreads!`;
+  showToast(`🐠 Sold ${count.toLocaleString()} duplicates for +${formatNumber(totalPayout)} spreads!`);
   refreshAfterAdminChange();
 }
 
@@ -1136,36 +2071,70 @@ function levelUpFish(id) {
   if (!character || !copies || level >= 10 || state.cookies < cost) return;
   state.cookies -= cost;
   state.fishLevels[id] = level + 1;
-  els.fishStatus.textContent = `${character.name} reached level ${level + 1}! Your production bonus increased.`;
+  playTone(580, 920, 0.12, 0.09);
+  els.fishStatus.textContent = `${character.name} reached level ${level + 1}! Your per-click and production bonuses increased.`;
   refreshAfterAdminChange();
 }
 
-function playTone(startFrequency, endFrequency, duration, volume) {
-  if (!state.soundEnabled) return;
+function levelUpAllAffordableFish() {
+  const candidates = Object.entries(state.fishCollection)
+    .filter(([id, copies]) => copies > 0 && (state.fishLevels[id] || 1) < 10)
+    .map(([id]) => ({ id, cost: getFishLevelUpCost(id) }))
+    .sort((a, b) => a.cost - b.cost);
+  let upgraded = 0;
+  for (const item of candidates) {
+    if (state.cookies < item.cost) break;
+    state.cookies -= item.cost;
+    state.fishLevels[item.id] = (state.fishLevels[item.id] || 1) + 1;
+    upgraded++;
+  }
+  if (upgraded === 0) return;
+  playChime([523.25, 659.25, 783.99]);
+  launchConfetti(Math.min(40, upgraded * 3 + 12));
+  els.fishStatus.textContent = `Leveled up ${upgraded} fish! Your click & production bonuses surged!`;
+  showToast(`⬆ Leveled up ${upgraded} fish!`);
+  refreshAfterAdminChange();
+}
+
+function getAudioContext() {
+  if (!state.soundEnabled) return null;
   const AudioContextType = window.AudioContext || window.webkitAudioContext;
-  if (!AudioContextType) return;
+  if (!AudioContextType) return null;
   if (!audioContext) audioContext = new AudioContextType();
   if (audioContext.state === "suspended") audioContext.resume();
-  const oscillator = audioContext.createOscillator();
-  const gain = audioContext.createGain();
-  const now = audioContext.currentTime;
-  oscillator.type = "sine";
+  return audioContext;
+}
+
+function playTone(startFrequency, endFrequency, duration, volume = 0.08, type = "sine") {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const oscillator = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const now = ctx.currentTime;
+  oscillator.type = type;
   oscillator.frequency.setValueAtTime(startFrequency, now);
-  oscillator.frequency.exponentialRampToValueAtTime(endFrequency, now + duration);
+  oscillator.frequency.exponentialRampToValueAtTime(Math.max(40, endFrequency), now + duration);
   gain.gain.setValueAtTime(volume, now);
   gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
   oscillator.connect(gain);
-  gain.connect(audioContext.destination);
+  gain.connect(ctx.destination);
   oscillator.start(now);
   oscillator.stop(now + duration);
 }
 
+function playChime(notes) {
+  if (!state.soundEnabled) return;
+  notes.forEach((freq, idx) => {
+    window.setTimeout(() => playTone(freq, freq * 1.02, 0.16, 0.07, "triangle"), idx * 65);
+  });
+}
+
 function speakSpread() {
-  if (!state.soundEnabled || !("speechSynthesis" in window) || typeof window.SpeechSynthesisUtterance !== "function") return;
+  if (!state.voiceEnabled || !("speechSynthesis" in window) || typeof window.SpeechSynthesisUtterance !== "function") return;
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance("spread");
   utterance.lang = "en-US";
-  utterance.rate = 1.1;
+  utterance.rate = 1.15;
   utterance.pitch = 1;
   const englishVoice = window.speechSynthesis.getVoices().find((voice) => voice.lang.startsWith("en"));
   if (englishVoice) utterance.voice = englishVoice;
@@ -1187,9 +2156,9 @@ function createUpgradeButton(upgrade, cost, level = 0, repeatable = false) {
   name.className = "upgrade-name";
   name.textContent = upgrade.name;
   const costLabel = document.createElement("span");
-  costLabel.className = "upgrade-cost";
+  costLabel.className = "upgrade-cost tabular-nums";
   costLabel.textContent = repeatable
-    ? `Level ${level} · ${formatNumber(cost)} spreads`
+    ? `Lv ${level} · ${formatNumber(cost)}`
     : `${formatNumber(cost)} spreads`;
   info.append(name, costLabel);
   button.append(icon, info);
@@ -1218,15 +2187,24 @@ function renderShop() {
   renderCursorShop();
   renderFishHabitatShop();
 
+  els.bulkBuyControls.querySelectorAll("[data-bulk]").forEach((btn) => {
+    btn.setAttribute("aria-pressed", String(btn.dataset.bulk === String(state.bulkBuyMode)));
+  });
+
+  const totalCps = getCookiesPerSecond();
   els.buildings.replaceChildren();
   BUILDINGS.forEach((building) => {
     const owned = state.buildings[building.id] || 0;
-    const cost = getBuildingCost(building);
+    const bulk = getBulkPurchaseInfo(building);
     const button = document.createElement("button");
     button.type = "button";
-    button.className = `building-card ${state.cookies >= cost ? "affordable" : "locked"}`;
-    button.dataset.cost = String(cost);
-    button.title = building.desc;
+    button.className = `building-card ${bulk.affordable ? "affordable" : "locked"}`;
+    button.dataset.buildingId = building.id;
+    button.dataset.cost = String(bulk.cost);
+    const perUnitCps = getBaseBuildingCps(building);
+    const tierTotalCps = owned * perUnitCps;
+    const sharePct = totalCps > 0 ? ((tierTotalCps / totalCps) * 100).toFixed(1) : "0.0";
+    button.title = `${building.desc}\nTotal producing: ${formatRate(tierTotalCps)}/sec (${sharePct}% of CPS)`;
     const icon = document.createElement("span");
     icon.className = "building-icon";
     icon.textContent = building.icon;
@@ -1234,14 +2212,13 @@ function renderShop() {
     info.className = "building-info";
     const name = document.createElement("span");
     name.className = "building-name";
-    name.textContent = building.name;
+    name.textContent = bulk.count > 1 ? `${building.name} (×${bulk.count})` : building.name;
     const meta = document.createElement("span");
-    meta.className = "building-meta";
-    const buildingCps = building.cps * getBuildingMultiplier(building.id);
-    meta.innerHTML = `<span class="building-cost">${formatNumber(cost)} spreads</span> · ${formatRate(buildingCps)}/sec`;
+    meta.className = "building-meta tabular-nums";
+    meta.innerHTML = `<span class="building-cost">${formatNumber(bulk.cost)}</span> · +${formatRate(perUnitCps * bulk.count)}/s${owned > 0 ? ` · ${sharePct}%` : ""}`;
     info.append(name, meta);
     const count = document.createElement("span");
-    count.className = "building-count";
+    count.className = "building-count tabular-nums";
     count.textContent = String(owned);
     button.append(icon, info, count);
     button.addEventListener("click", () => buyBuilding(building.id));
@@ -1273,12 +2250,13 @@ function renderCursorShop() {
     bonus.textContent = `${cursor.multiplier}× click power`;
     info.append(name, bonus);
     const action = document.createElement("span");
-    action.className = "cursor-action";
-    action.textContent = equipped ? "Equipped" : owned ? "Equip" : `${formatNumber(cursor.cost)} spreads`;
+    action.className = "cursor-action tabular-nums";
+    action.textContent = equipped ? "Equipped" : owned ? "Equip" : `${formatNumber(cursor.cost)}`;
     button.append(icon, info, action);
     button.addEventListener("click", () => buyOrEquipCursor(cursor.id));
     els.cursorShop.appendChild(button);
   });
+  updateEquippedCursorBadge();
 }
 
 function renderFishHabitatShop() {
@@ -1301,7 +2279,7 @@ function renderFishHabitatShop() {
     description.textContent = habitat.desc;
     info.append(name, description);
     const action = document.createElement("span");
-    action.className = "habitat-action";
+    action.className = "habitat-action tabular-nums";
     action.textContent = owned ? "Built" : `${formatNumber(habitat.cost)} spreads`;
     button.append(icon, info, action);
     button.addEventListener("click", () => buyFishHabitat(habitat.id));
@@ -1314,8 +2292,10 @@ function buyFishHabitat(id) {
   if (!habitat || state.fishHabitats[id] || state.cookies < habitat.cost) return;
   state.cookies -= habitat.cost;
   state.fishHabitats[id] = true;
-  els.fishStatus.textContent = `${habitat.name} built! Aquarium production increased by ${Math.round(habitat.bonus * 100)}%.`;
-  showToast(`${habitat.icon} ${habitat.name} built · +${Math.round(habitat.bonus * 100)}% production!`);
+  playChime([440, 554.37, 659.25]);
+  launchConfetti(28);
+  els.fishStatus.textContent = `${habitat.name} built! Aquarium click & production increased by ${Math.round(habitat.bonus * 100)}%.`;
+  showToast(`${habitat.icon} ${habitat.name} built · +${Math.round(habitat.bonus * 100)}% click & production!`);
   refreshAfterAdminChange();
 }
 
@@ -1326,6 +2306,9 @@ function buyOrEquipCursor(id) {
     if (state.cookies < cursor.cost) return;
     state.cookies -= cursor.cost;
     state.cursorCollection[id] = true;
+    playChime([523.25, 659.25]);
+  } else {
+    playTone(500, 650, 0.08, 0.07);
   }
   state.equippedCursor = id;
   showToast(`${cursor.icon} ${cursor.name} equipped · ${cursor.multiplier}× click power!`);
@@ -1336,12 +2319,14 @@ function buyOrEquipCursor(id) {
 
 function updateShopAffordability() {
   els.upgrades.querySelectorAll(".upgrade-btn").forEach((button) => {
-    button.classList.toggle("affordable", state.cookies >= Number(button.dataset.cost));
-    button.classList.toggle("locked", state.cookies < Number(button.dataset.cost));
+    const cost = Number(button.dataset.cost);
+    button.classList.toggle("affordable", state.cookies >= cost);
+    button.classList.toggle("locked", state.cookies < cost);
   });
   els.buildings.querySelectorAll(".building-card").forEach((button) => {
-    button.classList.toggle("affordable", state.cookies >= Number(button.dataset.cost));
-    button.classList.toggle("locked", state.cookies < Number(button.dataset.cost));
+    const cost = Number(button.dataset.cost);
+    button.classList.toggle("affordable", state.cookies >= cost);
+    button.classList.toggle("locked", state.cookies < cost);
   });
   els.cursorShop.querySelectorAll(".cursor-card").forEach((button) => {
     const owned = Boolean(state.cursorCollection[button.dataset.cursorId]);
@@ -1349,17 +2334,43 @@ function updateShopAffordability() {
   });
 }
 
+function updateAchievementDetail(achievement) {
+  if (!achievement) {
+    els.achievementDetail.textContent = "Select any victory tile to inspect its requirement.";
+    return;
+  }
+  const isUnlocked = state.achievements.includes(achievement.id);
+  els.achievementDetail.innerHTML = "";
+  const strong = document.createElement("strong");
+  strong.textContent = `${achievement.icon} ${achievement.name} (${isUnlocked ? "Unlocked" : "Locked"})`;
+  const span = document.createElement("span");
+  span.textContent = ` — ${achievement.desc}`;
+  els.achievementDetail.append(strong, span);
+}
+
 function renderAchievements() {
   els.achievements.replaceChildren();
   const unlocked = new Set(state.achievements);
   ACHIEVEMENTS.forEach((achievement) => {
-    const tile = document.createElement("div");
-    tile.className = `ach-tile ${unlocked.has(achievement.id) ? "unlocked" : ""}`;
+    const tile = document.createElement("button");
+    tile.type = "button";
+    const isUnlocked = unlocked.has(achievement.id);
+    const isSelected = selectedAchievementId === achievement.id;
+    tile.className = `ach-tile${isUnlocked ? " unlocked" : ""}${isSelected ? " selected" : ""}`;
     tile.textContent = achievement.icon;
-    tile.title = `${achievement.name}${unlocked.has(achievement.id) ? " (unlocked)" : " (locked)"}\n${achievement.desc}`;
+    tile.title = `${achievement.name} — ${achievement.desc}`;
+    tile.setAttribute("aria-label", `${achievement.name}: ${achievement.desc}`);
+    tile.addEventListener("click", () => {
+      selectedAchievementId = achievement.id;
+      renderAchievements();
+      updateAchievementDetail(achievement);
+    });
     els.achievements.appendChild(tile);
   });
   els.achievementCount.textContent = `${unlocked.size} / ${ACHIEVEMENTS.length}`;
+  els.masteryStat.textContent = `+${unlocked.size * 2}%`;
+  const selected = ACHIEVEMENTS.find((a) => a.id === selectedAchievementId);
+  if (selected) updateAchievementDetail(selected);
 }
 
 function checkAchievements() {
@@ -1367,7 +2378,8 @@ function checkAchievements() {
   ACHIEVEMENTS.forEach((achievement) => {
     if (!state.achievements.includes(achievement.id) && achievement.check(state)) {
       state.achievements.push(achievement.id);
-      showToast(`🏆 ${achievement.name} unlocked!`);
+      showToast(`🏆 ${achievement.name} unlocked! (+2% permanent power)`);
+      playChime([587.33, 739.99, 880]);
       changed = true;
     }
   });
@@ -1377,13 +2389,20 @@ function checkAchievements() {
 function buyBuilding(id) {
   const building = BUILDINGS.find((item) => item.id === id);
   if (!building) return;
-  const cost = getBuildingCost(building);
-  if (state.cookies < cost) return;
-  state.cookies -= cost;
-  state.buildings[id] = (state.buildings[id] || 0) + 1;
-  playTone(440, 660, 0.12, 0.1);
+  const bulk = getBulkPurchaseInfo(building);
+  if (!bulk.affordable || bulk.count <= 0) return;
+  state.cookies -= bulk.cost;
+  state.buildings[id] = (state.buildings[id] || 0) + bulk.count;
+  playTone(440, 660, 0.11, 0.08);
   renderShop();
+  renderOrbitCursors();
+  const card = els.buildings.querySelector(`[data-building-id="${id}"]`);
+  popElement(card);
   checkAchievements();
+  checkFlavorUnlocks();
+  updateOrdersProgress();
+  updateMilestone();
+  saveGame();
 }
 
 function buyUpgrade(id) {
@@ -1391,7 +2410,7 @@ function buyUpgrade(id) {
   if (!upgrade || state.upgrades.includes(id) || !upgrade.req(state) || state.cookies < upgrade.cost) return;
   state.cookies -= upgrade.cost;
   state.upgrades.push(id);
-  playTone(520, 880, 0.16, 0.12);
+  playChime([520, 780]);
   showToast(`✨ ${upgrade.name} unlocked!`);
   refreshAfterAdminChange();
 }
@@ -1403,7 +2422,7 @@ function buyClickUpgrade(id) {
   if (!upgrade || !upgrade.req(state) || !Number.isSafeInteger(level + 1) || state.cookies < cost) return;
   state.cookies -= cost;
   state.clickUpgradeLevels[id] = level + 1;
-  playTone(620, 1040, 0.14, 0.12);
+  playTone(620, 1040, 0.12, 0.09);
   showToast(`✨ ${upgrade.name} upgraded to level ${level + 1}!`);
   refreshAfterAdminChange();
 }
@@ -1416,6 +2435,7 @@ function buyRebirthUpgrade(id) {
     || state.rebirthPoints < upgrade.cost) return;
   state.rebirthPoints -= upgrade.cost;
   state.rebirthUpgrades.push(id);
+  playChime([523.25, 659.25, 1046.5]);
   showToast(`🌟 ${upgrade.name} unlocked!`);
   refreshAfterAdminChange();
 }
@@ -1426,13 +2446,9 @@ function startSugarFrenzy(duration = 15000) {
   showToast(`🍯 Sugar rush! 5× production for ${Math.ceil(duration / 1000)} seconds!`);
 }
 
-function performRebirth() {
+function executeRebirth() {
   const reward = getRebirthReward();
   if (!reward) return;
-  const confirmed = window.confirm(
-    `Rebirth for ${reward} Spread Star${reward === 1 ? "" : "s"}? Your current spreads, clicks, buildings, upgrades, and cursors will reset. Fish, habitats, and achievements will stay.`
-  );
-  if (!confirmed) return;
 
   const retainedProgress = {
     rebirthCount: state.rebirthCount + 1,
@@ -1440,13 +2456,22 @@ function performRebirth() {
     rebirthUpgrades: state.rebirthUpgrades,
     achievements: state.achievements,
     soundEnabled: state.soundEnabled,
+    voiceEnabled: state.voiceEnabled,
+    theme: state.theme,
+    goldenJarsCaught: state.goldenJarsCaught,
+    bestCombo: state.bestCombo,
+    unlockedFlavors: state.unlockedFlavors,
+    equippedFlavor: state.equippedFlavor,
+    freeFishRollTokens: state.freeFishRollTokens,
+    bulkBuyMode: state.bulkBuyMode,
     fishCollection: state.fishCollection,
     fishLevels: state.fishLevels,
     fishHabitats: state.fishHabitats,
     fishLuckLevel: state.fishLuckLevel,
     fishRolls: state.fishRolls,
     fishDailyRollDate: state.fishDailyRollDate,
-    fishCollectionRewardClaimed: state.fishCollectionRewardClaimed
+    fishCollectionRewardClaimed: state.fishCollectionRewardClaimed,
+    ordersCompleted: state.ordersCompleted
   };
   if (!Number.isSafeInteger(retainedProgress.rebirthCount) || !Number.isSafeInteger(retainedProgress.rebirthPoints)) {
     showToast("Rebirth points have reached their safe storage limit.");
@@ -1454,31 +2479,62 @@ function performRebirth() {
   }
 
   state = { ...createDefaultState(), ...retainedProgress };
+  displayedCookies = state.cookies;
   frenzyMultiplier = 1;
   frenzyEndTime = 0;
+  clickFrenzyMultiplier = 1;
+  clickFrenzyEndTime = 0;
   clickBoostEndTime = 0;
   productionBoostEndTime = 0;
+  comboCharge = 0;
   luckyClickArmed = false;
-  document.body.classList.remove("disco-mode", "dance-mode");
+  document.body.classList.remove("disco-mode", "dance-mode", "spin-mode", "rainbow-mode");
   els.adminLuckyClick.setAttribute("aria-pressed", "false");
   els.adminLuckyClick.textContent = "🍀 Arm a 5× lucky click";
   els.adminDisco.setAttribute("aria-pressed", "false");
   els.adminDisco.textContent = "🪩 Disco mode: off";
   els.adminDance.setAttribute("aria-pressed", "false");
   els.adminDance.textContent = "💃 Dance mode: off";
-  els.frenzyBanner.hidden = true;
+  els.adminSpinMode.setAttribute("aria-pressed", "false");
+  els.adminSpinMode.textContent = "🌀 Hyper-spin jar: off";
+  els.adminRainbowMode.setAttribute("aria-pressed", "false");
+  els.adminRainbowMode.textContent = "🌈 Rainbow aura: off";
+  els.frenzyBanner.classList.add("hidden");
   els.clickStreak.textContent = "Click streak bonus every 100 taps";
+  updateComboUI();
   updateAdminBoosterStatus();
+  checkAchievements();
+  checkFlavorUnlocks();
+  ensureActiveOrders();
+  renderFlavors();
+  renderOrders();
   renderShop();
+  renderOrbitCursors();
   renderAchievements();
   renderFishCollection();
+  renderAquariumSwimmers();
+  lastAcceptedSpreadClickAt = 0;
+  updateClickCooldownUI();
   updateFishTankUI();
   updateRebirthUI(true);
   updateMilestone();
   updateShopAffordability();
   updateNews();
   saveGame();
+  playChime([523.25, 659.25, 783.99, 1046.5]);
+  triggerAllAnimations();
   showToast(`🌟 Rebirth ${state.rebirthCount} complete! You now have ${formatNumber(state.rebirthPoints)} Spread Stars.`);
+}
+
+function performRebirth() {
+  const reward = getRebirthReward();
+  if (!reward) return;
+  showConfirmModal(
+    "Rebirth your spreadery?",
+    `Gain ${reward} Spread Star and +10% permanent click & production power. Current spreads, clicks, buildings, upgrades, and cursors will reset. Fish, habitats, flavors, and achievements stay.`,
+    "🌟 Rebirth Now",
+    executeRebirth
+  );
 }
 
 els.rebirthButton.addEventListener("click", performRebirth);
@@ -1488,12 +2544,29 @@ els.rebirthUpgrades.addEventListener("click", (event) => {
   if (button instanceof HTMLButtonElement) buyRebirthUpgrade(button.dataset.rebirthUpgradeId);
 });
 
+els.bulkBuyControls.addEventListener("click", (event) => {
+  if (!(event.target instanceof HTMLElement)) return;
+  const btn = event.target.closest("[data-bulk]");
+  if (!(btn instanceof HTMLButtonElement)) return;
+  state.bulkBuyMode = btn.dataset.bulk;
+  renderShop();
+  saveGame();
+});
+
 els.cookieButton.addEventListener("click", (event) => {
   const now = Date.now();
-  if (now - lastAcceptedSpreadClickAt < CLICK_COOLDOWN_MS) return;
+  if (!clickCooldownRemoved && now - lastAcceptedSpreadClickAt < CLICK_COOLDOWN_MS) return;
   lastAcceptedSpreadClickAt = now;
+  updateClickCooldownUI(now);
+
+  // Build combo
+  lastComboClickAt = now;
+  comboCharge = Math.min(100, comboCharge + 10);
+  updateComboUI();
+
   let gain = getCookiesPerClick();
   let streakBonus = 0;
+  let isJackpot = false;
   if (luckyClickArmed) {
     gain *= 5;
     luckyClickArmed = false;
@@ -1502,10 +2575,14 @@ els.cookieButton.addEventListener("click", (event) => {
     els.adminStatus.textContent = `Lucky click! You earned ${formatNumber(gain)} spreads.`;
     showToast(`🍀 5× lucky click! +${formatNumber(gain)} spreads`);
     launchConfetti(24);
-  } else if (Math.random() < 0.01) {
+  } else if (Math.random() < 0.012) {
     gain *= 5;
+    isJackpot = true;
     showToast(`🎉 Jackpot! That click made ${formatNumber(gain)} spreads!`);
-    launchConfetti(24);
+    launchConfetti(32);
+    launchFireworks(2);
+    triggerShockwave(true);
+    playChime([660, 880, 1100]);
   }
   state.cookies += gain;
   state.totalCookies += gain;
@@ -1516,34 +2593,80 @@ els.cookieButton.addEventListener("click", (event) => {
       state.cookies += streakBonus;
       state.totalCookies += streakBonus;
       showToast(`🎊 100-click streak! Bonus: ${formatNumber(streakBonus)} spreads!`);
-      launchConfetti(20);
+      launchConfetti(28);
+      launchFireworks(2);
+      triggerShockwave(true);
+      playChime([523.25, 659.25, 783.99]);
     }
   }
-  showClickGain(gain + streakBonus, event, streakBonus > 0);
+  showClickGain(gain + streakBonus, event, streakBonus > 0, isJackpot);
   const clicksUntilStreak = 100 - (state.totalClicks % 100);
   els.clickStreak.textContent = `Next streak bonus in ${clicksUntilStreak} click${clicksUntilStreak === 1 ? "" : "s"}`;
   updateMilestone();
+  updateOrdersProgress();
   els.cookieButton.classList.add("clicked");
   window.clearTimeout(spreadAnimationTimer);
-  spreadAnimationTimer = window.setTimeout(() => els.cookieButton.classList.remove("clicked"), 130);
+  spreadAnimationTimer = window.setTimeout(() => els.cookieButton.classList.remove("clicked"), 120);
+
+  // Tactile pop sound scaling subtly with combo
+  const basePitch = 340 + comboCharge * 2.2;
+  playTone(basePitch, basePitch * 1.35, 0.065, 0.055, "triangle");
   speakSpread();
+
   checkAchievements();
+  checkFlavorUnlocks();
   updateShopAffordability();
+  saveGame();
 });
 
 window.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !els.adminPanel.hidden) {
-    closeAdminPanel();
+  if (event.key === "Escape") {
+    if (!els.confirmModal.hidden) {
+      closeConfirmModal();
+      return;
+    }
+    if (!els.adminPanel.hidden) {
+      closeAdminPanel();
+      return;
+    }
+  }
+
+  const target = event.target;
+  const isTyping = target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
+
+  if (event.code === "Space" && !isTyping && els.adminPanel.hidden && els.confirmModal.hidden) {
+    if (document.activeElement !== els.cookieButton && !(document.activeElement instanceof HTMLButtonElement)) {
+      event.preventDefault();
+      els.cookieButton.click();
+      return;
+    }
+  }
+
+  if (event.ctrlKey || event.altKey || event.metaKey || event.key.length !== 1) return;
+  if (isTyping) return;
+  const maxCheatLength = Math.max(SPREAD_CHEAT_CODE.length, REMOVE_COOLDOWN_CODE.length);
+  cheatInput = (cheatInput + event.key).slice(-maxCheatLength);
+  const lowerCheat = cheatInput.toLowerCase();
+
+  if (lowerCheat.endsWith(SPREAD_CHEAT_CODE.toLowerCase())) {
+    cheatInput = "";
+    openAdminPanel();
     return;
   }
-  if (event.ctrlKey || event.altKey || event.metaKey || event.key.length !== 1) return;
-  const target = event.target;
-  if (target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName))) return;
-  cheatInput = (cheatInput + event.key).slice(-SPREAD_CHEAT_CODE.length);
-  if (cheatInput.toLowerCase() !== SPREAD_CHEAT_CODE.toLowerCase()) return;
 
-  cheatInput = "";
-  openAdminPanel();
+  if (lowerCheat.endsWith(REMOVE_COOLDOWN_CODE.toLowerCase())) {
+    cheatInput = "";
+    if (!clickCooldownRemoved) {
+      clickCooldownRemoved = true;
+      lastAcceptedSpreadClickAt = 0;
+      syncCooldownHint();
+      updateClickCooldownUI();
+      playChime([523.25, 659.25, 783.99, 1046.5]);
+      showToast("⚡ Clicker cooldown removed! Click as fast as you want!");
+    } else {
+      showToast("⚡ Clicker cooldown is already removed!");
+    }
+  }
 });
 
 function openAdminPanel() {
@@ -1563,6 +2686,17 @@ function closeAdminPanel() {
   els.adminTools.hidden = true;
   els.cookieButton.focus();
 }
+
+els.confirmClose.addEventListener("click", closeConfirmModal);
+els.confirmCancel.addEventListener("click", closeConfirmModal);
+els.confirmModal.addEventListener("click", (event) => {
+  if (event.target === els.confirmModal) closeConfirmModal();
+});
+els.confirmAccept.addEventListener("click", () => {
+  const cb = confirmActionCallback;
+  closeConfirmModal();
+  if (typeof cb === "function") cb();
+});
 
 els.adminLogin.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -1591,8 +2725,15 @@ function getAdminAmount() {
 
 function refreshAfterAdminChange() {
   checkAchievements();
+  checkFlavorUnlocks();
+  ensureActiveOrders();
+  renderFlavors();
+  renderOrders();
   renderShop();
+  renderOrbitCursors();
+  renderAchievements();
   renderFishCollection();
+  renderAquariumSwimmers();
   updateFishTankUI();
   updateRebirthUI(true);
   updateMilestone();
@@ -1617,9 +2758,18 @@ els.adminPanel.addEventListener("click", (event) => {
   if (event.target === els.adminPanel) closeAdminPanel();
 });
 
-els.fishRoll.addEventListener("click", () => rollFish());
-els.footer10kRolls.addEventListener("click", () => rollFishBatch());
-els.fishDailyRoll.addEventListener("click", () => rollFish(true));
+els.fishRoll.addEventListener("click", () => rollFish("paid"));
+els.fishDailyRoll.addEventListener("click", () => rollFish("daily"));
+els.fishFreeRollBtn.addEventListener("click", () => rollFish("token"));
+els.footer10kRolls.addEventListener("click", () => rollFishBatch(false));
+if (els.fishLevelAll) els.fishLevelAll.addEventListener("click", levelUpAllAffordableFish);
+els.fishSellDuplicates.addEventListener("click", sellAllDuplicates);
+
+els.fishSearchInput.addEventListener("input", () => {
+  fishSearchQuery = els.fishSearchInput.value;
+  renderFishCollection();
+});
+
 els.fishCollectionFilters.addEventListener("click", (event) => {
   if (!(event.target instanceof HTMLElement)) return;
   const button = event.target.closest("[data-fish-filter]");
@@ -1632,6 +2782,7 @@ els.fishLuckUpgrade.addEventListener("click", () => {
   if (state.fishLuckLevel >= 5 || state.cookies < cost) return;
   state.cookies -= cost;
   state.fishLuckLevel++;
+  playChime([520, 740]);
   els.fishStatus.textContent = `Luck upgraded to level ${state.fishLuckLevel}! Higher tiers are more likely now.`;
   refreshAfterAdminChange();
 });
@@ -1689,6 +2840,37 @@ els.adminRandom.addEventListener("click", () => {
   refreshAfterAdminChange();
 });
 
+els.adminMult10x.addEventListener("click", () => {
+  if (state.cookies <= 0) {
+    state.cookies = 1000;
+    state.totalCookies = Math.max(state.totalCookies, 1000);
+    els.adminStatus.textContent = "Jar started at 1,000 spreads!";
+  } else {
+    const next = Math.min(Number.MAX_VALUE, state.cookies * 10);
+    const added = Math.max(0, next - state.cookies);
+    state.cookies = next;
+    state.totalCookies = Math.min(Number.MAX_VALUE, state.totalCookies + added);
+    els.adminStatus.textContent = `Jar multiplied ×10! Now at ${formatNumber(state.cookies)} spreads.`;
+  }
+  triggerShockwave(false);
+  refreshAfterAdminChange();
+});
+
+els.adminSet1e90.addEventListener("click", () => {
+  state.cookies = Math.max(state.cookies, 1e90);
+  state.totalCookies = Math.max(state.totalCookies, 1e90);
+  els.adminStatus.textContent = "Cosmic treasury unlocked! Jar set to 1e90 spreads.";
+  launchFireworks(3);
+  refreshAfterAdminChange();
+});
+
+els.adminZeroJar.addEventListener("click", () => {
+  state.cookies = 0;
+  displayedCookies = 0;
+  els.adminStatus.textContent = "Current jar balance reset to 0 spreads.";
+  refreshAfterAdminChange();
+});
+
 els.adminClickBoost.addEventListener("click", () => {
   clickBoostEndTime = Date.now() + 60000;
   updateAdminBoosterStatus();
@@ -1697,6 +2879,79 @@ els.adminClickBoost.addEventListener("click", () => {
 els.adminProductionBoost.addEventListener("click", () => {
   productionBoostEndTime = Date.now() + 60000;
   updateAdminBoosterStatus();
+});
+
+els.adminToggleCooldown.addEventListener("click", () => {
+  clickCooldownRemoved = !clickCooldownRemoved;
+  lastAcceptedSpreadClickAt = 0;
+  syncCooldownHint();
+  updateClickCooldownUI();
+  els.adminStatus.textContent = clickCooldownRemoved
+    ? "Clicker cooldown removed! Tap as fast as you want."
+    : "Clicker cooldown restored to 10 seconds.";
+  showToast(clickCooldownRemoved ? "⚡ Clicker cooldown removed!" : "⏱️ Clicker cooldown set to 10s.");
+});
+
+els.adminMaxCombo.addEventListener("click", () => {
+  comboCharge = 100;
+  lastComboClickAt = Date.now();
+  updateComboUI();
+  triggerShockwave(false);
+  els.adminStatus.textContent = "Max Combo Fever (×2.5) activated!";
+});
+
+els.adminClickFrenzy.addEventListener("click", () => {
+  clickFrenzyMultiplier = 5;
+  clickFrenzyEndTime = Date.now() + 30000;
+  triggerShockwave(true);
+  showToast("⚡ 5× Click Frenzy for 30 seconds!");
+  els.adminStatus.textContent = "5× Click Frenzy active for 30 seconds!";
+});
+
+els.adminSpawnGolden.addEventListener("click", () => {
+  spawnGoldenJar(true);
+  els.adminStatus.textContent = "Spawned a Golden Jar on stage!";
+});
+
+els.adminGoldenRain.addEventListener("click", () => {
+  spawnGoldenJarRain(10);
+  els.adminStatus.textContent = "Golden Jar Rain launched (10 Golden Jars)!";
+});
+
+els.adminFxAll.addEventListener("click", () => {
+  triggerAllAnimations();
+  els.adminStatus.textContent = "ALL animations triggered! Fireworks, Rain, Confetti & Supernova!";
+});
+
+els.adminFxFireworks.addEventListener("click", () => {
+  launchFireworks(6);
+  els.adminStatus.textContent = "Fireworks show launched!";
+});
+
+els.adminFxSpreadRain.addEventListener("click", () => {
+  launchSpreadRain(60);
+  playChime([523.25, 659.25, 783.99]);
+  els.adminStatus.textContent = "Spread Rain Storm unleashed!";
+});
+
+els.adminFxShockwave.addEventListener("click", () => {
+  triggerShockwave(true);
+  playTone(220, 880, 0.28, 0.12, "sawtooth");
+  els.adminStatus.textContent = "Supernova Shockwave detonated!";
+});
+
+els.adminSpinMode.addEventListener("click", () => {
+  const enabled = document.body.classList.toggle("spin-mode");
+  els.adminSpinMode.setAttribute("aria-pressed", String(enabled));
+  els.adminSpinMode.textContent = `🌀 Hyper-spin jar: ${enabled ? "on" : "off"}`;
+  els.adminStatus.textContent = enabled ? "Hyper-spin jar is ON!" : "Hyper-spin jar is off.";
+});
+
+els.adminRainbowMode.addEventListener("click", () => {
+  const enabled = document.body.classList.toggle("rainbow-mode");
+  els.adminRainbowMode.setAttribute("aria-pressed", String(enabled));
+  els.adminRainbowMode.textContent = `🌈 Rainbow aura: ${enabled ? "on" : "off"}`;
+  els.adminStatus.textContent = enabled ? "Rainbow aura is ON!" : "Rainbow aura is off.";
 });
 
 els.adminEveryBuilding.addEventListener("click", () => {
@@ -1724,8 +2979,16 @@ els.adminAllUpgrades.addEventListener("click", () => {
   refreshAfterAdminChange();
 });
 
+els.adminAllFlavors.addEventListener("click", () => {
+  state.unlockedFlavors = FLAVORS.map((f) => f.id);
+  els.adminStatus.textContent = `Unlocked all ${FLAVORS.length} Kitchen Flavors!`;
+  launchConfetti(32);
+  refreshAfterAdminChange();
+});
+
 els.adminSugarFrenzy.addEventListener("click", () => {
   startSugarFrenzy();
+  triggerShockwave(false);
   els.adminStatus.textContent = "Sugar frenzy! All production is 5× for 15 seconds.";
 });
 
@@ -1753,7 +3016,7 @@ els.adminMystery.addEventListener("click", () => {
 });
 
 els.adminConfetti.addEventListener("click", () => {
-  launchConfetti(52);
+  launchConfetti(80);
   playTone(520, 880, 0.22, 0.11);
   els.adminStatus.textContent = "Confetti party! The spreadery is celebrating.";
 });
@@ -1834,16 +3097,22 @@ els.adminClearBoosts.addEventListener("click", () => {
   productionBoostEndTime = 0;
   frenzyMultiplier = 1;
   frenzyEndTime = 0;
+  clickFrenzyMultiplier = 1;
+  clickFrenzyEndTime = 0;
   luckyClickArmed = false;
-  document.body.classList.remove("disco-mode", "dance-mode");
+  document.body.classList.remove("disco-mode", "dance-mode", "spin-mode", "rainbow-mode");
   els.adminDisco.setAttribute("aria-pressed", "false");
   els.adminDisco.textContent = "🪩 Disco mode: off";
   els.adminDance.setAttribute("aria-pressed", "false");
   els.adminDance.textContent = "💃 Dance mode: off";
+  els.adminSpinMode.setAttribute("aria-pressed", "false");
+  els.adminSpinMode.textContent = "🌀 Hyper-spin jar: off";
+  els.adminRainbowMode.setAttribute("aria-pressed", "false");
+  els.adminRainbowMode.textContent = "🌈 Rainbow aura: off";
   els.adminLuckyClick.setAttribute("aria-pressed", "false");
   els.adminLuckyClick.textContent = "🍀 Arm a 5× lucky click";
   updateAdminBoosterStatus();
-  els.frenzyBanner.hidden = true;
+  els.frenzyBanner.classList.add("hidden");
   els.adminStatus.textContent = "All temporary boosts and fun modes are off.";
 });
 
@@ -1857,6 +3126,8 @@ els.adminUnlockOliva.addEventListener("click", () => {
   refreshAfterAdminChange();
   els.fishCollectionDetails.open = true;
   fishCollectionFilter = "all";
+  fishSearchQuery = "";
+  els.fishSearchInput.value = "";
   renderFishCollection();
   const olivaCard = els.fishCollection.querySelector(`[data-fish-id="${SECRET_FISH.id}"]`);
   if (olivaCard) {
@@ -1867,6 +3138,7 @@ els.adminUnlockOliva.addEventListener("click", () => {
       "secret"
     );
   }
+  launchFireworks(4);
   showOlivaCelebration();
 });
 
@@ -1897,9 +3169,14 @@ els.adminAllCursors.addEventListener("click", () => {
     state.cursorCollection[cursor.id] = true;
   });
   els.adminStatus.textContent = "Every cursor has been unlocked! Choose one from the Cursor Shop.";
-  renderShop();
-  updateShopAffordability();
-  saveGame();
+  refreshAfterAdminChange();
+});
+
+els.adminGrantTokens.addEventListener("click", () => {
+  state.freeFishRollTokens += 50;
+  els.adminStatus.textContent = "Granted +50 Free Aquarium Roll Tokens!";
+  playChime([523.25, 659.25, 783.99]);
+  refreshAfterAdminChange();
 });
 
 els.adminMaxLuck.addEventListener("click", () => {
@@ -1916,6 +3193,32 @@ els.adminResetDailyRoll.addEventListener("click", () => {
   refreshAfterAdminChange();
 });
 
+els.adminMaxRebirths.addEventListener("click", () => {
+  state.rebirthCount = MAX_REBIRTHS;
+  state.rebirthPoints = Math.max(state.rebirthPoints, 100);
+  state.rebirthUpgrades = REBIRTH_UPGRADES.map((u) => u.id);
+  els.adminStatus.textContent = "Maxed rebirths (100) and unlocked all rebirth upgrades!";
+  refreshAfterAdminChange();
+});
+
+els.adminAllAchievements.addEventListener("click", () => {
+  state.achievements = ACHIEVEMENTS.map((a) => a.id);
+  els.adminStatus.textContent = `Unlocked all ${ACHIEVEMENTS.length} achievements (+${ACHIEVEMENTS.length * 2}% power)!`;
+  launchFireworks(3);
+  launchConfetti(48);
+  refreshAfterAdminChange();
+});
+
+els.adminCompleteOrders.addEventListener("click", () => {
+  ensureActiveOrders();
+  state.activeOrders.forEach((order) => {
+    order.baseline = getOrderMetricValue(order.kind) - order.target;
+  });
+  els.adminStatus.textContent = "All 3 active Spread Orders are ready to claim!";
+  renderOrders();
+  saveGame();
+});
+
 function updateAdminBoosterStatus() {
   const clickSeconds = Math.max(0, Math.ceil((clickBoostEndTime - Date.now()) / 1000));
   const productionSeconds = Math.max(0, Math.ceil((productionBoostEndTime - Date.now()) / 1000));
@@ -1923,10 +3226,26 @@ function updateAdminBoosterStatus() {
   els.productionBoostStatus.textContent = productionSeconds ? `Active · ${productionSeconds}s` : "Ready";
 }
 
+els.themeToggleBtn.addEventListener("click", () => {
+  const idx = THEMES.findIndex((t) => t.id === state.theme);
+  const next = THEMES[(idx + 1) % THEMES.length];
+  applyTheme(next.id);
+  saveGame();
+});
+
 els.soundButton.addEventListener("click", () => {
   state.soundEnabled = !state.soundEnabled;
   els.soundButton.setAttribute("aria-pressed", String(state.soundEnabled));
   els.soundButton.textContent = state.soundEnabled ? "🔊 Sound on" : "🔇 Sound off";
+  if (state.soundEnabled) playTone(520, 740, 0.09, 0.07);
+  saveGame();
+});
+
+els.voiceButton.addEventListener("click", () => {
+  state.voiceEnabled = !state.voiceEnabled;
+  els.voiceButton.setAttribute("aria-pressed", String(state.voiceEnabled));
+  els.voiceButton.textContent = state.voiceEnabled ? "🗣️ Voice on" : "🗣️ Voice off";
+  if (state.voiceEnabled) speakSpread();
   saveGame();
 });
 
@@ -1935,29 +3254,55 @@ els.rebirthMenuShortcut.addEventListener("click", () => {
 });
 
 els.resetButton.addEventListener("click", () => {
-  if (!window.confirm("Start a fresh spreadery? This will erase your saved progress.")) return;
-  state = createDefaultState();
-  frenzyMultiplier = 1;
-  frenzyEndTime = 0;
-  clickBoostEndTime = 0;
-  productionBoostEndTime = 0;
-  luckyClickArmed = false;
-  document.body.classList.remove("disco-mode", "dance-mode");
-  els.adminLuckyClick.setAttribute("aria-pressed", "false");
-  els.adminLuckyClick.textContent = "🍀 Arm a 5× lucky click";
-  els.adminDisco.setAttribute("aria-pressed", "false");
-  els.adminDisco.textContent = "🪩 Disco mode: off";
-  els.adminDance.setAttribute("aria-pressed", "false");
-  els.adminDance.textContent = "💃 Dance mode: off";
-  updateAdminBoosterStatus();
-  saveGame();
-  renderShop();
-  renderAchievements();
-  renderFishCollection();
-  updateFishTankUI();
-  updateRebirthUI(true);
-  updateMilestone();
-  showToast("Your spreadery is ready for a fresh start!");
+  showConfirmModal(
+    "Start a fresh spreadery?",
+    "This will erase all saved progress including spreads, buildings, rebirths, and your aquarium collection.",
+    "↺ Reset Everything",
+    () => {
+      const savedTheme = state.theme;
+      state = createDefaultState();
+      state.theme = savedTheme;
+      displayedCookies = 0;
+      frenzyMultiplier = 1;
+      frenzyEndTime = 0;
+      clickFrenzyMultiplier = 1;
+      clickFrenzyEndTime = 0;
+      clickBoostEndTime = 0;
+      productionBoostEndTime = 0;
+      comboCharge = 0;
+      luckyClickArmed = false;
+      document.body.classList.remove("disco-mode", "dance-mode", "spin-mode", "rainbow-mode");
+      els.adminLuckyClick.setAttribute("aria-pressed", "false");
+      els.adminLuckyClick.textContent = "🍀 Arm a 5× lucky click";
+      els.adminDisco.setAttribute("aria-pressed", "false");
+      els.adminDisco.textContent = "🪩 Disco mode: off";
+      els.adminDance.setAttribute("aria-pressed", "false");
+      els.adminDance.textContent = "💃 Dance mode: off";
+      els.adminSpinMode.setAttribute("aria-pressed", "false");
+      els.adminSpinMode.textContent = "🌀 Hyper-spin jar: off";
+      els.adminRainbowMode.setAttribute("aria-pressed", "false");
+      els.adminRainbowMode.textContent = "🌈 Rainbow aura: off";
+      els.frenzyBanner.classList.add("hidden");
+      els.clickStreak.textContent = "Click streak bonus every 100 taps";
+      updateComboUI();
+      updateAdminBoosterStatus();
+      saveGame();
+      ensureActiveOrders();
+      renderFlavors();
+      renderOrders();
+      renderShop();
+      renderOrbitCursors();
+      renderAchievements();
+      renderFishCollection();
+      renderAquariumSwimmers();
+      lastAcceptedSpreadClickAt = 0;
+      updateClickCooldownUI();
+      updateFishTankUI();
+      updateRebirthUI(true);
+      updateMilestone();
+      showToast("Your spreadery is ready for a fresh start!");
+    }
+  );
 });
 
 function updateNews() {
@@ -1968,13 +3313,39 @@ function updateNews() {
 function gameLoop(now) {
   const delta = Math.min((now - lastFrameTime) / 1000, 1);
   lastFrameTime = now;
-  if (frenzyMultiplier > 1 && Date.now() >= frenzyEndTime) {
+  const currentTime = Date.now();
+
+  if (frenzyMultiplier > 1 && currentTime >= frenzyEndTime) {
     frenzyMultiplier = 1;
-    els.frenzyBanner.classList.add("hidden");
-  } else if (frenzyMultiplier > 1) {
-    els.frenzyBanner.classList.remove("hidden");
-    els.frenzyTimer.textContent = `${Math.ceil((frenzyEndTime - Date.now()) / 1000)}s`;
   }
+  if (clickFrenzyMultiplier > 1 && currentTime >= clickFrenzyEndTime) {
+    clickFrenzyMultiplier = 1;
+  }
+
+  const rushActive = frenzyMultiplier > 1 || clickFrenzyMultiplier > 1;
+  if (rushActive) {
+    els.frenzyBanner.classList.remove("hidden");
+    const prodSecs = frenzyMultiplier > 1 ? Math.ceil((frenzyEndTime - currentTime) / 1000) : 0;
+    const clickSecs = clickFrenzyMultiplier > 1 ? Math.ceil((clickFrenzyEndTime - currentTime) / 1000) : 0;
+    const parts = [];
+    if (prodSecs > 0) parts.push(`🍯 Sugar rush ${prodSecs}s (5× CPS)`);
+    if (clickSecs > 0) parts.push(`⚡ Click frenzy ${clickSecs}s (5× Clicks)`);
+    els.frenzyBanner.textContent = parts.join(" · ");
+  } else {
+    els.frenzyBanner.classList.add("hidden");
+  }
+
+  if (els.bakeStage) {
+    els.bakeStage.classList.toggle("fever-active", getComboMultiplier() >= 2.0);
+    els.bakeStage.classList.toggle("frenzy-active", rushActive);
+  }
+
+  const comboGraceMs = clickCooldownRemoved ? 1400 : 12500;
+  if (comboCharge > 0 && currentTime - lastComboClickAt > comboGraceMs) {
+    comboCharge = Math.max(0, comboCharge - delta * 28);
+    updateComboUI();
+  }
+  updateClickCooldownUI(currentTime);
 
   const cookiesPerSecond = getCookiesPerSecond();
   if (cookiesPerSecond > 0) {
@@ -1983,12 +3354,26 @@ function gameLoop(now) {
     state.totalCookies += earned;
   }
   state.playTimeSeconds += delta;
+
+  // Smooth rolling number counter
+  if (!Number.isFinite(displayedCookies)) displayedCookies = state.cookies;
+  const diff = state.cookies - displayedCookies;
+  if (Math.abs(diff) < 1 || !Number.isFinite(diff)) {
+    displayedCookies = state.cookies;
+  } else {
+    displayedCookies += diff * Math.min(1, delta * 14);
+  }
+
+  updateFxCanvas(delta);
+
   unlockCheckTime += delta;
   shopRenderTime += delta;
   if (unlockCheckTime >= 1) {
     unlockCheckTime = 0;
     checkAchievements();
+    checkFlavorUnlocks();
     updateMilestone();
+    updateOrdersProgress();
     const eligibleCount = UPGRADES.filter((upgrade) => !state.upgrades.includes(upgrade.id) && upgrade.req(state)).length
       + CLICK_UPGRADES.filter((upgrade) => upgrade.req(state)).length;
     if (eligibleCount !== els.upgrades.querySelectorAll(".upgrade-btn").length) renderShop();
@@ -2001,15 +3386,17 @@ function gameLoop(now) {
     updateRebirthUI();
   }
 
-  els.cookieCount.textContent = formatNumber(state.cookies);
+  els.cookieCount.textContent = formatNumber(displayedCookies);
   els.cps.textContent = formatRate(cookiesPerSecond);
   els.cpc.textContent = `+${formatNumber(getCookiesPerClick())}`;
   els.total.textContent = formatNumber(state.totalCookies);
   els.clicks.textContent = state.totalClicks.toLocaleString();
+  els.goldenStat.textContent = state.goldenJarsCaught.toLocaleString();
+  els.bestComboStat.textContent = `×${state.bestCombo.toFixed(1)}`;
   els.time.textContent = formatTime(state.playTimeSeconds);
   const buildingCount = getBuildingCount();
   els.buildingSummary.textContent = buildingCount
-    ? `${buildingCount} helper${buildingCount === 1 ? "" : "s"} making spreads`
+    ? `${buildingCount.toLocaleString()} helper${buildingCount === 1 ? "" : "s"} making spreads`
     : "Your spreadery is just getting started";
   document.title = `${formatNumber(state.cookies)} spreads — Spread Clicker`;
   requestAnimationFrame(gameLoop);
@@ -2017,29 +3404,54 @@ function gameLoop(now) {
 
 function startGame() {
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
-    navigator.serviceWorker.register("./service-worker.js").catch((error) => {
-      console.warn("Could not enable the offline app cache.", error);
-    });
+    navigator.serviceWorker.register("./service-worker.js", { updateViaCache: "none" })
+      .then((registration) => registration.update().catch(() => {}))
+      .catch((error) => {
+        console.warn("Could not enable the offline app cache.", error);
+      });
   }
+  resizeFxCanvas();
+  window.addEventListener("resize", resizeFxCanvas);
+  initAmbientSparks();
+  applyTheme(state.theme);
   const awaySeconds = Math.max(0, (Date.now() - state.lastSaved) / 1000);
   const offlineCookies = Math.min(awaySeconds, 8 * 60 * 60) * getCookiesPerSecond() * 0.5;
   if (offlineCookies > 0) {
     state.cookies += offlineCookies;
     state.totalCookies += offlineCookies;
+    saveGame();
     window.setTimeout(() => showToast(`Welcome back! Your spreadery made ${formatNumber(offlineCookies)} spreads.`), 400);
   }
+  displayedCookies = state.cookies;
   els.soundButton.setAttribute("aria-pressed", String(state.soundEnabled));
   els.soundButton.textContent = state.soundEnabled ? "🔊 Sound on" : "🔇 Sound off";
+  els.voiceButton.setAttribute("aria-pressed", String(state.voiceEnabled));
+  els.voiceButton.textContent = state.voiceEnabled ? "🗣️ Voice on" : "🗣️ Voice off";
+  ensureActiveOrders();
+  syncCooldownHint();
+  checkAchievements();
+  checkFlavorUnlocks();
+  renderFlavors();
+  renderOrders();
   renderShop();
+  renderOrbitCursors();
   renderAchievements();
   renderFishCollection();
+  renderAquariumSwimmers();
   updateFishTankUI();
   updateRebirthUI(true);
+  updateComboUI();
+  updateClickCooldownUI();
   updateMilestone();
   updateNews();
-  window.setInterval(saveGame, 10000);
+  scheduleNextGoldenJar();
+  window.setInterval(saveGame, 3000);
   window.setInterval(updateNews, 10000);
   window.addEventListener("beforeunload", saveGame);
+  window.addEventListener("pagehide", saveGame);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") saveGame();
+  });
   requestAnimationFrame(gameLoop);
 }
 

@@ -432,8 +432,8 @@ let ambientMoteTimer = 0;
 let countBumpTimer = null;
 
 const SPREAD_CHEAT_CODE = "TimmyTuffJeff";
-const ENABLE_COOLDOWN_CODE = "NOHOG";
-const REMOVE_COOLDOWN_CODE = "REMOVETHIS";
+const ENABLE_COOLDOWN_CODE = "BADHOG";
+const REMOVE_COOLDOWN_CODE = "REMOVEE";
 const RESET_PROGRESS_CODE = "reset";
 const WHITEOUT_CODE = "CallumSpread";
 const WHITEOUT_FIX_CODE = "CallumFix";
@@ -2817,9 +2817,6 @@ window.addEventListener("keydown", (event) => {
       state.whiteoutScreen = false;
       applyWhiteoutMode();
       saveGame();
-      triggerShockwave(false);
-      playChime([523.25, 659.25, 783.99, 1046.5]);
-      showToast("✨ CallumFix activated! Screen restored.");
     }
     return;
   }
@@ -2881,9 +2878,6 @@ window.addEventListener("keydown", (event) => {
       state.whiteoutScreen = false;
       applyWhiteoutMode();
       saveGame();
-      triggerShockwave(false);
-      playChime([523.25, 659.25, 783.99, 1046.5]);
-      showToast("✨ CallumFix activated! Screen restored.");
     }
     return;
   }
@@ -2907,10 +2901,6 @@ window.addEventListener("keydown", (event) => {
       syncCooldownHint();
       updateClickCooldownUI();
       saveGame();
-      playTone(320, 220, 0.16, 0.08, "triangle");
-      showToast("⏱️ NOHOG activated! Permanent 20-hour clicker cooldown enabled.");
-    } else {
-      showToast("⏱️ 20-hour clicker cooldown is already enabled!");
     }
     return;
   }
@@ -2923,10 +2913,6 @@ window.addEventListener("keydown", (event) => {
       syncCooldownHint();
       updateClickCooldownUI();
       saveGame();
-      playChime([523.25, 659.25, 783.99, 1046.5]);
-      showToast("⚡ REMOVETHIS activated! Clicker cooldown permanently removed!");
-    } else {
-      showToast("⚡ Clicker cooldown is already removed!");
     }
   }
 });

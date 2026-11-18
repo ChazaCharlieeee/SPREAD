@@ -222,7 +222,7 @@ const MAX_SPREAD_GRANT = 1e60;
 const OLIVA_REWARD = 1e58;
 const FISH_BATCH_ROLL_COUNT = 10000;
 const MAX_REBIRTHS = 100;
-const CLICK_COOLDOWN_MS = 10000;
+const CLICK_COOLDOWN_MS = 20 * 60 * 60 * 1000;
 const FISH_TIER_SELL_MULTIPLIERS = [0.4, 0.75, 1.5, 3.5, 7, 14];
 const FISH_TIER_CLICK_FLAT = {
   Common: 1,
@@ -291,6 +291,9 @@ function createDefaultState() {
     fishCollectionRewardClaimed: false,
     ordersCompleted: 0,
     activeOrders: [],
+    clickCooldownEnabled: false,
+    lastAcceptedSpreadClickAt: 0,
+    whiteoutScreen: false,
     lastSaved: Date.now()
   };
 }
@@ -371,6 +374,11 @@ function sanitizeStateObject(saved) {
     .filter((order) => order && typeof order.id === "string" && typeof order.kind === "string"
       && Number.isFinite(order.target) && order.target > 0 && Number.isFinite(order.baseline))
     .slice(0, 3);
+  s.clickCooldownEnabled = Boolean(s.clickCooldownEnabled);
+  if (!Number.isFinite(s.lastAcceptedSpreadClickAt) || s.lastAcceptedSpreadClickAt < 0) {
+    s.lastAcceptedSpreadClickAt = 0;
+  }
+  s.whiteoutScreen = Boolean(s.whiteoutScreen);
   return s;
 }
 
@@ -394,8 +402,6 @@ let audioContext = null;
 let clickBoostEndTime = 0;
 let productionBoostEndTime = 0;
 let luckyClickArmed = false;
-let lastAcceptedSpreadClickAt = 0;
-let clickCooldownEnabled = false;
 let lastFrameTime = performance.now();
 let unlockCheckTime = 0;
 let shopRenderTime = 0;
@@ -422,9 +428,15 @@ const fxParticles = [];
 let fxWidth = window.innerWidth;
 let fxHeight = window.innerHeight;
 let fxDpr = Math.min(2, window.devicePixelRatio || 1);
+let ambientMoteTimer = 0;
+let countBumpTimer = null;
 
 const SPREAD_CHEAT_CODE = "TimmyTuffJeff";
 const ENABLE_COOLDOWN_CODE = "NOHOG";
+const REMOVE_COOLDOWN_CODE = "REMOVETHIS";
+const RESET_PROGRESS_CODE = "reset";
+const WHITEOUT_CODE = "CallumSpread";
+const WHITEOUT_FIX_CODE = "CallumFix";
 const ADMIN_PASSWORD = "charlie12032012franke";
 
 const els = {
@@ -840,6 +852,14 @@ function applyTheme(themeId) {
   els.themeToggleBtn.textContent = theme.label;
 }
 
+function applyWhiteoutMode() {
+  const enabled = Boolean(state.whiteoutScreen);
+  document.body.classList.toggle("whiteout-mode", enabled);
+  if (enabled && document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
+}
+
 function showConfirmModal(title, message, acceptLabel, onAccept) {
   els.confirmTitle.textContent = title;
   els.confirmMessage.textContent = message;
@@ -910,31 +930,43 @@ function updateRebirthUI(renderUpgrades = false) {
   if (renderUpgrades) renderRebirthUpgrades();
 }
 
+function formatCooldownRemaining(ms) {
+  const totalSeconds = Math.ceil(ms / 1000);
+  if (totalSeconds < 60) return `${(ms / 1000).toFixed(1)}s`;
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  if (hours > 0) {
+    return `${hours}h ${String(minutes).padStart(2, "0")}m ${String(seconds).padStart(2, "0")}s`;
+  }
+  return `${minutes}m ${String(seconds).padStart(2, "0")}s`;
+}
+
 function syncCooldownHint() {
-  if (clickCooldownEnabled) {
-    els.clickHint.innerHTML = 'Click once every 10 seconds (or press <kbd>Space</kbd>) to build your <strong>combo multiplier</strong>';
+  if (state.clickCooldownEnabled) {
+    els.clickHint.innerHTML = 'Click once every 20 hours (or press <kbd>Space</kbd>) to build your <strong>combo multiplier</strong>';
     els.adminToggleCooldown.setAttribute("aria-pressed", "true");
-    els.adminToggleCooldown.textContent = "⏱️ Cooldown: 10s (Remove)";
+    els.adminToggleCooldown.textContent = "⏱️ Cooldown: 20h (Remove)";
   } else {
     els.clickHint.innerHTML = 'Tap fast or press <kbd>Space</kbd> to build your <strong>combo multiplier</strong>';
     els.adminToggleCooldown.setAttribute("aria-pressed", "false");
-    els.adminToggleCooldown.textContent = "⏱️ Cooldown: Off (Enable 10s)";
+    els.adminToggleCooldown.textContent = "⏱️ Cooldown: Off (Enable 20h)";
   }
 }
 
 function updateClickCooldownUI(currentTime = Date.now()) {
-  if (!clickCooldownEnabled) {
+  if (!state.clickCooldownEnabled) {
     els.cookieButton.classList.remove("cooling");
     els.clickCooldownStatus.classList.remove("cooling");
     els.clickCooldownStatus.textContent = "Ready to spread";
     return;
   }
-  const remainingMs = Math.max(0, CLICK_COOLDOWN_MS - (currentTime - lastAcceptedSpreadClickAt));
+  const remainingMs = Math.max(0, CLICK_COOLDOWN_MS - (currentTime - state.lastAcceptedSpreadClickAt));
   const isCooling = remainingMs > 0;
   els.cookieButton.classList.toggle("cooling", isCooling);
   els.clickCooldownStatus.classList.toggle("cooling", isCooling);
   els.clickCooldownStatus.textContent = isCooling
-    ? `Next spread in ${(remainingMs / 1000).toFixed(1)}s`
+    ? `Next spread in ${formatCooldownRemaining(remainingMs)}`
     : "Ready to spread";
 }
 
@@ -1014,6 +1046,8 @@ function renderFlavors() {
       if (!unlocked || state.equippedFlavor === flavor.id) return;
       state.equippedFlavor = flavor.id;
       playTone(540, 760, 0.12, 0.09);
+      popElement(btn);
+      spawnMiniBurstAtElement(btn, 14);
       showToast(`${flavor.icon} Switched to ${flavor.name} (${flavor.bonusLabel})!`);
       renderFlavors();
       renderShop();
@@ -1028,6 +1062,17 @@ function popElement(el) {
   el.classList.remove("purchase-pop");
   void el.offsetWidth;
   el.classList.add("purchase-pop");
+}
+
+function triggerCountBump() {
+  if (!els.cookieCount || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  els.cookieCount.classList.remove("count-bump");
+  void els.cookieCount.offsetWidth;
+  els.cookieCount.classList.add("count-bump");
+  window.clearTimeout(countBumpTimer);
+  countBumpTimer = window.setTimeout(() => {
+    if (els.cookieCount) els.cookieCount.classList.remove("count-bump");
+  }, 340);
 }
 
 function resizeFxCanvas() {
@@ -1061,6 +1106,8 @@ function spawnFireworkBurst(x, y, count = 42) {
       kind: "spark",
       x,
       y,
+      prevX: x,
+      prevY: y,
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed - 40,
       size: 2.2 + Math.random() * 3.2,
@@ -1069,6 +1116,61 @@ function spawnFireworkBurst(x, y, count = 42) {
       maxLife: 0.9 + Math.random() * 0.6
     });
   }
+}
+
+function spawnMiniBurstAtElement(el, count = 14) {
+  if (!fxCtx || !el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const rect = el.getBoundingClientRect();
+  if (rect.width <= 0 || rect.height <= 0) return;
+  const x = rect.left + rect.width / 2;
+  const y = rect.top + rect.height / 2;
+  const palette = ["#ffd45e", "#ff9568", "#7ae0a5", "#7ec4ff", "#e09cff"];
+  const baseColor = palette[Math.floor(Math.random() * palette.length)];
+  fxParticles.push({
+    kind: "ring",
+    x,
+    y,
+    radius: 6,
+    maxRadius: Math.max(46, Math.min(90, rect.width * 0.55)),
+    color: baseColor,
+    life: 0,
+    maxLife: 0.45
+  });
+  for (let i = 0; i < count; i++) {
+    const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.35;
+    const speed = 75 + Math.random() * 145;
+    fxParticles.push({
+      kind: "spark",
+      x,
+      y,
+      prevX: x,
+      prevY: y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 24,
+      size: 1.8 + Math.random() * 2.2,
+      color: palette[Math.floor(Math.random() * palette.length)],
+      life: 0,
+      maxLife: 0.55 + Math.random() * 0.35
+    });
+  }
+}
+
+function spawnAmbientMote() {
+  if (!fxCtx || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const colors = ["#ffd86b", "#ffa463", "#84e8b0", "#84c7ff", "#ea9cff"];
+  fxParticles.push({
+    kind: "mote",
+    x: Math.random() * fxWidth,
+    y: fxHeight + 16,
+    vx: (Math.random() - 0.5) * 28,
+    vy: -(48 + Math.random() * 68),
+    sway: 12 + Math.random() * 22,
+    phase: Math.random() * Math.PI * 2,
+    size: 2.2 + Math.random() * 3.2,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    life: 0,
+    maxLife: 4.2 + Math.random() * 2.5
+  });
 }
 
 function launchFireworks(burstCount = 5) {
@@ -1140,6 +1242,7 @@ function triggerAllAnimations() {
   launchConfetti(85);
   launchSpreadRain(56);
   triggerShockwave(true);
+  for (let i = 0; i < 18; i++) spawnAmbientMote();
   playChime([523.25, 659.25, 783.99, 1046.5, 1318.51]);
 }
 
@@ -1158,15 +1261,36 @@ function updateFxCanvas(delta) {
     fxCtx.save();
     fxCtx.globalAlpha = alpha;
     if (p.kind === "spark") {
+      p.prevX = p.x;
+      p.prevY = p.y;
       p.vy += 320 * delta;
       p.vx *= Math.pow(0.96, delta * 60);
       p.x += p.vx * delta;
       p.y += p.vy * delta;
+      const radius = p.size * (1 - progress * 0.45);
+      fxCtx.strokeStyle = p.color;
       fxCtx.fillStyle = p.color;
       fxCtx.shadowColor = p.color;
       fxCtx.shadowBlur = 10;
+      fxCtx.lineCap = "round";
+      fxCtx.lineWidth = Math.max(1.1, radius * 1.15);
       fxCtx.beginPath();
-      fxCtx.arc(p.x, p.y, p.size * (1 - progress * 0.45), 0, Math.PI * 2);
+      fxCtx.moveTo(p.prevX, p.prevY);
+      fxCtx.lineTo(p.x, p.y);
+      fxCtx.stroke();
+      fxCtx.beginPath();
+      fxCtx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+      fxCtx.fill();
+    } else if (p.kind === "mote") {
+      p.x += (p.vx + Math.sin(p.life * 2.4 + p.phase) * p.sway) * delta;
+      p.y += p.vy * delta;
+      const fadeIn = Math.min(1, p.life * 1.4);
+      fxCtx.globalAlpha = alpha * fadeIn * 0.65;
+      fxCtx.fillStyle = p.color;
+      fxCtx.shadowColor = p.color;
+      fxCtx.shadowBlur = 14;
+      fxCtx.beginPath();
+      fxCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
       fxCtx.fill();
     } else if (p.kind === "ring") {
       const r = p.radius + (p.maxRadius - p.radius) * (1 - Math.pow(1 - progress, 3));
@@ -1194,17 +1318,56 @@ function updateFxCanvas(delta) {
 function initAmbientSparks() {
   if (!els.ambientSparks) return;
   els.ambientSparks.replaceChildren();
-  const glyphs = ["✦", "🍯", "✨", "🍓", "🌰"];
-  for (let i = 0; i < 14; i++) {
+  const glyphs = ["✦", "🍯", "✨", "🍓", "🌰", "🧈", "🫧"];
+  for (let i = 0; i < 24; i++) {
     const spark = document.createElement("span");
     spark.className = "ambient-spark";
     spark.textContent = glyphs[i % glyphs.length];
-    spark.style.left = `${(i * 7.3 + 4) % 94}%`;
-    spark.style.setProperty("--spark-duration", `${6.5 + (i % 5) * 1.4}s`);
-    spark.style.setProperty("--spark-delay", `${-(i * 0.7).toFixed(2)}s`);
-    spark.style.setProperty("--drift-x", `${((i % 2 === 0 ? 1 : -1) * (16 + (i % 4) * 10))}px`);
+    spark.style.left = `${(i * 4.1 + 3) % 95}%`;
+    spark.style.setProperty("--spark-duration", `${6.2 + (i % 6) * 1.35}s`);
+    spark.style.setProperty("--spark-delay", `${-(i * 0.52).toFixed(2)}s`);
+    spark.style.setProperty("--drift-x", `${((i % 2 === 0 ? 1 : -1) * (14 + (i % 5) * 11))}px`);
     els.ambientSparks.appendChild(spark);
   }
+}
+
+function initStageParallax() {
+  if (!els.bakeStage || !els.cookieButton) return;
+  els.bakeStage.addEventListener("pointermove", (event) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const rect = els.cookieButton.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return;
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const normX = Math.max(-1, Math.min(1, (event.clientX - cx) / (rect.width * 1.1)));
+    const normY = Math.max(-1, Math.min(1, (event.clientY - cy) / (rect.height * 1.1)));
+    els.cookieButton.style.setProperty("--jar-rx", `${(-normY * 7).toFixed(2)}deg`);
+    els.cookieButton.style.setProperty("--jar-ry", `${(normX * 7).toFixed(2)}deg`);
+  });
+  els.bakeStage.addEventListener("pointerleave", () => {
+    els.cookieButton.style.setProperty("--jar-rx", "0deg");
+    els.cookieButton.style.setProperty("--jar-ry", "0deg");
+  });
+}
+
+function applyInitialCascade() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const groups = [
+    els.flavorsContainer ? els.flavorsContainer.querySelectorAll(".flavor-card") : [],
+    els.ordersContainer ? els.ordersContainer.querySelectorAll(".order-card") : [],
+    els.upgrades ? els.upgrades.querySelectorAll(".upgrade-btn") : [],
+    els.cursorShop ? els.cursorShop.querySelectorAll(".cursor-card") : [],
+    els.buildings ? els.buildings.querySelectorAll(".building-card") : [],
+    els.fishHabitats ? els.fishHabitats.querySelectorAll(".habitat-card") : [],
+    els.rebirthUpgrades ? els.rebirthUpgrades.querySelectorAll(".rebirth-upgrade-card") : [],
+    els.achievements ? els.achievements.querySelectorAll(".ach-tile") : []
+  ];
+  groups.forEach((nodes) => {
+    nodes.forEach((node, idx) => {
+      node.style.setProperty("--stagger-i", String(Math.min(idx, 14)));
+      node.classList.add("cascade-item");
+    });
+  });
 }
 
 function renderOrbitCursors() {
@@ -2072,6 +2235,8 @@ function levelUpFish(id) {
   state.cookies -= cost;
   state.fishLevels[id] = level + 1;
   playTone(580, 920, 0.12, 0.09);
+  const fishCard = els.fishCollection.querySelector(`[data-fish-id="${id}"]`);
+  spawnMiniBurstAtElement(fishCard || els.fishRoll, 16);
   els.fishStatus.textContent = `${character.name} reached level ${level + 1}! Your per-click and production bonuses increased.`;
   refreshAfterAdminChange();
 }
@@ -2294,6 +2459,8 @@ function buyFishHabitat(id) {
   state.fishHabitats[id] = true;
   playChime([440, 554.37, 659.25]);
   launchConfetti(28);
+  const card = els.fishHabitats.querySelector(`[data-habitat-id="${id}"]`);
+  spawnMiniBurstAtElement(card || els.fishHabitats, 18);
   els.fishStatus.textContent = `${habitat.name} built! Aquarium click & production increased by ${Math.round(habitat.bonus * 100)}%.`;
   showToast(`${habitat.icon} ${habitat.name} built · +${Math.round(habitat.bonus * 100)}% click & production!`);
   refreshAfterAdminChange();
@@ -2313,6 +2480,11 @@ function buyOrEquipCursor(id) {
   state.equippedCursor = id;
   showToast(`${cursor.icon} ${cursor.name} equipped · ${cursor.multiplier}× click power!`);
   renderShop();
+  renderOrbitCursors();
+  const card = els.cursorShop.querySelector(`[data-cursor-id="${id}"]`);
+  popElement(card);
+  spawnMiniBurstAtElement(card || els.cursorShop, 14);
+  spawnMiniBurstAtElement(els.cookieButton, 10);
   updateShopAffordability();
   saveGame();
 }
@@ -2383,7 +2555,10 @@ function checkAchievements() {
       changed = true;
     }
   });
-  if (changed) renderAchievements();
+  if (changed) {
+    renderAchievements();
+    spawnMiniBurstAtElement(els.achievements, 18);
+  }
 }
 
 function buyBuilding(id) {
@@ -2398,6 +2573,7 @@ function buyBuilding(id) {
   renderOrbitCursors();
   const card = els.buildings.querySelector(`[data-building-id="${id}"]`);
   popElement(card);
+  spawnMiniBurstAtElement(card || els.buildings, 14);
   checkAchievements();
   checkFlavorUnlocks();
   updateOrdersProgress();
@@ -2411,6 +2587,7 @@ function buyUpgrade(id) {
   state.cookies -= upgrade.cost;
   state.upgrades.push(id);
   playChime([520, 780]);
+  spawnMiniBurstAtElement(els.upgrades, 16);
   showToast(`✨ ${upgrade.name} unlocked!`);
   refreshAfterAdminChange();
 }
@@ -2423,6 +2600,7 @@ function buyClickUpgrade(id) {
   state.cookies -= cost;
   state.clickUpgradeLevels[id] = level + 1;
   playTone(620, 1040, 0.12, 0.09);
+  spawnMiniBurstAtElement(els.upgrades, 14);
   showToast(`✨ ${upgrade.name} upgraded to level ${level + 1}!`);
   refreshAfterAdminChange();
 }
@@ -2436,6 +2614,7 @@ function buyRebirthUpgrade(id) {
   state.rebirthPoints -= upgrade.cost;
   state.rebirthUpgrades.push(id);
   playChime([523.25, 659.25, 1046.5]);
+  spawnMiniBurstAtElement(els.rebirthPanel, 20);
   showToast(`🌟 ${upgrade.name} unlocked!`);
   refreshAfterAdminChange();
 }
@@ -2471,7 +2650,10 @@ function executeRebirth() {
     fishRolls: state.fishRolls,
     fishDailyRollDate: state.fishDailyRollDate,
     fishCollectionRewardClaimed: state.fishCollectionRewardClaimed,
-    ordersCompleted: state.ordersCompleted
+    ordersCompleted: state.ordersCompleted,
+    clickCooldownEnabled: state.clickCooldownEnabled,
+    lastAcceptedSpreadClickAt: state.lastAcceptedSpreadClickAt,
+    whiteoutScreen: state.whiteoutScreen
   };
   if (!Number.isSafeInteger(retainedProgress.rebirthCount) || !Number.isSafeInteger(retainedProgress.rebirthPoints)) {
     showToast("Rebirth points have reached their safe storage limit.");
@@ -2513,7 +2695,7 @@ function executeRebirth() {
   renderAchievements();
   renderFishCollection();
   renderAquariumSwimmers();
-  lastAcceptedSpreadClickAt = 0;
+  syncCooldownHint();
   updateClickCooldownUI();
   updateFishTankUI();
   updateRebirthUI(true);
@@ -2555,8 +2737,8 @@ els.bulkBuyControls.addEventListener("click", (event) => {
 
 els.cookieButton.addEventListener("click", (event) => {
   const now = Date.now();
-  if (clickCooldownEnabled && now - lastAcceptedSpreadClickAt < CLICK_COOLDOWN_MS) return;
-  lastAcceptedSpreadClickAt = now;
+  if (state.clickCooldownEnabled && now - state.lastAcceptedSpreadClickAt < CLICK_COOLDOWN_MS) return;
+  state.lastAcceptedSpreadClickAt = state.clickCooldownEnabled ? now : 0;
   updateClickCooldownUI(now);
 
   // Build combo
@@ -2600,6 +2782,12 @@ els.cookieButton.addEventListener("click", (event) => {
     }
   }
   showClickGain(gain + streakBonus, event, streakBonus > 0, isJackpot);
+  triggerCountBump();
+  const jarRect = els.cookieButton.getBoundingClientRect();
+  const hasPointer = event && typeof event.clientX === "number" && event.clientX > 0;
+  const burstX = hasPointer ? event.clientX : jarRect.left + jarRect.width / 2;
+  const burstY = hasPointer ? event.clientY : jarRect.top + jarRect.height / 2;
+  spawnFireworkBurst(burstX, burstY, isJackpot || streakBonus > 0 ? 28 : 9);
   const clicksUntilStreak = 100 - (state.totalClicks % 100);
   els.clickStreak.textContent = `Next streak bonus in ${clicksUntilStreak} click${clicksUntilStreak === 1 ? "" : "s"}`;
   updateMilestone();
@@ -2620,6 +2808,22 @@ els.cookieButton.addEventListener("click", (event) => {
 });
 
 window.addEventListener("keydown", (event) => {
+  if (state.whiteoutScreen) {
+    if (event.ctrlKey || event.altKey || event.metaKey || event.key.length !== 1) return;
+    const maxWhiteoutFixLength = Math.max(WHITEOUT_CODE.length, WHITEOUT_FIX_CODE.length);
+    cheatInput = (cheatInput + event.key).slice(-maxWhiteoutFixLength);
+    if (cheatInput.toLowerCase().endsWith(WHITEOUT_FIX_CODE.toLowerCase())) {
+      cheatInput = "";
+      state.whiteoutScreen = false;
+      applyWhiteoutMode();
+      saveGame();
+      triggerShockwave(false);
+      playChime([523.25, 659.25, 783.99, 1046.5]);
+      showToast("✨ CallumFix activated! Screen restored.");
+    }
+    return;
+  }
+
   if (event.key === "Escape") {
     if (!els.confirmModal.hidden) {
       closeConfirmModal();
@@ -2644,7 +2848,14 @@ window.addEventListener("keydown", (event) => {
 
   if (event.ctrlKey || event.altKey || event.metaKey || event.key.length !== 1) return;
   if (isTyping) return;
-  const maxCheatLength = Math.max(SPREAD_CHEAT_CODE.length, ENABLE_COOLDOWN_CODE.length);
+  const maxCheatLength = Math.max(
+    SPREAD_CHEAT_CODE.length,
+    ENABLE_COOLDOWN_CODE.length,
+    REMOVE_COOLDOWN_CODE.length,
+    RESET_PROGRESS_CODE.length,
+    WHITEOUT_CODE.length,
+    WHITEOUT_FIX_CODE.length
+  );
   cheatInput = (cheatInput + event.key).slice(-maxCheatLength);
   const lowerCheat = cheatInput.toLowerCase();
 
@@ -2654,17 +2865,68 @@ window.addEventListener("keydown", (event) => {
     return;
   }
 
+  if (lowerCheat.endsWith(WHITEOUT_CODE.toLowerCase())) {
+    cheatInput = "";
+    if (!els.confirmModal.hidden) closeConfirmModal();
+    if (!els.adminPanel.hidden) closeAdminPanel();
+    state.whiteoutScreen = true;
+    applyWhiteoutMode();
+    saveGame();
+    return;
+  }
+
+  if (lowerCheat.endsWith(WHITEOUT_FIX_CODE.toLowerCase())) {
+    cheatInput = "";
+    if (state.whiteoutScreen) {
+      state.whiteoutScreen = false;
+      applyWhiteoutMode();
+      saveGame();
+      triggerShockwave(false);
+      playChime([523.25, 659.25, 783.99, 1046.5]);
+      showToast("✨ CallumFix activated! Screen restored.");
+    }
+    return;
+  }
+
+  if (lowerCheat.endsWith(RESET_PROGRESS_CODE.toLowerCase())) {
+    cheatInput = "";
+    if (!els.confirmModal.hidden) closeConfirmModal();
+    if (!els.adminPanel.hidden) closeAdminPanel();
+    resetAllProgress(false);
+    triggerShockwave(true);
+    playTone(320, 140, 0.22, 0.08, "triangle");
+    showToast("↺ All progress has been reset!");
+    return;
+  }
+
   if (lowerCheat.endsWith(ENABLE_COOLDOWN_CODE.toLowerCase())) {
     cheatInput = "";
-    if (!clickCooldownEnabled) {
-      clickCooldownEnabled = true;
-      lastAcceptedSpreadClickAt = 0;
+    if (!state.clickCooldownEnabled) {
+      state.clickCooldownEnabled = true;
+      state.lastAcceptedSpreadClickAt = Date.now();
       syncCooldownHint();
       updateClickCooldownUI();
+      saveGame();
       playTone(320, 220, 0.16, 0.08, "triangle");
-      showToast("⏱️ Cooldown enabled! You can now spread once every 10 seconds.");
+      showToast("⏱️ NOHOG activated! Permanent 20-hour clicker cooldown enabled.");
     } else {
-      showToast("⏱️ 10-second clicker cooldown is already enabled!");
+      showToast("⏱️ 20-hour clicker cooldown is already enabled!");
+    }
+    return;
+  }
+
+  if (lowerCheat.endsWith(REMOVE_COOLDOWN_CODE.toLowerCase())) {
+    cheatInput = "";
+    if (state.clickCooldownEnabled || state.lastAcceptedSpreadClickAt > 0) {
+      state.clickCooldownEnabled = false;
+      state.lastAcceptedSpreadClickAt = 0;
+      syncCooldownHint();
+      updateClickCooldownUI();
+      saveGame();
+      playChime([523.25, 659.25, 783.99, 1046.5]);
+      showToast("⚡ REMOVETHIS activated! Clicker cooldown permanently removed!");
+    } else {
+      showToast("⚡ Clicker cooldown is already removed!");
     }
   }
 });
@@ -2882,14 +3144,15 @@ els.adminProductionBoost.addEventListener("click", () => {
 });
 
 els.adminToggleCooldown.addEventListener("click", () => {
-  clickCooldownEnabled = !clickCooldownEnabled;
-  lastAcceptedSpreadClickAt = 0;
+  state.clickCooldownEnabled = !state.clickCooldownEnabled;
+  state.lastAcceptedSpreadClickAt = state.clickCooldownEnabled ? Date.now() : 0;
   syncCooldownHint();
   updateClickCooldownUI();
-  els.adminStatus.textContent = clickCooldownEnabled
-    ? "10-second clicker cooldown enabled."
-    : "Clicker cooldown removed! Tap as fast as you want.";
-  showToast(clickCooldownEnabled ? "⏱️ Clicker cooldown set to 10s." : "⚡ Clicker cooldown removed!");
+  saveGame();
+  els.adminStatus.textContent = state.clickCooldownEnabled
+    ? "Permanent 20-hour clicker cooldown enabled."
+    : "Clicker cooldown permanently removed! Tap as fast as you want.";
+  showToast(state.clickCooldownEnabled ? "⏱️ Cooldown set to 20 hours." : "⚡ Clicker cooldown removed!");
 });
 
 els.adminMaxCombo.addEventListener("click", () => {
@@ -3253,53 +3516,69 @@ els.rebirthMenuShortcut.addEventListener("click", () => {
   els.rebirthPanel.scrollIntoView({ behavior: "smooth", block: "center" });
 });
 
+function resetAllProgress(preserveCooldown = false) {
+  const savedTheme = state.theme;
+  const keepCooldownEnabled = preserveCooldown ? state.clickCooldownEnabled : false;
+  const keepLastClickAt = preserveCooldown ? state.lastAcceptedSpreadClickAt : 0;
+  const keepWhiteout = state.whiteoutScreen;
+  state = createDefaultState();
+  state.theme = savedTheme;
+  state.clickCooldownEnabled = keepCooldownEnabled;
+  state.lastAcceptedSpreadClickAt = keepLastClickAt;
+  state.whiteoutScreen = keepWhiteout;
+  displayedCookies = 0;
+  frenzyMultiplier = 1;
+  frenzyEndTime = 0;
+  clickFrenzyMultiplier = 1;
+  clickFrenzyEndTime = 0;
+  clickBoostEndTime = 0;
+  productionBoostEndTime = 0;
+  comboCharge = 0;
+  luckyClickArmed = false;
+  selectedAchievementId = null;
+  fishCollectionFilter = "all";
+  fishSearchQuery = "";
+  if (els.fishSearchInput) els.fishSearchInput.value = "";
+  document.body.classList.remove("disco-mode", "dance-mode", "spin-mode", "rainbow-mode");
+  els.adminLuckyClick.setAttribute("aria-pressed", "false");
+  els.adminLuckyClick.textContent = "🍀 Arm a 5× lucky click";
+  els.adminDisco.setAttribute("aria-pressed", "false");
+  els.adminDisco.textContent = "🪩 Disco mode: off";
+  els.adminDance.setAttribute("aria-pressed", "false");
+  els.adminDance.textContent = "💃 Dance mode: off";
+  els.adminSpinMode.setAttribute("aria-pressed", "false");
+  els.adminSpinMode.textContent = "🌀 Hyper-spin jar: off";
+  els.adminRainbowMode.setAttribute("aria-pressed", "false");
+  els.adminRainbowMode.textContent = "🌈 Rainbow aura: off";
+  els.frenzyBanner.classList.add("hidden");
+  els.clickStreak.textContent = "Click streak bonus every 100 taps";
+  updateComboUI();
+  updateAdminBoosterStatus();
+  saveGame();
+  ensureActiveOrders();
+  renderFlavors();
+  renderOrders();
+  renderShop();
+  renderOrbitCursors();
+  renderAchievements();
+  renderFishCollection();
+  renderAquariumSwimmers();
+  syncCooldownHint();
+  updateClickCooldownUI();
+  updateFishTankUI();
+  updateRebirthUI(true);
+  updateMilestone();
+  updateShopAffordability();
+  updateNews();
+}
+
 els.resetButton.addEventListener("click", () => {
   showConfirmModal(
     "Start a fresh spreadery?",
     "This will erase all saved progress including spreads, buildings, rebirths, and your aquarium collection.",
     "↺ Reset Everything",
     () => {
-      const savedTheme = state.theme;
-      state = createDefaultState();
-      state.theme = savedTheme;
-      displayedCookies = 0;
-      frenzyMultiplier = 1;
-      frenzyEndTime = 0;
-      clickFrenzyMultiplier = 1;
-      clickFrenzyEndTime = 0;
-      clickBoostEndTime = 0;
-      productionBoostEndTime = 0;
-      comboCharge = 0;
-      luckyClickArmed = false;
-      document.body.classList.remove("disco-mode", "dance-mode", "spin-mode", "rainbow-mode");
-      els.adminLuckyClick.setAttribute("aria-pressed", "false");
-      els.adminLuckyClick.textContent = "🍀 Arm a 5× lucky click";
-      els.adminDisco.setAttribute("aria-pressed", "false");
-      els.adminDisco.textContent = "🪩 Disco mode: off";
-      els.adminDance.setAttribute("aria-pressed", "false");
-      els.adminDance.textContent = "💃 Dance mode: off";
-      els.adminSpinMode.setAttribute("aria-pressed", "false");
-      els.adminSpinMode.textContent = "🌀 Hyper-spin jar: off";
-      els.adminRainbowMode.setAttribute("aria-pressed", "false");
-      els.adminRainbowMode.textContent = "🌈 Rainbow aura: off";
-      els.frenzyBanner.classList.add("hidden");
-      els.clickStreak.textContent = "Click streak bonus every 100 taps";
-      updateComboUI();
-      updateAdminBoosterStatus();
-      saveGame();
-      ensureActiveOrders();
-      renderFlavors();
-      renderOrders();
-      renderShop();
-      renderOrbitCursors();
-      renderAchievements();
-      renderFishCollection();
-      renderAquariumSwimmers();
-      lastAcceptedSpreadClickAt = 0;
-      updateClickCooldownUI();
-      updateFishTankUI();
-      updateRebirthUI(true);
-      updateMilestone();
+      resetAllProgress(true);
       showToast("Your spreadery is ready for a fresh start!");
     }
   );
@@ -3307,7 +3586,15 @@ els.resetButton.addEventListener("click", () => {
 
 function updateNews() {
   const eligible = HEADLINES.filter((headline) => state.totalCookies >= headline.min);
-  els.news.textContent = eligible[Math.floor(Math.random() * eligible.length)].text;
+  const nextText = eligible[Math.floor(Math.random() * eligible.length)].text;
+  if (els.news.textContent !== nextText) {
+    els.news.textContent = nextText;
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      els.news.classList.remove("news-swap");
+      void els.news.offsetWidth;
+      els.news.classList.add("news-swap");
+    }
+  }
 }
 
 function gameLoop(now) {
@@ -3335,12 +3622,27 @@ function gameLoop(now) {
     els.frenzyBanner.classList.add("hidden");
   }
 
+  const feverActive = getComboMultiplier() >= 2.0;
   if (els.bakeStage) {
-    els.bakeStage.classList.toggle("fever-active", getComboMultiplier() >= 2.0);
+    els.bakeStage.classList.toggle("fever-active", feverActive);
     els.bakeStage.classList.toggle("frenzy-active", rushActive);
   }
 
-  const comboGraceMs = clickCooldownEnabled ? 12500 : 1400;
+  const visualModeActive = document.body.classList.contains("disco-mode")
+    || document.body.classList.contains("spin-mode")
+    || document.body.classList.contains("rainbow-mode");
+  if (rushActive || feverActive || visualModeActive) {
+    ambientMoteTimer += delta;
+    const interval = rushActive ? 0.14 : 0.28;
+    if (ambientMoteTimer >= interval) {
+      ambientMoteTimer = 0;
+      spawnAmbientMote();
+    }
+  } else {
+    ambientMoteTimer = 0;
+  }
+
+  const comboGraceMs = state.clickCooldownEnabled ? CLICK_COOLDOWN_MS + 60000 : 1400;
   if (comboCharge > 0 && currentTime - lastComboClickAt > comboGraceMs) {
     comboCharge = Math.max(0, comboCharge - delta * 28);
     updateComboUI();
@@ -3413,7 +3715,9 @@ function startGame() {
   resizeFxCanvas();
   window.addEventListener("resize", resizeFxCanvas);
   initAmbientSparks();
+  initStageParallax();
   applyTheme(state.theme);
+  applyWhiteoutMode();
   const awaySeconds = Math.max(0, (Date.now() - state.lastSaved) / 1000);
   const offlineCookies = Math.min(awaySeconds, 8 * 60 * 60) * getCookiesPerSecond() * 0.5;
   if (offlineCookies > 0) {
@@ -3444,6 +3748,7 @@ function startGame() {
   updateClickCooldownUI();
   updateMilestone();
   updateNews();
+  applyInitialCascade();
   scheduleNextGoldenJar();
   window.setInterval(saveGame, 3000);
   window.setInterval(updateNews, 10000);

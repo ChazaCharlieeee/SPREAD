@@ -395,7 +395,7 @@ let clickBoostEndTime = 0;
 let productionBoostEndTime = 0;
 let luckyClickArmed = false;
 let lastAcceptedSpreadClickAt = 0;
-let clickCooldownRemoved = false;
+let clickCooldownEnabled = false;
 let lastFrameTime = performance.now();
 let unlockCheckTime = 0;
 let shopRenderTime = 0;
@@ -424,7 +424,7 @@ let fxHeight = window.innerHeight;
 let fxDpr = Math.min(2, window.devicePixelRatio || 1);
 
 const SPREAD_CHEAT_CODE = "TimmyTuffJeff";
-const REMOVE_COOLDOWN_CODE = "removethis";
+const ENABLE_COOLDOWN_CODE = "NOHOG";
 const ADMIN_PASSWORD = "charlie12032012franke";
 
 const els = {
@@ -911,22 +911,22 @@ function updateRebirthUI(renderUpgrades = false) {
 }
 
 function syncCooldownHint() {
-  if (clickCooldownRemoved) {
-    els.clickHint.innerHTML = 'Tap fast or press <kbd>Space</kbd> to build your <strong>combo multiplier</strong>';
-    els.adminToggleCooldown.setAttribute("aria-pressed", "true");
-    els.adminToggleCooldown.textContent = "⏱️ Cooldown: Removed (Restore 10s)";
-  } else {
+  if (clickCooldownEnabled) {
     els.clickHint.innerHTML = 'Click once every 10 seconds (or press <kbd>Space</kbd>) to build your <strong>combo multiplier</strong>';
-    els.adminToggleCooldown.setAttribute("aria-pressed", "false");
+    els.adminToggleCooldown.setAttribute("aria-pressed", "true");
     els.adminToggleCooldown.textContent = "⏱️ Cooldown: 10s (Remove)";
+  } else {
+    els.clickHint.innerHTML = 'Tap fast or press <kbd>Space</kbd> to build your <strong>combo multiplier</strong>';
+    els.adminToggleCooldown.setAttribute("aria-pressed", "false");
+    els.adminToggleCooldown.textContent = "⏱️ Cooldown: Off (Enable 10s)";
   }
 }
 
 function updateClickCooldownUI(currentTime = Date.now()) {
-  if (clickCooldownRemoved) {
+  if (!clickCooldownEnabled) {
     els.cookieButton.classList.remove("cooling");
     els.clickCooldownStatus.classList.remove("cooling");
-    els.clickCooldownStatus.textContent = "Cooldown removed · Ready!";
+    els.clickCooldownStatus.textContent = "Ready to spread";
     return;
   }
   const remainingMs = Math.max(0, CLICK_COOLDOWN_MS - (currentTime - lastAcceptedSpreadClickAt));
@@ -2555,7 +2555,7 @@ els.bulkBuyControls.addEventListener("click", (event) => {
 
 els.cookieButton.addEventListener("click", (event) => {
   const now = Date.now();
-  if (!clickCooldownRemoved && now - lastAcceptedSpreadClickAt < CLICK_COOLDOWN_MS) return;
+  if (clickCooldownEnabled && now - lastAcceptedSpreadClickAt < CLICK_COOLDOWN_MS) return;
   lastAcceptedSpreadClickAt = now;
   updateClickCooldownUI(now);
 
@@ -2644,7 +2644,7 @@ window.addEventListener("keydown", (event) => {
 
   if (event.ctrlKey || event.altKey || event.metaKey || event.key.length !== 1) return;
   if (isTyping) return;
-  const maxCheatLength = Math.max(SPREAD_CHEAT_CODE.length, REMOVE_COOLDOWN_CODE.length);
+  const maxCheatLength = Math.max(SPREAD_CHEAT_CODE.length, ENABLE_COOLDOWN_CODE.length);
   cheatInput = (cheatInput + event.key).slice(-maxCheatLength);
   const lowerCheat = cheatInput.toLowerCase();
 
@@ -2654,17 +2654,17 @@ window.addEventListener("keydown", (event) => {
     return;
   }
 
-  if (lowerCheat.endsWith(REMOVE_COOLDOWN_CODE.toLowerCase())) {
+  if (lowerCheat.endsWith(ENABLE_COOLDOWN_CODE.toLowerCase())) {
     cheatInput = "";
-    if (!clickCooldownRemoved) {
-      clickCooldownRemoved = true;
+    if (!clickCooldownEnabled) {
+      clickCooldownEnabled = true;
       lastAcceptedSpreadClickAt = 0;
       syncCooldownHint();
       updateClickCooldownUI();
-      playChime([523.25, 659.25, 783.99, 1046.5]);
-      showToast("⚡ Clicker cooldown removed! Click as fast as you want!");
+      playTone(320, 220, 0.16, 0.08, "triangle");
+      showToast("⏱️ Cooldown enabled! You can now spread once every 10 seconds.");
     } else {
-      showToast("⚡ Clicker cooldown is already removed!");
+      showToast("⏱️ 10-second clicker cooldown is already enabled!");
     }
   }
 });
@@ -2882,14 +2882,14 @@ els.adminProductionBoost.addEventListener("click", () => {
 });
 
 els.adminToggleCooldown.addEventListener("click", () => {
-  clickCooldownRemoved = !clickCooldownRemoved;
+  clickCooldownEnabled = !clickCooldownEnabled;
   lastAcceptedSpreadClickAt = 0;
   syncCooldownHint();
   updateClickCooldownUI();
-  els.adminStatus.textContent = clickCooldownRemoved
-    ? "Clicker cooldown removed! Tap as fast as you want."
-    : "Clicker cooldown restored to 10 seconds.";
-  showToast(clickCooldownRemoved ? "⚡ Clicker cooldown removed!" : "⏱️ Clicker cooldown set to 10s.");
+  els.adminStatus.textContent = clickCooldownEnabled
+    ? "10-second clicker cooldown enabled."
+    : "Clicker cooldown removed! Tap as fast as you want.";
+  showToast(clickCooldownEnabled ? "⏱️ Clicker cooldown set to 10s." : "⚡ Clicker cooldown removed!");
 });
 
 els.adminMaxCombo.addEventListener("click", () => {
@@ -3340,7 +3340,7 @@ function gameLoop(now) {
     els.bakeStage.classList.toggle("frenzy-active", rushActive);
   }
 
-  const comboGraceMs = clickCooldownRemoved ? 1400 : 12500;
+  const comboGraceMs = clickCooldownEnabled ? 12500 : 1400;
   if (comboCharge > 0 && currentTime - lastComboClickAt > comboGraceMs) {
     comboCharge = Math.max(0, comboCharge - delta * 28);
     updateComboUI();

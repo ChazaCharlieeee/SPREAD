@@ -3,165 +3,171 @@
 const SAVE_KEY = "cookie_clicker_save_v2";
 
 const BUILDINGS = [
-  { id: "cursor", name: "Spread Cursor", icon: "👆", cost: 15, cps: 0.085, desc: "Clicks the spread for you." },
-  { id: "grandma", name: "Spread Grandma", icon: "👵", cost: 100, cps: 0.85, desc: "A nice grandma to make more spreads." },
-  { id: "farm", name: "Spread Farm", icon: "🌾", cost: 1100, cps: 6.8, desc: "Grows fresh spreads in the fields." },
-  { id: "mine", name: "Spread Mine", icon: "⛏️", cost: 12000, cps: 40, desc: "Mines ingredients for your spreads." },
-  { id: "factory", name: "Spread Factory", icon: "🏭", cost: 130000, cps: 220, desc: "Mass-produces freshly made spreads." },
-  { id: "bank", name: "Spread Bank", icon: "🏦", cost: 1400000, cps: 1200, desc: "Makes your spread earn interest." },
-  { id: "temple", name: "Spread Temple", icon: "🏛️", cost: 20000000, cps: 6600, desc: "A sacred place of spread worship." },
-  { id: "lab", name: "Spread Lab", icon: "🧪", cost: 330000000, cps: 37000, desc: "Discovers new ways to make spreads." },
-  { id: "portal", name: "Spread Portal", icon: "🌀", cost: 5100000000, cps: 220000, desc: "Brings spreads in from somewhere else." },
-  { id: "galaxy", name: "Spread Galaxy", icon: "🌌", cost: 75000000000, cps: 1350000, desc: "Turns an entire galaxy into a spread factory." },
-  { id: "dimension", name: "Spread Dimension", icon: "🔮", cost: 1100000000000, cps: 8500000, desc: "Makes spreads across dimensions." },
-  { id: "time-machine", name: "Spread Time Machine", icon: "⏳", cost: 14000000000000, cps: 65000000, desc: "Borrows spreads from the future." },
-  { id: "antimatter", name: "Spread Antimatter Condenser", icon: "⚛️", cost: 170000000000000, cps: 365000000, desc: "Condenses antimatter into pure spread." },
-  { id: "prism", name: "Spread Prism", icon: "🔺", cost: 2100000000000000, cps: 2450000000, desc: "Turns light itself into spreads." },
-  { id: "chancemaker", name: "Spread Chancemaker", icon: "🎲", cost: 26000000000000000, cps: 18000000000, desc: "Takes a chance and wins more spreads." },
-  { id: "fractal-engine", name: "Spread Fractal Engine", icon: "🧬", cost: 310000000000000000, cps: 127500000000, desc: "Makes tiny spread makers that make more spread makers." },
-  { id: "spread-suburb", name: "Spread Suburb", icon: "🏘️", cost: 420000000000000000, cps: 187000000000, desc: "Every home in town gets a tiny spreadery." },
-  { id: "spread-city", name: "Spread City", icon: "🌆", cost: 850000000000000000, cps: 306000000000, desc: "A bright city where every billboard sells spreads." },
-  { id: "spread-megacity", name: "Spread Megacity", icon: "🏙️", cost: 1600000000000000000, cps: 459000000000, desc: "A whole megacity runs on spread production." },
-  { id: "spread-multiverse", name: "Spread Multiverse", icon: "🪐", cost: 2800000000000000000, cps: 612000000000, desc: "Parallel worlds pool their spreads together." },
-  { id: "spreadster", name: "Spreadster", icon: "📻", cost: 4200000000000000000, cps: 680000000000, desc: "Broadcasts fresh spreads to everyone." },
-  { id: "spreadsheet", name: "Spreadsheet", icon: "📊", cost: 58000000000000000000, cps: 3800000000000, desc: "Organizes spreads into perfectly productive rows." },
-  { id: "spreadstergram", name: "Spreadstergram", icon: "📸", cost: 850000000000000000000, cps: 24500000000000, desc: "Shares spreads so fast they make more spreads." }
+  { id: "cursor", name: "Auto-Spreader", icon: "🤸‍♂️", cost: 15, cps: 0.085, desc: "Swirls warm hazelnut & butter jars onto toast automatically." },
+  { id: "grandma", name: "Spread Grandma", icon: "🤸‍♀️", cost: 100, cps: 0.85, desc: "A cheerful bakery grandma whisking warm spreadery batches by the dozen." },
+  { id: "farm", name: "Nut Farm", icon: "🧘‍♀️", cost: 1100, cps: 6.8, desc: "Grows roasted hazelnuts, almonds, strawberries & sweet toppings." },
+  { id: "mine", name: "Cocoa Mine", icon: "🤸", cost: 12000, cps: 40, desc: "Digs rich dark chocolate & sea-salt veins for the spreadery kettles." },
+  { id: "factory", name: "Spread Factory", icon: "🧘‍♂️", cost: 130000, cps: 220, desc: "Mixes, simmers, and seals artisan glass spread jars round the clock." },
+  { id: "bank", name: "Spread Bank", icon: "🤸‍♂️", cost: 1400000, cps: 1200, desc: "Generates compound interest paid in warm golden caramel spreads." },
+  { id: "temple", name: "Spread Temple", icon: "🧘", cost: 20000000, cps: 6600, desc: "Honors ancient sourdough recipes and secret spreadery kitchen craft." },
+  { id: "lab", name: "Spread Lab", icon: "🤸‍♀️", cost: 330000000, cps: 37000, desc: "Invents silky whipped textures and weightless honey-cream spreads." },
+  { id: "portal", name: "Spread Portal mat", icon: "🤸‍♂️", cost: 5100000000, cps: 220000, desc: "Opens delicious shortcuts straight from the spreadery pantry." },
+  { id: "galaxy", name: "Galaxy Bakery", icon: "🧘‍♀️", cost: 75000000000, cps: 1350000, desc: "Harvests stardust sugar across spiral nebulas." },
+  { id: "dimension", name: "Dimension Oven", icon: "🤸", cost: 1100000000000, cps: 8500000, desc: "Bakes warm batches across parallel timelines." },
+  { id: "time-machine", name: "Time Machine", icon: "🧘‍♂️", cost: 14000000000000, cps: 65000000, desc: "Brings fresh morning jars back from the future." },
+  { id: "antimatter", name: "Antimatter Condenser", icon: "🤸‍♂️", cost: 170000000000000, cps: 365000000, desc: "Turns pure subatomic energy into velvety spread." },
+  { id: "prism", name: "Prism Spreadery", icon: "🧘", cost: 2100000000000000, cps: 2450000000, desc: "Focuses beams of warm sunlight into golden glaze." },
+  { id: "chancemaker", name: "Chancemaker", icon: "🤸‍♀️", cost: 26000000000000000, cps: 18000000000, desc: "Turns lucky breaks into overflowing jars." },
+  { id: "fractal-engine", name: "Fractal Engine", icon: "🤸", cost: 310000000000000000, cps: 127500000000, desc: "Mirrors every spoonful into endless miniature swirls." },
+  { id: "spread-suburb", name: "Spread Suburb", icon: "🧘‍♂️", cost: 420000000000000000, cps: 187000000000, desc: "Every front porch stocks fresh artisan jars." },
+  { id: "spread-city", name: "Spread City", icon: "🤸‍♂️", cost: 850000000000000000, cps: 306000000000, desc: "A sunlit skyline built around busy spread cafés." },
+  { id: "spread-megacity", name: "Spread Megacity", icon: "🧘‍♀️", cost: 1600000000000000000, cps: 459000000000, desc: "Every skyscraper hosts an artisan tasting room." },
+  { id: "spread-multiverse", name: "Spread Multiverse", icon: "🤸‍♀️", cost: 2800000000000000000, cps: 612000000000, desc: "Links every cozy bakery across countless worlds." },
+  { id: "spreadster", name: "Spreadster", icon: "🤸", cost: 4200000000000000000, cps: 680000000000, desc: "Broadcasts fresh spread recipes to kitchens everywhere." },
+  { id: "spreadsheet", name: "Spreadsheet", icon: "🧘", cost: 58000000000000000000, cps: 3800000000000, desc: "Optimizes every jar ratio down to the last drop." },
+  { id: "spreadstergram", name: "Spreadstergram", icon: "🤸‍♂️", cost: 850000000000000000000, cps: 24500000000000, desc: "Shares glistening swirl photos that spark global cravings." }
 ];
 
 const CURSORS = [
-  { id: "starter", name: "Starter Cursor", icon: "👆", cost: 0, multiplier: 1 },
-  { id: "bronze", name: "Bronze Pointer", icon: "🖱️", cost: 1000, multiplier: 1.2 },
-  { id: "gold", name: "Golden Pointer", icon: "🌟", cost: 7500, multiplier: 1.6 },
-  { id: "diamond", name: "Diamond Cursor", icon: "💎", cost: 50000, multiplier: 2.4 },
-  { id: "rainbow", name: "Rainbow Cursor", icon: "🌈", cost: 250000, multiplier: 4 },
-  { id: "cosmic", name: "Cosmic Cursor", icon: "🪄", cost: 1500000, multiplier: 8 },
-  { id: "comet", name: "Comet Cursor", icon: "☄️", cost: 20000000, multiplier: 16 },
-  { id: "nebula", name: "Nebula Pointer", icon: "🌌", cost: 500000000, multiplier: 28 },
-  { id: "quantum", name: "Quantum Cursor", icon: "⚛️", cost: 25000000000, multiplier: 48 },
-  { id: "supernova", name: "Supernova Cursor", icon: "💫", cost: 10000000000000, multiplier: 80 },
-  { id: "infinity", name: "Infinity Pointer", icon: "♾️", cost: 1e19, multiplier: 140 },
-  { id: "tuff", name: "Tuff Tuff Cursor", icon: "👑", cost: 1e25, multiplier: 240 },
-  { id: "ultra", name: "Ultra Cursor", icon: "✨", cost: 1e31, multiplier: 400 },
-  { id: "galaxy", name: "Galaxy Pointer", icon: "🌠", cost: 1e37, multiplier: 640 },
-  { id: "reality", name: "Reality Bender", icon: "🌀", cost: 1e43, multiplier: 1000 },
-  { id: "overdrive", name: "Overdrive Cursor", icon: "⚡", cost: 1e49, multiplier: 1600 },
-  { id: "titan", name: "Titan Pointer", icon: "🔱", cost: 1e55, multiplier: 2800 },
-  { id: "apex", name: "Apex Cursor", icon: "🏆", cost: 1e61, multiplier: 4800 }
+  { id: "starter", name: "Starter Cursor", icon: "🤸‍♂️", cost: 0, multiplier: 1 },
+  { id: "bronze", name: "Bronze Pointer", icon: "🤸‍♀️", cost: 1000, multiplier: 1.2 },
+  { id: "gold", name: "Golden Pointer", icon: "🤸", cost: 7500, multiplier: 1.6 },
+  { id: "diamond", name: "Diamond Cursor", icon: "🧘‍♂️", cost: 50000, multiplier: 2.4 },
+  { id: "rainbow", name: "Rainbow Cursor", icon: "🧘‍♀️", cost: 250000, multiplier: 4 },
+  { id: "cosmic", name: "Cosmic Cursor", icon: "🧘", cost: 1500000, multiplier: 8 },
+  { id: "comet", name: "Comet Pointer", icon: "🤸‍♂️", cost: 20000000, multiplier: 16 },
+  { id: "nebula", name: "Nebula Pointer", icon: "🤸‍♀️", cost: 500000000, multiplier: 28 },
+  { id: "quantum", name: "Quantum Cursor", icon: "🤸", cost: 25000000000, multiplier: 48 },
+  { id: "supernova", name: "Supernova Cursor", icon: "🧘‍♂️", cost: 10000000000000, multiplier: 80 },
+  { id: "infinity", name: "Infinity Pointer", icon: "🧘‍♀️", cost: 1e19, multiplier: 140 },
+  { id: "tuff", name: "Varsity Crown Cursor", icon: "🤸‍♂️", cost: 1e25, multiplier: 240 },
+  { id: "ultra", name: "Ultra Carbon Cursor", icon: "🤸‍♀️", cost: 1e31, multiplier: 400 },
+  { id: "galaxy", name: "Starlight Cursor", icon: "🧘", cost: 1e37, multiplier: 640 },
+  { id: "reality", name: "Reality Cursor", icon: "🤸", cost: 1e43, multiplier: 1000 },
+  { id: "overdrive", name: "Overdrive Pointer", icon: "🧘‍♂️", cost: 1e49, multiplier: 1600 },
+  { id: "titan", name: "Titan Cursor", icon: "🤸‍♂️", cost: 1e55, multiplier: 2800 },
+  { id: "apex", name: "Apex Gold Cursor", icon: "🧘‍♀️", cost: 1e61, multiplier: 4800 }
 ];
 
 const FLAVORS = [
-  { id: "hazelnut", name: "Classic Hazelnut", icon: "🌰", bonusLabel: "+10% Clicks", clickMult: 1.1, prodMult: 1, goldenSpeed: 1, desc: "Rich roasted hazelnut butter.", reqText: "Unlocked at start", req: () => true },
-  { id: "salted-caramel", name: "Salted Caramel", icon: "🍮", bonusLabel: "+15% Production", clickMult: 1, prodMult: 1.15, goldenSpeed: 1, desc: "Silky caramel for busy helpers.", reqText: "Make 500 total spreads", req: (s) => s.totalCookies >= 500 },
-  { id: "strawberry-jam", name: "Strawberry Jam", icon: "🍓", bonusLabel: "+20% Clicks", clickMult: 1.2, prodMult: 1, goldenSpeed: 1, desc: "Bright berry burst for fast tappers.", reqText: "Make 200 manual clicks", req: (s) => s.totalClicks >= 200 },
-  { id: "pistachio-cream", name: "Pistachio Cream", icon: "💚", bonusLabel: "+25% Production", clickMult: 1, prodMult: 1.25, goldenSpeed: 1, desc: "Velvety green cream for factories.", reqText: "Own 15 helpers", req: (s) => getBuildingCount(s) >= 15 },
-  { id: "golden-truffle", name: "Golden Truffle", icon: "🍯", bonusLabel: "Faster Golden Jars +15%", clickMult: 1.15, prodMult: 1.15, goldenSpeed: 1.35, desc: "Lures Golden Jars 35% more often.", reqText: "Catch 2 Golden Jars or 100K spreads", req: (s) => s.goldenJarsCaught >= 2 || s.totalCookies >= 100000 },
-  { id: "cosmic-honey", name: "Cosmic Honey", icon: "🌌", bonusLabel: "+30% All Power", clickMult: 1.3, prodMult: 1.3, goldenSpeed: 1.2, desc: "Starlight nectar for late runs.", reqText: "1+ Rebirth or 25 unique fish", req: (s) => s.rebirthCount >= 1 || getFishUniqueCount(s) >= 25 },
-  { id: "matcha-swirl", name: "Matcha Swirl", icon: "🍵", bonusLabel: "+35% Production", clickMult: 1.05, prodMult: 1.35, goldenSpeed: 1.1, desc: "Zen ceremonial cream for unstoppable helpers.", reqText: "Make 1 million total spreads", req: (s) => s.totalCookies >= 1000000 },
-  { id: "spiced-chai", name: "Spiced Chai", icon: "🫖", bonusLabel: "+45% Clicks", clickMult: 1.45, prodMult: 1.1, goldenSpeed: 1.15, desc: "Warm cinnamon-ginger whip for massive taps.", reqText: "Make 1,500 manual clicks", req: (s) => s.totalClicks >= 1500 },
-  { id: "diamond-glaze", name: "Diamond Glaze", icon: "💎", bonusLabel: "+60% All Power", clickMult: 1.6, prodMult: 1.6, goldenSpeed: 1.25, desc: "Faceted sugar crystal frosting.", reqText: "3+ Rebirths or 1T total spreads", req: (s) => s.rebirthCount >= 3 || s.totalCookies >= 1e12 },
-  { id: "nebula-butter", name: "Nebula Butter", icon: "🌠", bonusLabel: "+100% Power & Fast Jars", clickMult: 2, prodMult: 2, goldenSpeed: 1.5, desc: "Cosmic whipped gold forged between stars.", reqText: "10+ Rebirths or 120 unique fish", req: (s) => s.rebirthCount >= 10 || getFishUniqueCount(s) >= 120 }
+  { id: "hazelnut", name: "Classic Hazelnut", icon: "🤸‍♂️", bonusLabel: "+10% Clicks", clickMult: 1.1, prodMult: 1, goldenSpeed: 1, desc: "Silky roasted hazelnut spread baked fresh every morning.", reqText: "Unlocked at start", req: () => true },
+  { id: "salted-caramel", name: "Salted Caramel", icon: "🤸‍♀️", bonusLabel: "+15% Production", clickMult: 1, prodMult: 1.15, goldenSpeed: 1, desc: "Warm golden caramel with flaky sea salt for busy ovens.", reqText: "Make 500 total spreads", req: (s) => s.totalCookies >= 500 },
+  { id: "strawberry-jam", name: "Strawberry Jam", icon: "🧘‍♀️", bonusLabel: "+20% Clicks", clickMult: 1.2, prodMult: 1, goldenSpeed: 1, desc: "Bright berry preserve packed with snappy click energy.", reqText: "Make 200 manual clicks", req: (s) => s.totalClicks >= 200 },
+  { id: "pistachio-cream", name: "Pistachio Cream", icon: "🤸", bonusLabel: "+25% Production", clickMult: 1, prodMult: 1.25, goldenSpeed: 1, desc: "Velvety roasted pistachio swirl prized by master helpers.", reqText: "Own 15 helpers & shops", req: (s) => getBuildingCount(s) >= 15 },
+  { id: "golden-truffle", name: "Golden Truffle", icon: "🧘‍♂️", bonusLabel: "Faster Golden Jars +15%", clickMult: 1.15, prodMult: 1.15, goldenSpeed: 1.35, desc: "Attracts floating Golden Jars 35% more often.", reqText: "Catch 2 Golden Jars or 100K spreads", req: (s) => s.goldenJarsCaught >= 2 || s.totalCookies >= 100000 },
+  { id: "cosmic-honey", name: "Cosmic Honey", icon: "🤸‍♂️", bonusLabel: "+30% All Power", clickMult: 1.3, prodMult: 1.3, goldenSpeed: 1.2, desc: "Starlight nectar drizzle for elite bakery runs.", reqText: "1+ Rebirth or 25 unique fish", req: (s) => s.rebirthCount >= 1 || getFishUniqueCount(s) >= 25 },
+  { id: "matcha-swirl", name: "Matcha Swirl", icon: "🧘", bonusLabel: "+35% Production", clickMult: 1.05, prodMult: 1.35, goldenSpeed: 1.1, desc: "Stone-ground green tea cream for calm, steady production.", reqText: "Make 1 million total spreads", req: (s) => s.totalCookies >= 1000000 },
+  { id: "spiced-chai", name: "Spiced Chai", icon: "🤸‍♀️", bonusLabel: "+45% Clicks", clickMult: 1.45, prodMult: 1.1, goldenSpeed: 1.15, desc: "Cinnamon-cardamom warmth for massive manual clicks.", reqText: "Make 1,500 manual clicks", req: (s) => s.totalClicks >= 1500 },
+  { id: "diamond-glaze", name: "Diamond Glaze", icon: "🧘‍♂️", bonusLabel: "+60% All Power", clickMult: 1.6, prodMult: 1.6, goldenSpeed: 1.25, desc: "Mirror-shine sugar crystal finish fit for royalty.", reqText: "3+ Rebirths or 1T total spreads", req: (s) => s.rebirthCount >= 3 || s.totalCookies >= 1e12 },
+  { id: "nebula-butter", name: "Nebula Butter", icon: "🤸‍♂️", bonusLabel: "+100% Power & Fast Jars", clickMult: 2, prodMult: 2, goldenSpeed: 1.5, desc: "Swirling cosmic spread whipped inside oven starlight.", reqText: "10+ Rebirths or 120 unique fish", req: (s) => s.rebirthCount >= 10 || getFishUniqueCount(s) >= 120 }
 ];
 
 const FISH_HABITATS = [
-  { id: "coral-garden", name: "Coral Garden", icon: "🪸", cost: 125000, bonus: 0.04, desc: "Coral comforts your fish. +4% click & production." },
-  { id: "bubble-castle", name: "Bubble Castle", icon: "🫧", cost: 2500000, bonus: 0.08, desc: "A bubbly home for your collection. +8% click & production." },
-  { id: "sunken-ship", name: "Sunken Treasure Ship", icon: "🚢", cost: 62500000, bonus: 0.16, desc: "Treasures inspire the whole tank. +16% click & production." },
-  { id: "rainbow-reef", name: "Rainbow Reef", icon: "🌈", cost: 1250000000, bonus: 0.28, desc: "A legendary reef energizes your fish. +28% click & production." },
-  { id: "atlantis-vault", name: "Atlantis Vault", icon: "🔱", cost: 50000000000, bonus: 0.45, desc: "Ancient sea wisdom surges through every tap. +45% click & production." },
-  { id: "celestial-lagoon", name: "Celestial Lagoon", icon: "🌠", cost: 2500000000000, bonus: 0.8, desc: "Starlight waters supercharge the entire tank. +80% click & production." }
+  { id: "coral-garden", name: "Coral Garden 🤸‍♂️", icon: "🪸", cost: 125000, bonus: 0.04, desc: "Peaceful reef hideaway. +4% click & production." },
+  { id: "bubble-castle", name: "Bubble Castle 🤸‍♀️", icon: "🫧", cost: 2500000, bonus: 0.08, desc: "Shimmery castle towers for happy swimmers. +8% click & production." },
+  { id: "sunken-ship", name: "Sunken Treasure Ship 🧘", icon: "🚢", cost: 62500000, bonus: 0.16, desc: "Antique chest overflowing with golden glaze. +16% click & production." },
+  { id: "rainbow-reef", name: "Rainbow Reef 🤸", icon: "🌈", cost: 1250000000, bonus: 0.28, desc: "Vibrant prism coral energizing the whole tank. +28% click & production." },
+  { id: "atlantis-vault", name: "Atlantis Vault 🧘‍♂️", icon: "🔱", cost: 50000000000, bonus: 0.45, desc: "Ancient sea vault brimming with spread power. +45% click & production." },
+  { id: "celestial-lagoon", name: "Celestial Lagoon 🤸‍♂️", icon: "🌠", cost: 2500000000000, bonus: 0.8, desc: "Starlight waters supercharging every bakery helper. +80% click & production." }
 ];
 
 const CLICK_UPGRADES = [
-  { id: "strong-fingers", name: "Spread Strong Fingers", icon: "💪", cost: 400, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalClicks >= 10, mult: 1.05 },
-  { id: "butter-cookie", name: "Spread Butter", icon: "🧈", cost: 4000, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalCookies >= 250, mult: 1.05 },
-  { id: "chocolate-chips", name: "Spread Extra Toppings", icon: "🍫", cost: 16000, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalClicks >= 100, mult: 1.05 },
-  { id: "sugar-rush", name: "Spread Sugar Rush", icon: "🍬", cost: 80000, desc: "Each purchase adds 10% more spreads per click.", req: (s) => s.totalCookies >= 5000, mult: 1.1 },
-  { id: "quick-tap", name: "Quick-Tap Practice", icon: "⚡", cost: 2400, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalClicks >= 25, mult: 1.05 },
-  { id: "sticky-fingers", name: "Sticky Fingers", icon: "🫳", cost: 9600, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalClicks >= 60, mult: 1.05 },
-  { id: "spread-sling", name: "Spread Sling", icon: "🥄", cost: 28800, desc: "Each purchase adds 10% more spreads per click.", req: (s) => s.totalClicks >= 120, mult: 1.1 },
-  { id: "turbo-thumb", name: "Turbo Thumb", icon: "👍", cost: 72000, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalClicks >= 250, mult: 1.05 },
-  { id: "power-palm", name: "Power Palm", icon: "🖐️", cost: 160000, desc: "Each purchase adds 10% more spreads per click.", req: (s) => s.totalClicks >= 500, mult: 1.1 },
-  { id: "double-tap", name: "Double-Tap Technique", icon: "✌️", cost: 352000, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalClicks >= 900, mult: 1.05 },
-  { id: "mega-mitts", name: "Mega Mitts", icon: "🥊", cost: 768000, desc: "Each purchase adds 10% more spreads per click.", req: (s) => s.totalClicks >= 1500, mult: 1.1 },
-  { id: "lightning-click", name: "Lightning Click", icon: "🌩️", cost: 1600000, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalClicks >= 2500, mult: 1.05 },
-  { id: "spread-storm", name: "Spreadstorm", icon: "🌪️", cost: 3520000, desc: "Each purchase adds 10% more spreads per click.", req: (s) => s.totalClicks >= 4000, mult: 1.1 },
-  { id: "click-cannon", name: "Click Cannon", icon: "🚀", cost: 7200000, desc: "Each purchase adds 5% more spreads per click.", req: (s) => s.totalClicks >= 6500, mult: 1.05 },
-  { id: "golden-touch-upgrade", name: "Golden Touch", icon: "✨", cost: 14400000, desc: "Each purchase multiplies spreads per click by 1.2.", req: (s) => s.totalClicks >= 10000, mult: 1.2 }
+  { id: "strong-fingers", name: "Spread Strong Fingers", icon: "🤸‍♂️", cost: 400, desc: "Each level adds 5% more spreads per click.", req: (s) => s.totalClicks >= 10, mult: 1.05 },
+  { id: "butter-cookie", name: "Butter Spread", icon: "🧘‍♀️", cost: 4000, desc: "Each level adds 5% more spreads per click.", req: (s) => s.totalCookies >= 250, mult: 1.05 },
+  { id: "chocolate-chips", name: "Spread Extra Topping", icon: "🤸‍♀️", cost: 16000, desc: "Each level adds 5% more spreads per click.", req: (s) => s.totalClicks >= 100, mult: 1.05 },
+  { id: "sugar-rush", name: "Sugar Rush", icon: "🔥", cost: 80000, desc: "Each level adds 10% more spreads per click.", req: (s) => s.totalCookies >= 5000, mult: 1.1 },
+  { id: "quick-tap", name: "Quick-Tap Practice", icon: "🤸", cost: 2400, desc: "Each level adds 5% more spreads per click.", req: (s) => s.totalClicks >= 25, mult: 1.05 },
+  { id: "sticky-fingers", name: "Sticky Fingers", icon: "🧘‍♂️", cost: 9600, desc: "Each level adds 5% more spreads per click.", req: (s) => s.totalClicks >= 60, mult: 1.05 },
+  { id: "spread-sling", name: "Spread Sling", icon: "🤸‍♂️", cost: 28800, desc: "Each level adds 10% more spreads per click.", req: (s) => s.totalClicks >= 120, mult: 1.1 },
+  { id: "turbo-thumb", name: "Turbo Thumb", icon: "🧘", cost: 72000, desc: "Each level adds 5% more spreads per click.", req: (s) => s.totalClicks >= 250, mult: 1.05 },
+  { id: "power-palm", name: "Power Palm", icon: "🤸‍♀️", cost: 160000, desc: "Each level adds 10% more spreads per click.", req: (s) => s.totalClicks >= 500, mult: 1.1 },
+  { id: "double-tap", name: "Double-Tap Knack", icon: "🤸", cost: 352000, desc: "Each level adds 5% more spreads per click.", req: (s) => s.totalClicks >= 900, mult: 1.05 },
+  { id: "mega-mitts", name: "Mega Mitts", icon: "🧘‍♀️", cost: 768000, desc: "Each level adds 10% more spreads per click.", req: (s) => s.totalClicks >= 1500, mult: 1.1 },
+  { id: "lightning-click", name: "Lightning Click", icon: "🤸‍♂️", cost: 1600000, desc: "Each level adds 5% more spreads per click.", req: (s) => s.totalClicks >= 2500, mult: 1.05 },
+  { id: "spread-storm", name: "Spread Storm", icon: "🧘‍♂️", cost: 3520000, desc: "Each level adds 10% more spreads per click.", req: (s) => s.totalClicks >= 4000, mult: 1.1 },
+  { id: "click-cannon", name: "Click Cannon", icon: "🤸‍♀️", cost: 7200000, desc: "Each level adds 5% more spreads per click.", req: (s) => s.totalClicks >= 6500, mult: 1.05 },
+  { id: "golden-touch-upgrade", name: "Golden Touch", icon: "🤸‍♂️", cost: 14400000, desc: "Each level multiplies spreads per click by 1.2.", req: (s) => s.totalClicks >= 10000, mult: 1.2 }
 ];
 
 const UPGRADES = [
-  { id: "grandmas-rolling-pin", name: "Spread Rolling Pins", icon: "🧑‍🍳", cost: 500, desc: "Grandmas make 75% more spreads.", req: (s) => (s.buildings.grandma || 0) >= 1, type: "building", target: "grandma", mult: 1.75 },
-  { id: "fertilizer", name: "Spread Magic Fertilizer", icon: "🌱", cost: 5500, desc: "Spread farms are 75% more productive.", req: (s) => (s.buildings.farm || 0) >= 1, type: "building", target: "farm", mult: 1.75 },
-  { id: "laser-drills", name: "Spread Laser Drills", icon: "🔦", cost: 60000, desc: "Spread mines are 75% more productive.", req: (s) => (s.buildings.mine || 0) >= 1, type: "building", target: "mine", mult: 1.75 },
-  { id: "robot-bakers", name: "Spread Robot Makers", icon: "🤖", cost: 650000, desc: "Spread factories are 75% more productive.", req: (s) => (s.buildings.factory || 0) >= 1, type: "building", target: "factory", mult: 1.75 },
-  { id: "interest", name: "Spread Compound Interest", icon: "💰", cost: 7000000, desc: "Spread banks are 75% more productive.", req: (s) => (s.buildings.bank || 0) >= 1, type: "building", target: "bank", mult: 1.75 },
-  { id: "lab-research", name: "Spread Research", icon: "🔬", cost: 990000000, desc: "Spread Labs are 75% more productive.", req: (s) => (s.buildings.lab || 0) >= 1, type: "building", target: "lab", mult: 1.75 },
-  { id: "portal-stabilizer", name: "Spread Stabilizer", icon: "🪄", cost: 15300000000, desc: "Spread Portals are 75% more productive.", req: (s) => (s.buildings.portal || 0) >= 1, type: "building", target: "portal", mult: 1.75 },
-  { id: "galactic-spread", name: "Spread Galactic Boost", icon: "🌠", cost: 225000000000, desc: "Spread Galaxies are 75% more productive.", req: (s) => (s.buildings.galaxy || 0) >= 1, type: "building", target: "galaxy", mult: 1.75 },
-  { id: "dimensional-spread", name: "Spread Dimension Boost", icon: "💫", cost: 3300000000000, desc: "Spread Dimensions are 75% more productive.", req: (s) => (s.buildings.dimension || 0) >= 1, type: "building", target: "dimension", mult: 1.75 },
-  { id: "time-tuner", name: "Spread Time Tuner", icon: "⌚", cost: 42000000000000, desc: "Spread Time Machines are 75% more productive.", req: (s) => (s.buildings["time-machine"] || 0) >= 1, type: "building", target: "time-machine", mult: 1.75 },
-  { id: "antimatter-coils", name: "Spread Antimatter Coils", icon: "🧲", cost: 510000000000000, desc: "Spread Antimatter Condensers are 75% more productive.", req: (s) => (s.buildings.antimatter || 0) >= 1, type: "building", target: "antimatter", mult: 1.75 },
-  { id: "prismatic-lenses", name: "Spread Prismatic Lenses", icon: "🌈", cost: 6300000000000000, desc: "Spread Prisms are 75% more productive.", req: (s) => (s.buildings.prism || 0) >= 1, type: "building", target: "prism", mult: 1.75 },
-  { id: "lucky-dice", name: "Spread Lucky Dice", icon: "🎰", cost: 78000000000000000, desc: "Spread Chancemakers are 75% more productive.", req: (s) => (s.buildings.chancemaker || 0) >= 1, type: "building", target: "chancemaker", mult: 1.75 },
-  { id: "fractal-blueprints", name: "Spread Fractal Blueprints", icon: "🧩", cost: 930000000000000000, desc: "Spread Fractal Engines are 75% more productive.", req: (s) => (s.buildings["fractal-engine"] || 0) >= 1, type: "building", target: "fractal-engine", mult: 1.75 },
-  { id: "spreadster-amplifier", name: "Spreadster Amplifier", icon: "📡", cost: 12600000000000000000, desc: "Spreadsters make 75% more spreads each second.", req: (s) => (s.buildings.spreadster || 0) >= 1, type: "building", target: "spreadster", mult: 1.75 },
-  { id: "spreadsheet-formulas", name: "Spreadsheet Formulas", icon: "🧮", cost: 174000000000000000000, desc: "Spreadsheets make 75% more spreads each second.", req: (s) => (s.buildings.spreadsheet || 0) >= 1, type: "building", target: "spreadsheet", mult: 1.75 },
-  { id: "spreadstergram-filters", name: "Spreadstergram Filters", icon: "🌈", cost: 2550000000000000000000, desc: "Spreadstergrams make 75% more spreads each second.", req: (s) => (s.buildings.spreadstergram || 0) >= 1, type: "building", target: "spreadstergram", mult: 1.75 }
+  { id: "grandmas-rolling-pin", name: "Rolling Pins 🤸‍♀️", icon: "🤸‍♀️", cost: 500, desc: "Spread Grandmas produce 75% more spreads.", req: (s) => (s.buildings.grandma || 0) >= 1, type: "building", target: "grandma", mult: 1.75 },
+  { id: "fertilizer", name: "Rich Compost 🧘", icon: "🧘", cost: 5500, desc: "Nut Farms produce 75% more spreads.", req: (s) => (s.buildings.farm || 0) >= 1, type: "building", target: "farm", mult: 1.75 },
+  { id: "laser-drills", name: "Laser Drills 🤸", icon: "🤸", cost: 60000, desc: "Cocoa Mines produce 75% more spreads.", req: (s) => (s.buildings.mine || 0) >= 1, type: "building", target: "mine", mult: 1.75 },
+  { id: "robot-bakers", name: "Robot Mixers 🤸‍♂️", icon: "🤸‍♂️", cost: 650000, desc: "Spread Factories produce 75% more spreads.", req: (s) => (s.buildings.factory || 0) >= 1, type: "building", target: "factory", mult: 1.75 },
+  { id: "interest", name: "Golden Interest 🧘‍♂️", icon: "🧘‍♂️", cost: 7000000, desc: "Spread Banks produce 75% more spreads.", req: (s) => (s.buildings.bank || 0) >= 1, type: "building", target: "bank", mult: 1.75 },
+  { id: "lab-research", name: "Whisk Labs 🤸‍♀️", icon: "🤸‍♀️", cost: 990000000, desc: "Spread Labs produce 75% more spreads.", req: (s) => (s.buildings.lab || 0) >= 1, type: "building", target: "lab", mult: 1.75 },
+  { id: "portal-stabilizer", name: "Portal Stabilizer 🤸", icon: "🤸", cost: 15300000000, desc: "Spread Portal Mats produce 75% more spreads.", req: (s) => (s.buildings.portal || 0) >= 1, type: "building", target: "portal", mult: 1.75 },
+  { id: "galactic-spread", name: "Starlight Glaze 🧘‍♀️", icon: "🧘‍♀️", cost: 225000000000, desc: "Galaxy Bakeries produce 75% more spreads.", req: (s) => (s.buildings.galaxy || 0) >= 1, type: "building", target: "galaxy", mult: 1.75 },
+  { id: "dimensional-spread", name: "Timeline Seasoning 🤸‍♂️", icon: "🤸‍♂️", cost: 3300000000000, desc: "Dimension Ovens produce 75% more spreads.", req: (s) => (s.buildings.dimension || 0) >= 1, type: "building", target: "dimension", mult: 1.75 },
+  { id: "time-tuner", name: "Chrono Timer 🧘", icon: "🧘", cost: 42000000000000, desc: "Time Machines produce 75% more spreads.", req: (s) => (s.buildings["time-machine"] || 0) >= 1, type: "building", target: "time-machine", mult: 1.75 },
+  { id: "antimatter-coils", name: "Flavor Coils 🤸‍♀️", icon: "🤸‍♀️", cost: 510000000000000, desc: "Antimatter Condensers produce 75% more spreads.", req: (s) => (s.buildings.antimatter || 0) >= 1, type: "building", target: "antimatter", mult: 1.75 },
+  { id: "prismatic-lenses", name: "Prismatic Lenses 🤸", icon: "🤸", cost: 6300000000000000, desc: "Prism Spreaderies produce 75% more spreads.", req: (s) => (s.buildings.prism || 0) >= 1, type: "building", target: "prism", mult: 1.75 },
+  { id: "lucky-dice", name: "Lucky Dice 🧘‍♂️", icon: "🧘‍♂️", cost: 78000000000000000, desc: "Chancemakers produce 75% more spreads.", req: (s) => (s.buildings.chancemaker || 0) >= 1, type: "building", target: "chancemaker", mult: 1.75 },
+  { id: "fractal-blueprints", name: "Recursive Blueprints 🤸‍♂️", icon: "🤸‍♂️", cost: 930000000000000000, desc: "Fractal Engines produce 75% more spreads.", req: (s) => (s.buildings["fractal-engine"] || 0) >= 1, type: "building", target: "fractal-engine", mult: 1.75 },
+  { id: "spreadster-amplifier", name: "Spreadster Amplifier 🧘‍♀️", icon: "🧘‍♀️", cost: 12600000000000000000, desc: "Spreadsters produce 75% more spreads each second.", req: (s) => (s.buildings.spreadster || 0) >= 1, type: "building", target: "spreadster", mult: 1.75 },
+  { id: "spreadsheet-formulas", name: "Spreadsheet Formulas 🤸‍♀️", icon: "🤸‍♀️", cost: 174000000000000000000, desc: "Spreadsheets produce 75% more spreads each second.", req: (s) => (s.buildings.spreadsheet || 0) >= 1, type: "building", target: "spreadsheet", mult: 1.75 },
+  { id: "spreadstergram-filters", name: "Swirl Filters 🤸‍♂️", icon: "🤸‍♂️", cost: 2550000000000000000000, desc: "Spreadstergrams produce 75% more spreads each second.", req: (s) => (s.buildings.spreadstergram || 0) >= 1, type: "building", target: "spreadstergram", mult: 1.75 }
 ];
 
 const ACHIEVEMENTS = [
-  { id: "first-cookie", icon: "✨", name: "First spread", desc: "Make your first spread.", check: (s) => s.totalClicks >= 1 },
-  { id: "busy-hands", icon: "👆", name: "Busy hands", desc: "Make 100 clicks.", check: (s) => s.totalClicks >= 100 },
-  { id: "combo-chef", icon: "🔥", name: "Rhythm spreader", desc: "Reach a ×2.0 click combo.", check: (s) => s.bestCombo >= 2 },
-  { id: "combo-master", icon: "⚡", name: "Fever pitch", desc: "Reach a ×2.5 max click combo.", check: (s) => s.bestCombo >= 2.5 },
-  { id: "dozen", icon: "🥣", name: "Making a batch", desc: "Make 1,000 spreads total.", check: (s) => s.totalCookies >= 1000 },
-  { id: "cookie-mogul", icon: "🧁", name: "Spread mogul", desc: "Make 100,000 spreads total.", check: (s) => s.totalCookies >= 100000 },
-  { id: "sweet-empire", icon: "🏰", name: "Spread empire", desc: "Make 10 million spreads total.", check: (s) => s.totalCookies >= 10000000 },
-  { id: "spread-billionaire", icon: "💎", name: "Spread Billionaire", desc: "Make 1 billion spreads total.", check: (s) => s.totalCookies >= 1000000000 },
-  { id: "spread-trillionaire", icon: "👑", name: "Spread Trillionaire", desc: "Make 1 trillion spreads total.", check: (s) => s.totalCookies >= 1000000000000 },
-  { id: "big-bakery", icon: "🏠", name: "Big spreadery", desc: "Own 25 helpers.", check: (s) => getBuildingCount(s) >= 25 },
-  { id: "spread-collector", icon: "🏪", name: "Spread Collector", desc: "Own 50 helpers.", check: (s) => getBuildingCount(s) >= 50 },
-  { id: "metropolis", icon: "🌆", name: "Spreadopolis", desc: "Own 150 helpers.", check: (s) => getBuildingCount(s) >= 150 },
-  { id: "golden-spotter", icon: "🍯", name: "Golden eye", desc: "Catch your first Golden Jar.", check: (s) => s.goldenJarsCaught >= 1 },
-  { id: "golden-hunter", icon: "🪙", name: "Jar catcher", desc: "Catch 10 Golden Jars.", check: (s) => s.goldenJarsCaught >= 10 },
-  { id: "flavor-artisan", icon: "🍓", name: "Flavor artisan", desc: "Unlock 4 Kitchen Flavors.", check: (s) => s.unlockedFlavors.length >= 4 },
-  { id: "fish-friend", icon: "🐠", name: "Aquarium starter", desc: "Collect 10 unique fish.", check: (s) => getFishUniqueCount(s) >= 10 },
-  { id: "fish-curator", icon: "🫧", name: "Tank curator", desc: "Collect 50 unique fish.", check: (s) => getFishUniqueCount(s) >= 50 },
-  { id: "fish-encyclopedia", icon: "🏆", name: "Master angler", desc: "Collect all 200 standard fish.", check: (s) => getFishUniqueCount(s) >= 200 },
-  { id: "first-rebirth", icon: "🌟", name: "Born anew", desc: "Complete your first Rebirth.", check: (s) => s.rebirthCount >= 1 },
-  { id: "oliva-chosen", icon: "👑", name: "Chosen by Oliva", desc: "Discover the secret fish Oliva.", check: (s) => Boolean(s.fishCollection[SECRET_FISH.id]) },
-  { id: "order-runner", icon: "📜", name: "Order runner", desc: "Complete 5 Spread Orders.", check: (s) => s.ordersCompleted >= 5 },
-  { id: "order-legend", icon: "🎖️", name: "Master caterer", desc: "Complete 25 Spread Orders.", check: (s) => s.ordersCompleted >= 25 },
-  { id: "fish-level-master", icon: "🧬", name: "Fish trainer", desc: "Reach level 10 on any fish.", check: (s) => Object.values(s.fishLevels).some((lvl) => lvl >= 10) },
-  { id: "habitat-architect", icon: "🪸", name: "Reef architect", desc: "Build all 6 aquarium habitats.", check: (s) => FISH_HABITATS.every((h) => Boolean(s.fishHabitats[h.id])) },
-  { id: "flavor-connoisseur", icon: "🍵", name: "Flavor connoisseur", desc: "Unlock all 10 Kitchen Flavors.", check: (s) => s.unlockedFlavors.length >= FLAVORS.length },
-  { id: "rebirth-veteran", icon: "🌠", name: "Star voyager", desc: "Complete 10 Rebirths.", check: (s) => s.rebirthCount >= 10 },
-  { id: "rebirth-immortal", icon: "♾️", name: "Spread immortal", desc: "Complete 100 Rebirths.", check: (s) => s.rebirthCount >= 100 }
+  { id: "first-cookie", icon: "🤸‍♂️", name: "First Spread", desc: "Click the spread jar once.", check: (s) => s.totalClicks >= 1 },
+  { id: "busy-hands", icon: "🤸‍♀️", name: "Busy Hands", desc: "Click 100 times manually.", check: (s) => s.totalClicks >= 100 },
+  { id: "combo-chef", icon: "🤸", name: "Combo Maker", desc: "Reach a ×2.0 click combo.", check: (s) => s.bestCombo >= 2 },
+  { id: "combo-master", icon: "🧘‍♂️", name: "Combo Master", desc: "Reach the maximum ×2.5 combo.", check: (s) => s.bestCombo >= 2.5 },
+  { id: "dozen", icon: "🧘‍♀️", name: "Warm Pantry", desc: "Bake 1,000 spreads total.", check: (s) => s.totalCookies >= 1000 },
+  { id: "cookie-mogul", icon: "🤸‍♂️", name: "Spread Mogul", desc: "Bake 100,000 spreads total.", check: (s) => s.totalCookies >= 100000 },
+  { id: "sweet-empire", icon: "🧘", name: "Spread Empire", desc: "Bake 10 million spreads total.", check: (s) => s.totalCookies >= 10000000 },
+  { id: "spread-billionaire", icon: "🤸‍♀️", name: "Spread Billionaire", desc: "Bake 1 billion spreads total.", check: (s) => s.totalCookies >= 1000000000 },
+  { id: "spread-trillionaire", icon: "🤸", name: "Spread Trillionaire", desc: "Bake 1 trillion spreads total.", check: (s) => s.totalCookies >= 1000000000000 },
+  { id: "big-bakery", icon: "🧘‍♂️", name: "Busy Bakery", desc: "Own 25 helpers & shops.", check: (s) => getBuildingCount(s) >= 25 },
+  { id: "spread-collector", icon: "🤸‍♂️", name: "Shop Collector", desc: "Own 50 helpers & shops.", check: (s) => getBuildingCount(s) >= 50 },
+  { id: "metropolis", icon: "🤸‍♀️", name: "Spread Metropolis", desc: "Own 150 helpers & shops.", check: (s) => getBuildingCount(s) >= 150 },
+  { id: "golden-spotter", icon: "🧘‍♀️", name: "Golden Eye", desc: "Catch your first Golden Jar.", check: (s) => s.goldenJarsCaught >= 1 },
+  { id: "golden-hunter", icon: "🤸", name: "Golden Hunter", desc: "Catch 10 Golden Jars.", check: (s) => s.goldenJarsCaught >= 10 },
+  { id: "flavor-artisan", icon: "🧘", name: "Flavor Artisan", desc: "Unlock 4 Kitchen Flavors.", check: (s) => s.unlockedFlavors.length >= 4 },
+  { id: "fish-friend", icon: "🤸‍♂️", name: "Aquarium Friend", desc: "Collect 10 unique fish.", check: (s) => getFishUniqueCount(s) >= 10 },
+  { id: "fish-curator", icon: "🤸‍♀️", name: "Tank Curator", desc: "Collect 50 unique fish.", check: (s) => getFishUniqueCount(s) >= 50 },
+  { id: "fish-encyclopedia", icon: "🧘‍♂️", name: "Master Collector", desc: "Collect all 200 standard fish.", check: (s) => getFishUniqueCount(s) >= 200 },
+  { id: "first-rebirth", icon: "🤸", name: "Fresh Batch", desc: "Complete your first Rebirth.", check: (s) => s.rebirthCount >= 1 },
+  { id: "oliva-chosen", icon: "🧘‍♀️", name: "Chosen by Oliva", desc: "Discover the secret fish Oliva.", check: (s) => Boolean(s.fishCollection[SECRET_FISH.id]) },
+  { id: "order-runner", icon: "🤸‍♂️", name: "Order Runner", desc: "Complete 5 Bakery Orders.", check: (s) => s.ordersCompleted >= 5 },
+  { id: "order-legend", icon: "🤸‍♀️", name: "Master Baker", desc: "Complete 25 Bakery Orders.", check: (s) => s.ordersCompleted >= 25 },
+  { id: "fish-level-master", icon: "🧘", name: "Fish Trainer", desc: "Reach level 10 on any swimmer.", check: (s) => Object.values(s.fishLevels).some((lvl) => lvl >= 10) },
+  { id: "habitat-architect", icon: "🤸", name: "Reef Architect", desc: "Build all 6 aquarium habitats.", check: (s) => FISH_HABITATS.every((h) => Boolean(s.fishHabitats[h.id])) },
+  { id: "flavor-connoisseur", icon: "🧘‍♂️", name: "Flavor Connoisseur", desc: "Unlock all 10 Kitchen Flavors.", check: (s) => s.unlockedFlavors.length >= FLAVORS.length },
+  { id: "rebirth-veteran", icon: "🤸‍♂️", name: "Rebirth Veteran", desc: "Complete 10 Rebirths.", check: (s) => s.rebirthCount >= 10 },
+  { id: "rebirth-immortal", icon: "🤸‍♀️", name: "Immortal Baker", desc: "Complete 100 Rebirths.", check: (s) => s.rebirthCount >= 100 },
+  { id: "split-180", icon: "🤸‍♂️", name: "180° Full Flex", desc: "Reach a 180° full split on the flex gauge.", check: (s) => getSplitAngleInfo(s).angle >= 180 },
+  { id: "wheel-winner", icon: "🧘‍♀️", name: "Wheel Spinner", desc: "Spin the Prize Wheel 5 times.", check: (s) => (s.totalWheelSpins || 0) >= 5 },
+  { id: "pnf-master", icon: "🤸", name: "Deep Split Hold", desc: "Complete 3 Deep Split Holds.", check: (s) => (s.pnfHoldsCompleted || 0) >= 3 }
 ];
 
 const HEADLINES = [
-  { min: 0, text: "Fresh spreads, straight from the jar." },
-  { min: 50, text: "Local spread maker's jar mysteriously starts refilling itself." },
-  { min: 500, text: "Grandmas everywhere report a sudden rise in spread demand." },
-  { min: 5000, text: "Spread farms flourish as the world's taste for spreads grows." },
-  { min: 50000, text: "Experts confirm: there is no such thing as too many spreads." },
-  { min: 500000, text: "Your spreadery is now visible from space." },
-  { min: 100000000, text: "Economists adopt the Spread Standard across three continents." }
+  { min: 0, text: "Warm sourdough, swirling spatulas & refilling jars at The Little Spreadery. 🤸‍♂️" },
+  { min: 50, text: "Neighbors line up outside The Little Spreadery for fresh hazelnut toast swirls. 🤸‍♀️" },
+  { min: 500, text: "Spread Grandmas invent a zero-spill spatula flip — mid-cartwheel! 🤸" },
+  { min: 2500, text: "Morning toast aroma draws crowds from three bakeries over to your tasting bar. 🍯 🧘‍♂️" },
+  { min: 5000, text: "Nut Farms plant three new orchards to keep your copper kettles bubbling. 🥐 🧘‍♂️" },
+  { min: 25000, text: "Spreadery tasting flights sell out in minutes as caramel batches simmer all afternoon. 🤸‍♀️" },
+  { min: 50000, text: "Food critics award The Little Spreadery five golden spoons and a 10/10 floor flip. 🧘‍♀️" },
+  { min: 500000, text: "Your Little Spreadery now ships warm artisan glass jars to six continents. 🤸‍♂️" },
+  { min: 5000000, text: "Bakers celebrate National Spreadery Day with synchronized whisk routines. 🤸 🧘‍♀️" },
+  { min: 100000000, text: "Space stations request emergency shipments of your Cosmic Honey spreadery jars. 🧘" }
 ];
 
 const MILESTONES = [
-  { title: "Make 100 clicks", target: 100, unit: "clicks", value: () => state.totalClicks },
-  { title: "Make 500 clicks", target: 500, unit: "clicks", value: () => state.totalClicks },
-  { title: "Make 1,000 clicks", target: 1000, unit: "clicks", value: () => state.totalClicks },
-  { title: "Earn 1,000 spreads", target: 1000, unit: "spreads", value: () => state.totalCookies },
-  { title: "Make 5,000 clicks", target: 5000, unit: "clicks", value: () => state.totalClicks },
-  { title: "Earn 1 million spreads", target: 1000000, unit: "spreads", value: () => state.totalCookies },
-  { title: "Own 25 helpers", target: 25, unit: "helpers", value: () => getBuildingCount() },
-  { title: "Collect 10 fish", target: 10, unit: "fish", value: () => getFishUniqueCount() },
-  { title: "Earn 1 billion spreads", target: 1000000000, unit: "spreads", value: () => state.totalCookies },
-  { title: "Own 100 helpers", target: 100, unit: "helpers", value: () => getBuildingCount() },
-  { title: "Collect 50 fish", target: 50, unit: "fish", value: () => getFishUniqueCount() },
-  { title: "Collect all 200 fish", target: 200, unit: "fish", value: () => getFishUniqueCount() }
+  { title: "Swirl 100 clicks 🤸‍♂️", target: 100, unit: "clicks", value: () => state.totalClicks },
+  { title: "Swirl 500 clicks 🤸‍♀️", target: 500, unit: "clicks", value: () => state.totalClicks },
+  { title: "Swirl 1,000 clicks 🤸", target: 1000, unit: "clicks", value: () => state.totalClicks },
+  { title: "Jar 1,000 warm spreads 🧘‍♂️", target: 1000, unit: "spreads", value: () => state.totalCookies },
+  { title: "Swirl 5,000 clicks 🤸‍♂️", target: 5000, unit: "clicks", value: () => state.totalClicks },
+  { title: "Bake 1M spreadery jars 🧘‍♀️", target: 1000000, unit: "spreads", value: () => state.totalCookies },
+  { title: "Hire 25 bakery helpers 🤸‍♀️", target: 25, unit: "helpers", value: () => getBuildingCount() },
+  { title: "Collect 10 tank fish 🤸", target: 10, unit: "fish", value: () => getFishUniqueCount() },
+  { title: "Bake 1B spreadery jars 🧘", target: 1000000000, unit: "spreads", value: () => state.totalCookies },
+  { title: "Hire 100 bakery helpers 🤸‍♂️", target: 100, unit: "helpers", value: () => getBuildingCount() },
+  { title: "Collect 50 tank fish 🧘‍♂️", target: 50, unit: "fish", value: () => getFishUniqueCount() },
+  { title: "Collect all 200 fish 🤸‍♀️", target: 200, unit: "fish", value: () => getFishUniqueCount() }
 ];
 
 const FISH_TIERS = [
@@ -244,18 +250,18 @@ const FISH_TIER_CLICK_PERCENT = {
 };
 const THEMES = [
   { id: "warm", label: "🎨 Warm", className: "" },
-  { id: "espresso", label: "🌙 Espresso", className: "theme-espresso" },
+  { id: "espresso", label: "☕ Espresso", className: "theme-espresso" },
   { id: "matcha", label: "🍵 Matcha", className: "theme-matcha" }
 ];
 
 const REBIRTH_UPGRADES = [
-  { id: "star-touched-click", name: "Star-Touched Click", icon: "✨", unlockAt: 1, cost: 1, clickMultiplier: 1.1, productionMultiplier: 1, desc: "+10% click power." },
-  { id: "steady-star-bakery", name: "Steady Star Bakery", icon: "🌠", unlockAt: 3, cost: 2, clickMultiplier: 1, productionMultiplier: 1.1, desc: "+10% building production." },
-  { id: "orbiting-fingertips", name: "Orbiting Fingertips", icon: "🪐", unlockAt: 5, cost: 3, clickMultiplier: 1.15, productionMultiplier: 1, desc: "+15% click power." },
-  { id: "nova-ovens", name: "Nova Ovens", icon: "🌌", unlockAt: 10, cost: 5, clickMultiplier: 1, productionMultiplier: 1.15, desc: "+15% building production." },
-  { id: "starlight-synergy", name: "Starlight Synergy", icon: "🌟", unlockAt: 25, cost: 10, clickMultiplier: 1.2, productionMultiplier: 1.2, desc: "+20% click power and production." },
-  { id: "galactic-recipe", name: "Galactic Recipe", icon: "🌌", unlockAt: 50, cost: 20, clickMultiplier: 1.25, productionMultiplier: 1.25, desc: "+25% click power and production." },
-  { id: "rebirth-mastery", name: "Rebirth Mastery", icon: "👑", unlockAt: 100, cost: 30, clickMultiplier: 1.35, productionMultiplier: 1.35, desc: "+35% click power and production." }
+  { id: "star-touched-click", name: "Star-Touched Spoon 🤸‍♂️", icon: "🤸‍♂️", unlockAt: 1, cost: 1, clickMultiplier: 1.1, productionMultiplier: 1, desc: "+10% click power." },
+  { id: "steady-star-bakery", name: "Steady Star Bakery 🤸‍♀️", icon: "🤸‍♀️", unlockAt: 3, cost: 2, clickMultiplier: 1, productionMultiplier: 1.1, desc: "+10% helper production." },
+  { id: "orbiting-fingertips", name: "Orbiting Fingertips 🤸", icon: "🤸", unlockAt: 5, cost: 3, clickMultiplier: 1.15, productionMultiplier: 1, desc: "+15% click power." },
+  { id: "nova-ovens", name: "Nova Ovens 🧘‍♂️", icon: "🧘‍♂️", unlockAt: 10, cost: 5, clickMultiplier: 1, productionMultiplier: 1.15, desc: "+15% helper production." },
+  { id: "starlight-synergy", name: "Starlight Synergy 🧘‍♀️", icon: "🧘‍♀️", unlockAt: 25, cost: 10, clickMultiplier: 1.2, productionMultiplier: 1.2, desc: "+20% click power and production." },
+  { id: "galactic-recipe", name: "Galactic Recipe 🧘", icon: "🧘", unlockAt: 50, cost: 20, clickMultiplier: 1.25, productionMultiplier: 1.25, desc: "+25% click power and production." },
+  { id: "rebirth-mastery", name: "Rebirth Mastery 🤸‍♂️", icon: "🤸‍♂️", unlockAt: 100, cost: 30, clickMultiplier: 1.35, productionMultiplier: 1.35, desc: "+35% click power and production." }
 ];
 
 function createDefaultState() {
@@ -294,6 +300,14 @@ function createDefaultState() {
     clickCooldownEnabled: false,
     lastAcceptedSpreadClickAt: 0,
     whiteoutScreen: false,
+    beatModeEnabled: false,
+    wheelSpins: 1,
+    wheelRotation: 0,
+    totalWheelSpins: 0,
+    dailyStreak: 0,
+    dailyClaimDate: "",
+    highestSplitRank: 0,
+    pnfHoldsCompleted: 0,
     lastSaved: Date.now()
   };
 }
@@ -308,9 +322,13 @@ function sanitizeStateObject(saved) {
   ["cookies", "totalCookies", "totalClicks", "playTimeSeconds", "lastSaved"].forEach((key) => {
     if (!Number.isFinite(s[key]) || s[key] < 0) s[key] = defaults[key];
   });
-  ["rebirthCount", "rebirthPoints", "goldenJarsCaught", "freeFishRollTokens", "ordersCompleted"].forEach((key) => {
+  ["rebirthCount", "rebirthPoints", "goldenJarsCaught", "freeFishRollTokens", "ordersCompleted", "wheelSpins", "totalWheelSpins", "dailyStreak", "highestSplitRank", "pnfHoldsCompleted"].forEach((key) => {
     if (!Number.isSafeInteger(s[key]) || s[key] < 0) s[key] = defaults[key];
   });
+  s.dailyStreak = Math.min(7, s.dailyStreak);
+  s.beatModeEnabled = Boolean(s.beatModeEnabled);
+  if (!Number.isFinite(s.wheelRotation)) s.wheelRotation = 0;
+  if (typeof s.dailyClaimDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(s.dailyClaimDate)) s.dailyClaimDate = "";
   if (!Number.isFinite(s.bestCombo) || s.bestCombo < 1) s.bestCombo = 1;
   s.rebirthCount = Math.min(MAX_REBIRTHS, s.rebirthCount);
   if (!Array.isArray(s.rebirthUpgrades)) s.rebirthUpgrades = [];
@@ -430,6 +448,19 @@ let fxHeight = window.innerHeight;
 let fxDpr = Math.min(2, window.devicePixelRatio || 1);
 let ambientMoteTimer = 0;
 let countBumpTimer = null;
+let lastTrailSparkAt = 0;
+let splitSurgeEndTime = 0;
+let splitHoldActive = false;
+let splitHoldCharge = 0;
+let isWheelSpinning = false;
+let lastBeatIndex = -1;
+let beatHitTimeout = null;
+let temporaryLegSpreadBoost = 0;
+let lastMilestoneIndex = -1;
+let jarPulseTimeout = null;
+const heldActivationKeys = new Set();
+let enterClickConsumed = false;
+let spaceClickConsumed = false;
 
 const SPREAD_CHEAT_CODE = "TimmyTuffJeff";
 const ENABLE_COOLDOWN_CODE = "BADHOG";
@@ -516,9 +547,37 @@ const els = {
   frenzyBanner: document.getElementById("frenzy-banner"),
   frenzyTimer: document.getElementById("frenzy-timer"),
   themeToggleBtn: document.getElementById("theme-toggle-btn"),
+  toggleBeatBtn: document.getElementById("toggle-beat-btn"),
   soundButton: document.getElementById("toggle-sfx-btn"),
   voiceButton: document.getElementById("toggle-voice-btn"),
+  backupBtn: document.getElementById("backup-btn"),
   resetButton: document.getElementById("reset-btn"),
+  splitRankLabel: document.getElementById("split-rank-label"),
+  splitArcFill: document.getElementById("split-arc-fill"),
+  splitLegLeft: document.getElementById("split-leg-left"),
+  splitLegRight: document.getElementById("split-leg-right"),
+  splitAngleValue: document.getElementById("split-angle-value"),
+  splitAngleSub: document.getElementById("split-angle-sub"),
+  beatRing: document.getElementById("beat-ring"),
+  splitHoldBtn: document.getElementById("split-hold-btn"),
+  splitHoldLabel: document.getElementById("split-hold-label"),
+  splitHoldPct: document.getElementById("split-hold-pct"),
+  splitHoldFill: document.getElementById("split-hold-fill"),
+  wheelSpinsBadge: document.getElementById("wheel-spins-badge"),
+  dailyStreakLabel: document.getElementById("daily-streak-label"),
+  dailyClaimBtn: document.getElementById("daily-claim-btn"),
+  dailyStreakDays: document.getElementById("daily-streak-days"),
+  dailyStreakStatus: document.getElementById("daily-streak-status"),
+  prizeWheel: document.getElementById("prize-wheel"),
+  spinWheelBtn: document.getElementById("spin-wheel-btn"),
+  wheelResultStatus: document.getElementById("wheel-result-status"),
+  buyAllUpgradesBtn: document.getElementById("buy-all-upgrades-btn"),
+  backupModal: document.getElementById("backup-modal"),
+  backupClose: document.getElementById("backup-close"),
+  backupCode: document.getElementById("backup-code"),
+  backupCopyBtn: document.getElementById("backup-copy-btn"),
+  backupImportBtn: document.getElementById("backup-import-btn"),
+  backupStatus: document.getElementById("backup-status"),
   buildingSummary: document.getElementById("building-summary"),
   confirmModal: document.getElementById("confirm-modal"),
   confirmTitle: document.getElementById("confirm-title"),
@@ -571,6 +630,7 @@ const els = {
   adminAdd100Fish: document.getElementById("admin-add-100-fish"),
   adminAllCursors: document.getElementById("admin-all-cursors"),
   adminGrantTokens: document.getElementById("admin-grant-tokens"),
+  adminGrantSpins: document.getElementById("admin-grant-spins"),
   adminMaxLuck: document.getElementById("admin-max-luck"),
   adminResetDailyRoll: document.getElementById("admin-reset-daily-roll"),
   adminMaxRebirths: document.getElementById("admin-max-rebirths"),
@@ -777,11 +837,13 @@ function getFishTierOdds() {
 
 function getBaseBuildingCps(building) {
   const boost = Date.now() < productionBoostEndTime ? 1.5 : 1;
+  const splitSurge = Date.now() < splitSurgeEndTime ? 1.5 : 1;
   const flavor = getActiveFlavor();
   return building.cps
     * getBuildingMultiplier(building.id)
     * frenzyMultiplier
     * boost
+    * splitSurge
     * getFishProductionMultiplier()
     * getRebirthMultiplier()
     * getRebirthUpgradeMultiplier("production")
@@ -802,6 +864,7 @@ function getCookiesPerClick() {
   const cursor = CURSORS.find((item) => item.id === state.equippedCursor) || CURSORS[0];
   const flavor = getActiveFlavor();
   const boost = Date.now() < clickBoostEndTime ? 1.5 : 1;
+  const splitSurge = Date.now() < splitSurgeEndTime ? 1.5 : 1;
   return Math.max(1, Math.floor(Math.min(
     1e100,
     baseClick
@@ -810,6 +873,7 @@ function getCookiesPerClick() {
     * frenzyMultiplier
     * clickFrenzyMultiplier
     * boost
+    * splitSurge
     * getComboMultiplier()
     * getFishClickMultiplier()
     * getRebirthMultiplier()
@@ -881,7 +945,7 @@ function updateEquippedCursorBadge() {
 
 function updateComboUI() {
   const mult = getComboMultiplier();
-  const label = mult >= 2.5 ? "FEVER!" : mult >= 2.0 ? "Blazing" : mult >= 1.5 ? "Hot" : mult > 1 ? "Warming" : "Ready";
+  const label = mult >= 2.5 ? "FEVER!" : mult >= 2.0 ? "On Fire" : mult >= 1.5 ? "Sizzling" : mult > 1 ? "Warm" : "Ready";
   els.comboBadge.textContent = `×${mult.toFixed(mult % 1 === 0 ? 1 : 2)} · ${label}`;
   els.comboFill.style.width = `${Math.min(100, Math.max(0, comboCharge))}%`;
   els.comboMeter.classList.toggle("hot", mult >= 2.0);
@@ -891,11 +955,27 @@ function updateComboUI() {
   }
 }
 
-function updateMilestone() {
-  const milestone = MILESTONES.find((item) => item.value() < item.target);
+function updateMilestone(celebrate = true) {
+  const idx = MILESTONES.findIndex((item) => item.value() < item.target);
+  const currentIndex = idx < 0 ? MILESTONES.length : idx;
+  if (celebrate && lastMilestoneIndex >= 0 && currentIndex > lastMilestoneIndex) {
+    const tracker = els.milestoneBar ? els.milestoneBar.closest(".milestone-tracker") : null;
+    if (tracker) {
+      tracker.classList.remove("milestone-celebrate");
+      void tracker.offsetWidth;
+      tracker.classList.add("milestone-celebrate");
+    }
+    spawnMiniBurstAtElement(els.milestoneBar, 18);
+    launchConfetti(28);
+    playChime([523.25, 659.25, 783.99]);
+    showToast(`🏅 Milestone complete! Next spreadery goal unlocked! 🤸‍♂️`);
+  }
+  lastMilestoneIndex = currentIndex;
+
+  const milestone = idx >= 0 ? MILESTONES[idx] : null;
   if (!milestone) {
-    els.milestoneTitle.textContent = "Every milestone reached!";
-    els.milestoneProgress.textContent = "You're a spread legend.";
+    els.milestoneTitle.textContent = "Every milestone reached! 🤸‍♂️";
+    els.milestoneProgress.textContent = "You're a spreadery legend. 🍯";
     els.milestoneFill.style.width = "100%";
     els.milestoneBar.setAttribute("aria-valuenow", "100");
     return;
@@ -909,6 +989,439 @@ function updateMilestone() {
   els.milestoneBar.setAttribute("aria-valuenow", String(percent));
 }
 
+const SPLIT_RANKS = [
+  { minAngle: 45, label: "Warm-Up Straddle 🤸‍♂️", hint: "Keep spreading toward 180°! 🤸‍♀️" },
+  { minAngle: 75, label: "Seated V-Stretch 🧘‍♂️", hint: "Loosening up nicely — keep clicking! 🤸" },
+  { minAngle: 105, label: "Wide Straddle (105°) 🤸‍♀️", hint: "Past a right angle! Headed for flat splits." },
+  { minAngle: 135, label: "Deep Middle Split 🧘‍♀️", hint: "Awesome form — mat contact is getting close! 🤸‍♂️" },
+  { minAngle: 160, label: "Near-Floor Split 🤸", hint: "Only inches above the mat! 🧘" },
+  { minAngle: 180, label: "180° Full Splits! 🤸‍♂️", hint: "Flat 180° splits unlocked — reach for oversplit! 🤸‍♀️" },
+  { minAngle: 195, label: "195° Oversplit! 🤸‍♀️", hint: "World-champion flexibility achieved! 🤸‍♂️ 🧘‍♂️" }
+];
+
+function getSplitAngleInfo(game = state) {
+  const total = Math.max(0, game.totalCookies || 0);
+  const clicks = Math.max(0, game.totalClicks || 0);
+  const rebirths = Math.max(0, game.rebirthCount || 0);
+  const pnf = Math.max(0, game.pnfHoldsCompleted || 0);
+  const score = Math.log10(1 + total) * 9.5 + rebirths * 4 + pnf * 1.2 + Math.min(20, clicks * 0.012);
+  const angle = Math.min(210, 45 + score);
+  let rankIndex = 0;
+  SPLIT_RANKS.forEach((rank, idx) => {
+    if (angle >= rank.minAngle) rankIndex = idx;
+  });
+  return {
+    angle,
+    rankIndex,
+    rank: SPLIT_RANKS[rankIndex],
+    pct: Math.min(100, Math.max(0, ((angle - 45) / 165) * 100))
+  };
+}
+
+function updateSplitGauge(announceRankUp = true) {
+  if (!els.splitAngleValue || !els.splitArcFill) return;
+  const info = getSplitAngleInfo();
+  els.splitAngleValue.textContent = `${info.angle.toFixed(1)}°`;
+  els.splitRankLabel.textContent = info.rank.label;
+  els.splitAngleSub.textContent = info.rank.hint;
+  els.splitArcFill.style.strokeDashoffset = (100 - info.pct).toFixed(2);
+  els.splitArcFill.style.stroke = info.angle >= 180 ? "#d97706" : "var(--caramel)";
+  const gaugeCard = els.splitAngleValue.closest(".split-gauge-card");
+  if (gaugeCard) gaugeCard.classList.toggle("full-flex", info.angle >= 180);
+
+  if (els.splitLegLeft && els.splitLegRight) {
+    const visualAngle = Math.min(208, info.angle + temporaryLegSpreadBoost);
+    const halfRad = (visualAngle / 2) * (Math.PI / 180);
+    const legLen = 22;
+    const dx = Math.sin(halfRad) * legLen;
+    const dy = Math.cos(halfRad) * legLen;
+    els.splitLegLeft.setAttribute("x2", (60 - dx).toFixed(1));
+    els.splitLegLeft.setAttribute("y2", (44 + dy).toFixed(1));
+    els.splitLegRight.setAttribute("x2", (60 + dx).toFixed(1));
+    els.splitLegRight.setAttribute("y2", (44 + dy).toFixed(1));
+    const legColor = info.angle >= 180 ? "#d97706" : "var(--caramel)";
+    els.splitLegLeft.style.stroke = legColor;
+    els.splitLegRight.style.stroke = legColor;
+  }
+
+  if (announceRankUp && info.rankIndex > state.highestSplitRank) {
+    state.highestSplitRank = info.rankIndex;
+    showToast(`🤸‍♂️ Flex milestone unlocked: ${info.rank.label}!`);
+    playChime([523.25, 659.25, 783.99, 1046.5]);
+    launchConfetti(32);
+    launchFireworks(2);
+  }
+}
+
+function syncBeatUI() {
+  const on = Boolean(state.beatModeEnabled);
+  if (els.toggleBeatBtn) {
+    els.toggleBeatBtn.setAttribute("aria-pressed", String(on));
+    els.toggleBeatBtn.textContent = on ? "🎵 Beat on" : "🎵 Beat off";
+  }
+  if (els.beatRing) {
+    els.beatRing.classList.toggle("active", on);
+  }
+}
+
+function updateSplitHoldUI() {
+  if (!els.splitHoldBtn || !els.splitHoldFill || !els.splitHoldLabel || !els.splitHoldPct) return;
+  const surgeLeft = Math.max(0, Math.ceil((splitSurgeEndTime - Date.now()) / 1000));
+  els.splitHoldBtn.classList.toggle("holding", splitHoldActive);
+  els.splitHoldBtn.classList.toggle("surging", surgeLeft > 0);
+  els.splitHoldFill.style.width = `${Math.min(100, Math.max(0, splitHoldCharge)).toFixed(1)}%`;
+  if (splitHoldActive) {
+    els.splitHoldLabel.textContent = "🧘‍♂️ Holding Deep Split...";
+    els.splitHoldPct.textContent = `${Math.floor(splitHoldCharge)}%`;
+  } else if (surgeLeft > 0) {
+    els.splitHoldLabel.textContent = "🤸‍♀️ Split Surge Active (+50% Power)";
+    els.splitHoldPct.textContent = `${surgeLeft}s`;
+  } else {
+    els.splitHoldLabel.textContent = "🤸‍♂️ Hold Deep Split (2.5s · +50% Power)";
+    els.splitHoldPct.textContent = "Ready";
+  }
+}
+
+function startSplitHold() {
+  if (splitHoldActive) return;
+  splitHoldActive = true;
+  updateSplitHoldUI();
+}
+
+function stopSplitHold() {
+  if (!splitHoldActive) return;
+  splitHoldActive = false;
+  updateSplitHoldUI();
+}
+
+function completeSplitHold() {
+  splitHoldActive = false;
+  splitHoldCharge = 0;
+  splitSurgeEndTime = Date.now() + 20000;
+  state.pnfHoldsCompleted = (state.pnfHoldsCompleted || 0) + 1;
+  const holdReward = Math.min(MAX_SPREAD_GRANT, Math.max(150, Math.floor(getCookiesPerClick() * 18 + getCookiesPerSecond() * 8)));
+  state.cookies = Math.min(Number.MAX_VALUE, state.cookies + holdReward);
+  state.totalCookies = Math.min(Number.MAX_VALUE, state.totalCookies + holdReward);
+  temporaryLegSpreadBoost = 16;
+  playChime([523.25, 659.25, 783.99, 1046.5]);
+  launchConfetti(34);
+  launchFireworks(2);
+  spawnMiniBurstAtElement(els.splitHoldBtn, 22);
+  showToast(`🤸‍♂️ Deep Split Hold complete! +${formatNumber(holdReward)} spreads & +50% Power (20s)!`);
+  updateSplitHoldUI();
+  updateSplitGauge();
+  checkAchievements();
+  updateMilestone();
+  updateShopAffordability();
+  saveGame();
+}
+
+const DAILY_STREAK_REWARDS = [
+  { day: 1, icon: "🤸‍♂️", label: "1 Spin", desc: "+1 Prize Spin & 1K spreads", grant: (game) => { game.wheelSpins += 1; return 1000; } },
+  { day: 2, icon: "🤸‍♀️", label: "1 Spin+", desc: "+1 Prize Spin & 2.5K spreads", grant: (game) => { game.wheelSpins += 1; return 2500; } },
+  { day: 3, icon: "🧘‍♂️", label: "1 Token", desc: "+1 Tank Token & 5K spreads", grant: (game) => { game.freeFishRollTokens += 1; return 5000; } },
+  { day: 4, icon: "🤸", label: "2 Spins", desc: "+2 Prize Spins & 15K spreads", grant: (game) => { game.wheelSpins += 2; return 15000; } },
+  { day: 5, icon: "🧘‍♀️", label: "2 Tokens", desc: "+2 Tank Tokens & 35K spreads", grant: (game) => { game.freeFishRollTokens += 2; return 35000; } },
+  { day: 6, icon: "🧘", label: "2 Spins+", desc: "+2 Prize Spins & 75K spreads", grant: (game) => { game.wheelSpins += 2; return 75000; } },
+  { day: 7, icon: "🤸‍♂️", label: "JACKPOT · 5× + 3 Spins", desc: "5× Frenzy + 3 Spins + 2 Tokens!", grant: (game) => { game.wheelSpins += 3; game.freeFishRollTokens += 2; startSugarFrenzy(20000); return 150000; } }
+];
+
+function daysBetweenDateKeys(prevKey, currKey) {
+  if (!prevKey || !currKey) return Infinity;
+  const [py, pm, pd] = prevKey.split("-").map(Number);
+  const [cy, cm, cd] = currKey.split("-").map(Number);
+  const prevUtc = Date.UTC(py, pm - 1, pd);
+  const currUtc = Date.UTC(cy, cm - 1, cd);
+  return Math.round((currUtc - prevUtc) / 86400000);
+}
+
+function renderDailyCheckIn() {
+  if (!els.dailyStreakDays || !els.dailyClaimBtn || !els.dailyStreakStatus) return;
+  const todayKey = getLocalDateKey();
+  const alreadyClaimedToday = state.dailyClaimDate === todayKey;
+  const dayGap = daysBetweenDateKeys(state.dailyClaimDate, todayKey);
+  const effectiveStreak = !state.dailyClaimDate
+    ? 0
+    : alreadyClaimedToday
+      ? state.dailyStreak
+      : dayGap === 1
+        ? (state.dailyStreak >= 7 ? 0 : state.dailyStreak)
+        : 0;
+  const activeDayNumber = alreadyClaimedToday ? effectiveStreak : effectiveStreak + 1;
+
+  els.dailyStreakDays.replaceChildren();
+  DAILY_STREAK_REWARDS.forEach((reward) => {
+    const tile = document.createElement("div");
+    const isClaimed = reward.day <= effectiveStreak;
+    const isCurrent = !alreadyClaimedToday && reward.day === activeDayNumber;
+    const isJackpot = reward.day === 7;
+    tile.className = `streak-day-tile${isClaimed ? " claimed" : ""}${isCurrent ? " current" : ""}${isJackpot ? " jackpot" : ""}`;
+    tile.title = `Day ${reward.day}: ${reward.desc}`;
+
+    const icon = document.createElement("span");
+    icon.className = "streak-day-icon";
+    icon.textContent = reward.icon;
+
+    const num = document.createElement("span");
+    num.className = "streak-day-num";
+    num.textContent = isClaimed ? `✓ Day ${reward.day}` : `Day ${reward.day}`;
+
+    const label = document.createElement("span");
+    label.className = "streak-day-reward";
+    label.textContent = reward.label;
+
+    tile.append(icon, num, label);
+    els.dailyStreakDays.appendChild(tile);
+  });
+
+  els.dailyStreakLabel.textContent = `7-Day Spread Streak (${effectiveStreak}/7) 🤸‍♀️`;
+  els.dailyClaimBtn.disabled = alreadyClaimedToday;
+  els.dailyClaimBtn.textContent = alreadyClaimedToday ? "✓ Checked In Today 🤸" : `🎁 Claim Day ${activeDayNumber} 🤸‍♂️`;
+  els.dailyStreakStatus.textContent = alreadyClaimedToday
+    ? `Day ${state.dailyStreak} checked in at the spreadery counter! Come back tomorrow for Day ${state.dailyStreak >= 7 ? 1 : state.dailyStreak + 1} 🤸‍♀️.`
+    : `Ready to claim Day ${activeDayNumber}: ${DAILY_STREAK_REWARDS[activeDayNumber - 1].desc}`;
+}
+
+function claimDailyCheckIn() {
+  const todayKey = getLocalDateKey();
+  if (state.dailyClaimDate === todayKey) return;
+  const dayGap = daysBetweenDateKeys(state.dailyClaimDate, todayKey);
+  const nextStreak = state.dailyClaimDate && dayGap === 1 && state.dailyStreak < 7 ? state.dailyStreak + 1 : 1;
+  const rewardDef = DAILY_STREAK_REWARDS[nextStreak - 1];
+  const baseGain = rewardDef.grant(state);
+  const scaledGain = Math.min(MAX_SPREAD_GRANT, Math.max(baseGain, Math.floor(getCookiesPerSecond() * 40 + getCookiesPerClick() * 30)));
+  state.cookies = Math.min(Number.MAX_VALUE, state.cookies + scaledGain);
+  state.totalCookies = Math.min(Number.MAX_VALUE, state.totalCookies + scaledGain);
+  state.dailyStreak = nextStreak;
+  state.dailyClaimDate = todayKey;
+
+  playChime([523.25, 659.25, 783.99, 1046.5]);
+  launchConfetti(42);
+  launchFireworks(2);
+  launchSpreadRain(20);
+  spawnMiniBurstAtElement(els.dailyClaimBtn, 22);
+  showToast(`🤸‍♂️ Day ${nextStreak} Pantry Check-In claimed! ${rewardDef.desc} (+${formatNumber(scaledGain)} spreads)`);
+  refreshAfterAdminChange();
+}
+
+const WHEEL_PRIZES = [
+  { icon: "🤸‍♂️", label: "2× Burst", run: () => {
+    const gain = Math.min(MAX_SPREAD_GRANT, Math.max(1000, Math.floor(getCookiesPerSecond() * 45 + getCookiesPerClick() * 60)));
+    state.cookies = Math.min(Number.MAX_VALUE, state.cookies + gain);
+    state.totalCookies = Math.min(Number.MAX_VALUE, state.totalCookies + gain);
+    return `🤸‍♂️ Spread Burst! +${formatNumber(gain)} spreads!`;
+  }},
+  { icon: "🏅", label: "5× Frenzy (20s)", run: () => {
+    startSugarFrenzy(20000);
+    return "🏅 5× Sugar Frenzy active for 20s!";
+  }},
+  { icon: "🎟️", label: "+2 Roll Tokens", run: () => {
+    state.freeFishRollTokens += 2;
+    return "🎟️ +2 Free Aquarium Roll Tokens! 🤸‍♀️";
+  }},
+  { icon: "🌟", label: "Golden Rain", run: () => {
+    spawnGoldenJarRain(5);
+    return "🌟 Golden Jar Rain (5 Golden Jars launched)! 🤸";
+  }},
+  { icon: "🤸‍♀️", label: "5× Click Frenzy (25s)", run: () => {
+    clickFrenzyMultiplier = 5;
+    clickFrenzyEndTime = Date.now() + 25000;
+    return "🤸‍♀️ 5× Click Frenzy active for 25s!";
+  }},
+  { icon: "🧘‍♂️", label: "+2 Bonus Spins", run: () => {
+    state.wheelSpins += 2;
+    return "🧘‍♂️ Jackpot Respin! +2 Free Prize Wheel Spins!";
+  }},
+  { icon: "💥", label: "100× Click Surge", run: () => {
+    const gain = Math.min(MAX_SPREAD_GRANT, Math.max(2000, getCookiesPerClick() * 100));
+    state.cookies = Math.min(Number.MAX_VALUE, state.cookies + gain);
+    state.totalCookies = Math.min(Number.MAX_VALUE, state.totalCookies + gain);
+    return `💥 100× Click Surge! +${formatNumber(gain)} spreads! 🤸‍♂️`;
+  }},
+  { icon: "🍀", label: "Lucky 5× + Fireworks", run: () => {
+    luckyClickArmed = true;
+    els.adminLuckyClick.setAttribute("aria-pressed", "true");
+    els.adminLuckyClick.textContent = "🍀 Lucky click armed!";
+    launchFireworks(5);
+    return "🍀 Next click armed for 5× + Fireworks! 🤸‍♀️";
+  }}
+];
+
+function initPrizeWheel() {
+  if (!els.prizeWheel) return;
+  els.prizeWheel.replaceChildren();
+  WHEEL_PRIZES.forEach((prize, i) => {
+    const iconEl = document.createElement("span");
+    iconEl.className = "wheel-wedge-icon";
+    iconEl.textContent = prize.icon;
+    iconEl.title = prize.label;
+    iconEl.style.setProperty("--wedge-angle", `${i * 45 + 22.5}deg`);
+    els.prizeWheel.appendChild(iconEl);
+  });
+  els.prizeWheel.style.transform = `rotate(${state.wheelRotation || 0}deg)`;
+}
+
+function updateWheelUI() {
+  if (!els.wheelSpinsBadge || !els.spinWheelBtn) return;
+  const spins = state.wheelSpins || 0;
+  els.wheelSpinsBadge.textContent = `${spins.toLocaleString()} spin${spins === 1 ? "" : "s"} ready`;
+  els.spinWheelBtn.disabled = isWheelSpinning || spins <= 0;
+  els.spinWheelBtn.textContent = isWheelSpinning ? "..." : "SPIN";
+}
+
+function spinPrizeWheel() {
+  if (isWheelSpinning || (state.wheelSpins || 0) <= 0 || !els.prizeWheel) return;
+  isWheelSpinning = true;
+  state.wheelSpins--;
+  state.totalWheelSpins = (state.totalWheelSpins || 0) + 1;
+  updateWheelUI();
+  els.wheelResultStatus.textContent = "Spinning the Spreadery Prize Wheel... 🤸‍♂️";
+  els.prizeWheel.classList.add("spinning");
+  const pointerEl = els.prizeWheel.parentElement ? els.prizeWheel.parentElement.querySelector(".wheel-pointer") : null;
+  if (pointerEl) pointerEl.classList.add("ticking");
+
+  const prizeIndex = Math.floor(Math.random() * WHEEL_PRIZES.length);
+  const targetMod = (360 - (prizeIndex * 45 + 22.5 + (Math.random() - 0.5) * 26) + 360) % 360;
+  const currentMod = ((state.wheelRotation % 360) + 360) % 360;
+  const deltaMod = (targetMod - currentMod + 360) % 360;
+  state.wheelRotation += 5 * 360 + deltaMod;
+  els.prizeWheel.style.transform = `rotate(${state.wheelRotation}deg)`;
+
+  for (let i = 0; i < 16; i++) {
+    const delay = Math.floor(Math.pow(i / 16, 1.55) * 3900);
+    window.setTimeout(() => playTone(680 - i * 16, 480 - i * 12, 0.035, 0.04, "triangle"), delay);
+  }
+
+  window.setTimeout(() => {
+    isWheelSpinning = false;
+    els.prizeWheel.classList.remove("spinning");
+    if (pointerEl) pointerEl.classList.remove("ticking");
+    const prize = WHEEL_PRIZES[prizeIndex];
+    const msg = prize.run();
+    els.wheelResultStatus.textContent = msg;
+    playChime([523.25, 659.25, 783.99, 1046.5]);
+    launchConfetti(42);
+    launchFireworks(3);
+    launchSpreadRain(24);
+    spawnMiniBurstAtElement(els.prizeWheel, 24);
+    showToast(msg);
+    refreshAfterAdminChange();
+  }, 4250);
+}
+
+function buyAllAffordableUpgrades() {
+  let boughtCount = 0;
+  let totalSpent = 0;
+
+  UPGRADES.forEach((upgrade) => {
+    if (!state.upgrades.includes(upgrade.id) && upgrade.req(state) && state.cookies >= upgrade.cost) {
+      state.cookies -= upgrade.cost;
+      totalSpent += upgrade.cost;
+      state.upgrades.push(upgrade.id);
+      boughtCount++;
+    }
+  });
+
+  for (let iter = 0; iter < 50; iter++) {
+    let bestUpgrade = null;
+    let bestCost = Infinity;
+    CLICK_UPGRADES.forEach((upgrade) => {
+      if (!upgrade.req(state)) return;
+      const level = state.clickUpgradeLevels[upgrade.id] || 0;
+      if (!Number.isSafeInteger(level + 1)) return;
+      const cost = getClickUpgradeCost(upgrade);
+      if (state.cookies >= cost && cost < bestCost) {
+        bestCost = cost;
+        bestUpgrade = upgrade;
+      }
+    });
+    if (!bestUpgrade) break;
+    state.cookies -= bestCost;
+    totalSpent += bestCost;
+    state.clickUpgradeLevels[bestUpgrade.id] = (state.clickUpgradeLevels[bestUpgrade.id] || 0) + 1;
+    boughtCount++;
+  }
+
+  if (boughtCount === 0) return;
+  playChime([523.25, 659.25, 783.99, 1046.5]);
+  launchConfetti(Math.min(48, 12 + boughtCount * 3));
+  spawnMiniBurstAtElement(els.upgrades, 22);
+  showToast(`✨ Bought ${boughtCount} upgrade${boughtCount === 1 ? "" : "s"} for ${formatNumber(totalSpent)} stretches!`);
+  refreshAfterAdminChange();
+}
+
+function encodeSaveString(obj) {
+  const json = JSON.stringify(obj);
+  const bytes = new TextEncoder().encode(json);
+  let bin = "";
+  bytes.forEach((b) => { bin += String.fromCharCode(b); });
+  return btoa(bin);
+}
+
+function decodeSaveString(raw) {
+  const trimmed = raw.trim();
+  if (!trimmed) throw new Error("Paste a save code first.");
+  if (trimmed.startsWith("{")) return sanitizeStateObject(JSON.parse(trimmed));
+  const bin = atob(trimmed);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  const json = new TextDecoder().decode(bytes);
+  return sanitizeStateObject(JSON.parse(json));
+}
+
+function openBackupModal() {
+  if (!els.backupModal || !els.backupCode) return;
+  els.backupCode.value = encodeSaveString(state);
+  els.backupStatus.textContent = "";
+  els.backupModal.hidden = false;
+  els.backupCopyBtn.focus();
+}
+
+function closeBackupModal() {
+  if (!els.backupModal) return;
+  els.backupModal.hidden = true;
+}
+
+function copyBackupSave() {
+  if (!els.backupCode) return;
+  els.backupCode.select();
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+    navigator.clipboard.writeText(els.backupCode.value)
+      .then(() => {
+        els.backupStatus.textContent = "Save code copied to clipboard!";
+        showToast("💾 Save code copied!");
+      })
+      .catch(() => {
+        document.execCommand("copy");
+        els.backupStatus.textContent = "Save code selected — press Ctrl/Cmd+C to copy.";
+      });
+  } else {
+    document.execCommand("copy");
+    els.backupStatus.textContent = "Save code copied!";
+  }
+}
+
+function importBackupSave() {
+  if (!els.backupCode) return;
+  try {
+    const parsed = decodeSaveString(els.backupCode.value);
+    state = parsed;
+    displayedCookies = state.cookies;
+    applyTheme(state.theme);
+    applyWhiteoutMode();
+    syncBeatUI();
+    initPrizeWheel();
+    closeBackupModal();
+    refreshAfterAdminChange();
+    launchConfetti(42);
+    launchFireworks(2);
+    playChime([523.25, 659.25, 783.99, 1046.5]);
+    showToast("📥 Save imported! Studio restored.");
+  } catch (err) {
+    els.backupStatus.textContent = `Could not import save: ${err.message || "Invalid save code."}`;
+  }
+}
+
 function updateRebirthUI(renderUpgrades = false) {
   const reward = getRebirthReward();
   const requiredBuildings = getRebirthBuildingRequirement();
@@ -918,15 +1431,15 @@ function updateRebirthUI(renderUpgrades = false) {
   els.rebirthBoost.textContent = `×${formatNumber(getRebirthMultiplier())}`;
   els.rebirthButton.disabled = reward === 0;
   els.rebirthButton.textContent = state.rebirthCount >= MAX_REBIRTHS
-    ? "🌟 All 100 rebirths complete"
+    ? "🌟 All 100 rebirths complete 🤸‍♂️"
     : reward
-      ? "🌟 Rebirth · +10% power and 1 Star"
-      : `🌟 Rebirth · need ${requiredBuildings} Spreadstergram${requiredBuildings === 1 ? "" : "s"}`;
+      ? "🌟 Rebirth · +10% power and 1 Star 🤸‍♂️"
+      : `🌟 Rebirth · need ${requiredBuildings} Spreadstergram${requiredBuildings === 1 ? "" : "s"} 🤸‍♂️`;
   els.rebirthStatus.textContent = state.rebirthCount >= MAX_REBIRTHS
-    ? "You have reached the 100-rebirth limit. Your permanent rebirth bonus is +1,000%."
+    ? "You have reached the 100-rebirth limit. Your permanent rebirth bonus is +1,000% 🤸‍♂️."
     : reward
-      ? `You own ${ownedBuildings} Spreadstergram${ownedBuildings === 1 ? "" : "s"}. Rebirth resets current spreads, clicks, buildings, upgrades, and cursors, while keeping fish, habitats, flavors, and achievements.`
-      : `Own ${requiredBuildings} Spreadstergram${requiredBuildings === 1 ? "" : "s"} to rebirth (${ownedBuildings} owned). Each rebirth grants 1 Rebirth Star and +10% permanent click and production power.`;
+      ? `You own ${ownedBuildings} Spreadstergram${ownedBuildings === 1 ? "" : "s"}. Rebirth resets current spreads, clicks, shops, upgrades, and cursors, while keeping fish, habitats, flavors, and achievements 🤸‍♀️.`
+      : `Own ${requiredBuildings} Spreadstergram${requiredBuildings === 1 ? "" : "s"} to rebirth (${ownedBuildings} owned). Each rebirth grants 1 Golden Star and +10% permanent click and production power 🤸.`;
   if (renderUpgrades) renderRebirthUpgrades();
 }
 
@@ -944,11 +1457,11 @@ function formatCooldownRemaining(ms) {
 
 function syncCooldownHint() {
   if (state.clickCooldownEnabled) {
-    els.clickHint.innerHTML = 'Click once every 20 hours (or press <kbd>Space</kbd>) to build your <strong>combo multiplier</strong>';
+    els.clickHint.innerHTML = 'Click once every 20 hours (or press <kbd>Space</kbd>) to build your <strong>combo multiplier</strong> 🤸‍♂️';
     els.adminToggleCooldown.setAttribute("aria-pressed", "true");
     els.adminToggleCooldown.textContent = "⏱️ Cooldown: 20h (Remove)";
   } else {
-    els.clickHint.innerHTML = 'Tap fast or press <kbd>Space</kbd> to build your <strong>combo multiplier</strong>';
+    els.clickHint.innerHTML = 'Click fast or press <kbd>Space</kbd> to build your <strong>combo multiplier</strong> 🤸‍♂️';
     els.adminToggleCooldown.setAttribute("aria-pressed", "false");
     els.adminToggleCooldown.textContent = "⏱️ Cooldown: Off (Enable 20h)";
   }
@@ -958,7 +1471,7 @@ function updateClickCooldownUI(currentTime = Date.now()) {
   if (!state.clickCooldownEnabled) {
     els.cookieButton.classList.remove("cooling");
     els.clickCooldownStatus.classList.remove("cooling");
-    els.clickCooldownStatus.textContent = "Ready to spread";
+    els.clickCooldownStatus.textContent = "Ready to click 🤸‍♂️";
     return;
   }
   const remainingMs = Math.max(0, CLICK_COOLDOWN_MS - (currentTime - state.lastAcceptedSpreadClickAt));
@@ -966,8 +1479,8 @@ function updateClickCooldownUI(currentTime = Date.now()) {
   els.cookieButton.classList.toggle("cooling", isCooling);
   els.clickCooldownStatus.classList.toggle("cooling", isCooling);
   els.clickCooldownStatus.textContent = isCooling
-    ? `Next spread in ${formatCooldownRemaining(remainingMs)}`
-    : "Ready to spread";
+    ? `Next click in ${formatCooldownRemaining(remainingMs)}`
+    : "Ready to click 🤸‍♂️";
 }
 
 function renderRebirthUpgrades() {
@@ -1007,7 +1520,7 @@ function checkFlavorUnlocks() {
   FLAVORS.forEach((flavor) => {
     if (!state.unlockedFlavors.includes(flavor.id) && flavor.req(state)) {
       state.unlockedFlavors.push(flavor.id);
-      showToast(`${flavor.icon} New flavor unlocked: ${flavor.name}!`);
+      showToast(`${flavor.icon} New kitchen flavor unlocked: ${flavor.name}!`);
       unlockedAny = true;
     }
   });
@@ -1087,7 +1600,7 @@ function resizeFxCanvas() {
 
 function spawnFireworkBurst(x, y, count = 42) {
   if (!fxCtx || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const palette = ["#ffcf56", "#ff7d5d", "#6de19c", "#6eb8ff", "#d48cff", "#ff72b6"];
+  const palette = ["#ffcf56", "#ff9e5d", "#93aa67", "#e08458", "#d4a45a", "#f4b860"];
   const baseColor = palette[Math.floor(Math.random() * palette.length)];
   fxParticles.push({
     kind: "ring",
@@ -1124,7 +1637,7 @@ function spawnMiniBurstAtElement(el, count = 14) {
   if (rect.width <= 0 || rect.height <= 0) return;
   const x = rect.left + rect.width / 2;
   const y = rect.top + rect.height / 2;
-  const palette = ["#ffd45e", "#ff9568", "#7ae0a5", "#7ec4ff", "#e09cff"];
+  const palette = ["#ffd45e", "#ff9568", "#93aa67", "#e6aa42", "#c47d2e"];
   const baseColor = palette[Math.floor(Math.random() * palette.length)];
   fxParticles.push({
     kind: "ring",
@@ -1157,7 +1670,7 @@ function spawnMiniBurstAtElement(el, count = 14) {
 
 function spawnAmbientMote() {
   if (!fxCtx || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const colors = ["#ffd86b", "#ffa463", "#84e8b0", "#84c7ff", "#ea9cff"];
+  const colors = ["#e6aa42", "#c8822e", "#93aa67", "#d97757", "#f2cf7c"];
   fxParticles.push({
     kind: "mote",
     x: Math.random() * fxWidth,
@@ -1187,7 +1700,7 @@ function launchFireworks(burstCount = 5) {
 
 function launchSpreadRain(count = 48) {
   if (!fxCtx || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const glyphs = ["🫙", "🍯", "🍓", "🌰", "✨", "🌟", "🥐", "🍰"];
+  const glyphs = ["🤸‍♂️", "🤸‍♀️", "🤸", "🧘‍♂️", "🧘‍♀️", "🧘", "✨", "🌟"];
   for (let i = 0; i < count; i++) {
     fxParticles.push({
       kind: "rain",
@@ -1318,14 +1831,14 @@ function updateFxCanvas(delta) {
 function initAmbientSparks() {
   if (!els.ambientSparks) return;
   els.ambientSparks.replaceChildren();
-  const glyphs = ["✦", "🍯", "✨", "🍓", "🌰", "🧈", "🫧"];
-  for (let i = 0; i < 24; i++) {
+  const glyphs = ["🤸‍♂️", "🤸‍♀️", "🤸", "🧘‍♂️", "🧘‍♀️", "🧘", "🤸‍♂️", "🤸‍♀️"];
+  for (let i = 0; i < 36; i++) {
     const spark = document.createElement("span");
     spark.className = "ambient-spark";
     spark.textContent = glyphs[i % glyphs.length];
-    spark.style.left = `${(i * 4.1 + 3) % 95}%`;
+    spark.style.left = `${(i * 2.8 + 2) % 96}%`;
     spark.style.setProperty("--spark-duration", `${6.2 + (i % 6) * 1.35}s`);
-    spark.style.setProperty("--spark-delay", `${-(i * 0.52).toFixed(2)}s`);
+    spark.style.setProperty("--spark-delay", `${-(i * 0.42).toFixed(2)}s`);
     spark.style.setProperty("--drift-x", `${((i % 2 === 0 ? 1 : -1) * (14 + (i % 5) * 11))}px`);
     els.ambientSparks.appendChild(spark);
   }
@@ -1333,6 +1846,7 @@ function initAmbientSparks() {
 
 function initStageParallax() {
   if (!els.bakeStage || !els.cookieButton) return;
+  const trailColors = ["#c8822e", "#e6aa42", "#93aa67", "#d97757", "#7c4418"];
   els.bakeStage.addEventListener("pointermove", (event) => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const rect = els.cookieButton.getBoundingClientRect();
@@ -1343,6 +1857,25 @@ function initStageParallax() {
     const normY = Math.max(-1, Math.min(1, (event.clientY - cy) / (rect.height * 1.1)));
     els.cookieButton.style.setProperty("--jar-rx", `${(-normY * 7).toFixed(2)}deg`);
     els.cookieButton.style.setProperty("--jar-ry", `${(normX * 7).toFixed(2)}deg`);
+
+    const nowMs = performance.now();
+    if (fxCtx && nowMs - lastTrailSparkAt >= 48) {
+      lastTrailSparkAt = nowMs;
+      const color = trailColors[Math.floor(Math.random() * trailColors.length)];
+      fxParticles.push({
+        kind: "spark",
+        x: event.clientX,
+        y: event.clientY,
+        prevX: event.clientX,
+        prevY: event.clientY,
+        vx: (Math.random() - 0.5) * 48,
+        vy: -25 - Math.random() * 45,
+        size: 1.4 + Math.random() * 1.8,
+        color,
+        life: 0,
+        maxLife: 0.42 + Math.random() * 0.22
+      });
+    }
   });
   els.bakeStage.addEventListener("pointerleave", () => {
     els.cookieButton.style.setProperty("--jar-rx", "0deg");
@@ -1375,26 +1908,28 @@ function renderOrbitCursors() {
   els.orbitCursors.replaceChildren();
   const totalOwnedCursors = CURSORS.filter((c) => state.cursorCollection[c.id]);
   const buildingOrbiterCount = Math.min(8, Math.floor(getBuildingCount() / 10));
+  const extraGlyphs = ["🤸‍♂️", "🤸‍♀️", "🤸", "🧘‍♂️", "🧘‍♀️", "🧘", "🍯", "🥐"];
   const items = [];
-  totalOwnedCursors.slice(0, 8).forEach((c) => items.push(c.icon));
-  for (let i = 0; i < buildingOrbiterCount && items.length < 12; i++) {
-    items.push("✨");
+  totalOwnedCursors.slice(0, 6).forEach((c) => items.push(c.icon));
+  while (items.length < 6 + buildingOrbiterCount && items.length < 12) {
+    items.push(extraGlyphs[items.length % extraGlyphs.length]);
   }
   items.forEach((glyph, idx) => {
     const orb = document.createElement("span");
     orb.className = "orbit-cursor-item";
     orb.textContent = glyph;
     orb.style.setProperty("--orbit-angle", `${(360 / items.length) * idx}deg`);
+    orb.style.setProperty("--orbit-i", String(idx));
     els.orbitCursors.appendChild(orb);
   });
 }
 
 const ORDER_TEMPLATES = [
-  { kind: "clicks", title: "Tap Sprint", label: "manual clicks", base: 15 },
-  { kind: "spreads", title: "Sweet Batch", label: "new spreads earned", base: 400 },
-  { kind: "helpers", title: "Crew Expansion", label: "more helpers hired", base: 3 },
-  { kind: "golden", title: "Jar Hunter", label: "Golden Jar caught", base: 1 },
-  { kind: "fish", title: "Aquarium Scout", label: "tank rolls made", base: 3 }
+  { kind: "clicks", title: "Morning Toast Tray 🥐 🤸‍♂️", label: "manual clicks", base: 15 },
+  { kind: "spreads", title: "Warm Jar Crate 🍯 🤸‍♀️", label: "new spreads baked", base: 400 },
+  { kind: "helpers", title: "Spreadery Kitchen Shift 🥣 🧘‍♂️", label: "more helpers hired", base: 3 },
+  { kind: "golden", title: "Golden Spoon Inspection 🥄 🤸", label: "Golden Jar caught", base: 1 },
+  { kind: "fish", title: "Aquarium Tasting Flight 🐠 🧘‍♀️", label: "tank rolls made", base: 3 }
 ];
 
 function getOrderMetricValue(kind) {
@@ -1465,7 +2000,7 @@ function claimOrder(orderId) {
   launchFireworks(2);
   launchConfetti(28);
   const tokenText = order.rewardTokens ? ` + ${order.rewardTokens} 🎟️ Token!` : "";
-  showToast(`📜 Order "${order.title}" claimed! +${formatNumber(spreadReward)} spreads${tokenText}`);
+  showToast(`📜 Order "${order.title}" delivered! +${formatNumber(spreadReward)} spreads${tokenText}`);
   refreshAfterAdminChange();
 }
 
@@ -1551,27 +2086,33 @@ function showClickGain(amount, event, streakBonus, isJackpot = false) {
   window.setTimeout(() => ripple.remove(), 750);
 
   const flavor = getActiveFlavor();
-  const sparkGlyphs = [flavor.icon, "✨", "🍯", "🌟", "💫"];
-  const sparkCount = isJackpot || streakBonus ? 16 : 9;
+  const sparkGlyphs = ["🤸‍♂️", "🤸‍♀️", "🤸", "🧘‍♂️", "🧘‍♀️", "🧘", flavor.icon, "🍯", "✨"];
+  const sparkCount = isJackpot || streakBonus ? 18 : 10;
   for (let i = 0; i < sparkCount; i++) {
     const spark = document.createElement("span");
     spark.className = "click-spark";
     spark.textContent = sparkGlyphs[i % sparkGlyphs.length];
     const angle = (Math.PI * 2 * i) / sparkCount + (Math.random() - 0.5) * 0.4;
-    const distance = (isJackpot || streakBonus ? 75 : 44) + Math.random() * 68;
+    const distance = (isJackpot || streakBonus ? 78 : 46) + Math.random() * 72;
     spark.style.left = `${x}px`;
     spark.style.top = `${y}px`;
     spark.style.setProperty("--px", `${Math.cos(angle) * distance}px`);
     spark.style.setProperty("--py", `${Math.sin(angle) * distance - 18}px`);
     spark.style.setProperty("--prot", `${Math.round((Math.random() - 0.5) * 320)}deg`);
-    spark.style.setProperty("--pscale", `${(0.8 + Math.random() * 0.65).toFixed(2)}`);
+    spark.style.setProperty("--pscale", `${(0.85 + Math.random() * 0.65).toFixed(2)}`);
     els.clickParticles.appendChild(spark);
     window.setTimeout(() => spark.remove(), 780);
   }
 
+  const spreadPopWords = ["Swirled!", "Velvety!", "Fresh jar!", "Smooth!"];
   const particle = document.createElement("span");
   particle.className = `click-gain${streakBonus || isJackpot ? " click-gain-streak" : ""}`;
-  particle.textContent = `+${formatNumber(amount)}${streakBonus ? " streak!" : isJackpot ? " JACKPOT!" : ""}`;
+  const bonusLabel = streakBonus
+    ? ` ${spreadPopWords[Math.floor(Math.random() * spreadPopWords.length)]} 🤸‍♂️`
+    : isJackpot
+      ? " JACKPOT JAR! 🤸‍♀️"
+      : "";
+  particle.textContent = `+${formatNumber(amount)}${bonusLabel}`;
   particle.style.left = `${x}px`;
   particle.style.top = `${y}px`;
   els.clickParticles.appendChild(particle);
@@ -1580,7 +2121,7 @@ function showClickGain(amount, event, streakBonus, isJackpot = false) {
 
 function launchConfetti(count = 32) {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const colors = ["#d97d55", "#e7b84f", "#83a66d", "#8d7ac4", "#e58aa0"];
+  const colors = ["#c8822e", "#e6aa42", "#6a8b4e", "#d97757", "#7c4418"];
   for (let index = 0; index < count; index++) {
     const piece = document.createElement("span");
     piece.className = "confetti-piece";
@@ -1611,9 +2152,10 @@ function spawnGoldenJar(allowMultiple = false) {
   const btn = document.createElement("button");
   btn.type = "button";
   btn.className = "golden-jar-btn";
-  btn.setAttribute("aria-label", "Catch Golden Spread Jar for a bonus");
-  btn.textContent = "🍯";
-  btn.style.left = `${10 + Math.random() * 76}%`;
+  btn.setAttribute("aria-label", "Catch Golden Jar for a bonus");
+  btn.textContent = "🤸‍♂️";
+  const onLeftSide = Math.random() < 0.5;
+  btn.style.left = `${onLeftSide ? 6 + Math.random() * 14 : 76 + Math.random() * 14}%`;
   btn.style.top = `${14 + Math.random() * 62}%`;
   els.goldenSpreadLayer.appendChild(btn);
 
@@ -1640,14 +2182,14 @@ function spawnGoldenJar(allowMultiple = false) {
       const burst = Math.min(MAX_SPREAD_GRANT, Math.max(250, Math.floor(getCookiesPerSecond() * 25 + getCookiesPerClick() * 40)));
       state.cookies = Math.min(Number.MAX_VALUE, state.cookies + burst);
       state.totalCookies = Math.min(Number.MAX_VALUE, state.totalCookies + burst);
-      showToast(`🍯 Golden Jar burst! +${formatNumber(burst)} spreads!`);
+      showToast(`🤸‍♂️ Golden Jar burst! +${formatNumber(burst)} spreads!`);
     } else if (roll < 0.85) {
       clickFrenzyMultiplier = 5;
       clickFrenzyEndTime = Date.now() + 12000;
-      showToast("⚡ Golden Click Frenzy! 5× click power for 12 seconds!");
+      showToast("⚡ Click Frenzy! 5× click power for 12 seconds! 🤸‍♀️");
     } else {
       state.freeFishRollTokens++;
-      showToast("🎟️ Golden Jar gift! +1 Free Fish Tank Roll Token!");
+      showToast("🎟️ Golden Jar bonus! +1 Free Aquarium Roll Token! 🤸");
     }
 
     checkAchievements();
@@ -1665,7 +2207,7 @@ function spawnGoldenJarRain(count = 10) {
     window.setTimeout(() => spawnGoldenJar(true), i * 110);
   }
   launchFireworks(3);
-  showToast(`🌧️ Golden Jar Rain! Catch ${count} Golden Jars!`);
+  showToast(`🌧️ Golden Jar Rain! Catch ${count} Golden Jars! 🤸‍♂️`);
 }
 
 function getFishTierClass(tierName) {
@@ -1715,7 +2257,7 @@ function renderAquariumSwimmers() {
   topFish.forEach((fish, idx) => {
     const swimmer = document.createElement("span");
     swimmer.className = `aquarium-swimmer${idx % 2 === 1 ? " reverse" : ""}`;
-    swimmer.textContent = fish.id === SECRET_FISH.id ? "👑" : fish.tier === "Mythic" ? "🐡" : fish.tier === "Legendary" ? "🦈" : fish.tier === "Epic" ? "🐬" : "🐟";
+    swimmer.textContent = fish.id === SECRET_FISH.id ? "👑" : idx % 3 === 0 ? "🤸‍♂️" : idx % 3 === 1 ? "🤸‍♀️" : fish.tier === "Mythic" ? "🐡" : fish.tier === "Legendary" ? "🦈" : fish.tier === "Epic" ? "🐬" : "🐟";
     swimmer.style.left = `${8 + ((idx * 13) % 78)}%`;
     swimmer.style.top = `${12 + ((idx * 19) % 72)}%`;
     swimmer.style.animationDuration = `${4.8 + (idx % 4) * 1.1}s`;
@@ -1816,18 +2358,18 @@ function updateFishTankUI() {
   els.fishRollCount.textContent = state.fishRolls.toLocaleString();
   els.fishClickBonus.textContent = `+${formatNumber(flatClickBonus)} · +${clickBonusPercent}%`;
   els.fishProductionBonus.textContent = `+${bonusPercent}%`;
-  els.fishRollCost.textContent = `Paid roll: ${formatNumber(rollCost)} spreads · Secret Oliva: 1 in 10,000 (0.01%)`;
+  els.fishRollCost.textContent = `Paid roll: ${formatNumber(rollCost)} spreads · Secret Oliva: 1 in 10,000 (0.01%) 🤸‍♂️`;
   els.fishRoll.disabled = state.cookies < rollCost;
   const batchCost = getFishBatchCost();
   els.footer10kRolls.disabled = state.cookies < batchCost;
-  els.footer10kRollsLabel.textContent = `Roll the tank ${FISH_BATCH_ROLL_COUNT.toLocaleString()} times · ${formatNumber(batchCost)} spreads`;
+  els.footer10kRollsLabel.textContent = `Roll the tank ${FISH_BATCH_ROLL_COUNT.toLocaleString()} times · ${formatNumber(batchCost)} spreads 🤸‍♀️`;
   els.fishDailyRoll.disabled = !dailyAvailable;
   els.fishDailyRoll.textContent = dailyAvailable ? "🎁 Claim daily free roll" : "✅ Daily roll claimed";
 
   els.fishFreeRollBtn.hidden = state.freeFishRollTokens <= 0;
   els.fishFreeTokens.textContent = state.freeFishRollTokens.toLocaleString();
 
-  els.fishLuckStatus.textContent = `Luck level ${state.fishLuckLevel} / 5 · Owning & leveling fish boosts spreads per click and production`;
+  els.fishLuckStatus.textContent = `Luck level ${state.fishLuckLevel} / 5 · Owning & leveling swimmers boosts spreads per click and production 🤸`;
   els.fishLuckUpgrade.disabled = state.fishLuckLevel >= 5 || state.cookies < luckCost;
   els.fishLuckUpgrade.textContent = state.fishLuckLevel >= 5
     ? "🍀 Luck fully upgraded"
@@ -2065,7 +2607,7 @@ function checkFishCollectionReward() {
   const reward = Math.min(MAX_SPREAD_GRANT, getFishRollCost() * 50);
   if (!addFishSpreads(reward)) return false;
   state.fishCollectionRewardClaimed = true;
-  showToast(`🏆 All 200 characters collected! You earned ${formatNumber(reward)} spreads!`);
+  showToast(`🏆 All 200 swimmers collected! You earned ${formatNumber(reward)} spreads! 🤸‍♂️`);
   launchConfetti(60);
   return true;
 }
@@ -2099,7 +2641,7 @@ function rollFish(mode = "paid") {
   const character = pickFishCharacter();
   const copies = state.fishCollection[character.id] || 0;
   if (!Number.isSafeInteger(copies + 1)) {
-    els.fishStatus.textContent = "That character collection has reached its safe storage limit.";
+    els.fishStatus.textContent = "That swimmer collection has reached its safe storage limit.";
     return;
   }
   if (mode === "daily") {
@@ -2114,17 +2656,23 @@ function rollFish(mode = "paid") {
   state.fishRolls = Math.min(Number.MAX_SAFE_INTEGER, state.fishRolls + 1);
 
   playTone(460, 740, 0.14, 0.09);
+  if (els.fishRoll) {
+    els.fishRoll.classList.remove("aquarium-splash");
+    void els.fishRoll.offsetWidth;
+    els.fishRoll.classList.add("aquarium-splash");
+    spawnMiniBurstAtElement(els.fishRoll, 16);
+  }
 
   if (character.id === SECRET_FISH.id) {
     state.cookies = Math.max(state.cookies, OLIVA_REWARD);
     state.totalCookies = Math.max(state.totalCookies, OLIVA_REWARD);
-    els.fishStatus.textContent = "✨ SECRET! Oliva appeared! A 1-in-10,000 discovery and a huge spread bonus!";
+    els.fishStatus.textContent = "✨ SECRET! Oliva appeared! A 1-in-10,000 discovery and a huge spread bonus! 🤸‍♂️";
     launchConfetti(100);
-    showToast("✨ Oliva! The secret character filled your jar with spreads!");
+    showToast("✨ Oliva! The secret fish filled your spread jar! 🤸‍♂️");
   } else if (copies) {
-    els.fishStatus.textContent = `You rolled ${character.name} (${character.tier}) again. You now own ${copies + 1}.`;
+    els.fishStatus.textContent = `You rolled ${character.name} (${character.tier}) again. You now own ${copies + 1}. 🤸‍♀️`;
   } else {
-    els.fishStatus.textContent = `New character: ${character.name} · ${character.tier}!`;
+    els.fishStatus.textContent = `New fish: ${character.name} · ${character.tier}! 🤸‍♂️`;
   }
 
   checkFishCollectionReward();
@@ -2142,7 +2690,7 @@ function rollFishBatch(free = false) {
 
   const cost = getFishBatchCost();
   if (!free && state.cookies < cost) {
-    els.fishStatus.textContent = `You need ${formatNumber(cost)} spreads for 10,000 tank rolls.`;
+    els.fishStatus.textContent = `You need ${formatNumber(cost)} spreads for 10,000 aquarium rolls.`;
     return false;
   }
 
@@ -2175,7 +2723,7 @@ function rollFishBatch(free = false) {
   checkFishCollectionReward();
   const duplicateRolls = FISH_BATCH_ROLL_COUNT - newCharacters - olivaRolls;
   const paymentText = free ? "Free batch complete" : `Spent ${formatNumber(cost)} spreads`;
-  els.fishStatus.textContent = `${paymentText}: 10,000 rolls · ${newCharacters} new characters · ${duplicateRolls} duplicates${olivaRolls ? ` · Oliva x${olivaRolls}` : ""}.`;
+  els.fishStatus.textContent = `${paymentText}: 10,000 rolls · ${newCharacters} new swimmers · ${duplicateRolls} duplicates${olivaRolls ? ` · Oliva x${olivaRolls}` : ""}. 🤸‍♂️`;
   els.fishCollectionDetails.open = true;
   fishCollectionFilter = "all";
   fishSearchQuery = "";
@@ -2183,7 +2731,7 @@ function rollFishBatch(free = false) {
   refreshAfterAdminChange();
   animateFishLanding(landedCharacter);
   if (olivaRolls > 0) {
-    showToast(`✨ Oliva appeared ${olivaRolls} time${olivaRolls === 1 ? "" : "s"} in the batch!`);
+    showToast(`✨ Oliva appeared ${olivaRolls} time${olivaRolls === 1 ? "" : "s"} in the batch! 🤸‍♂️`);
     showOlivaCelebration();
   } else if (landedHighTier && landedCharacter) {
     launchConfetti(40);
@@ -2204,7 +2752,7 @@ function sellFishDuplicate(id) {
   state.cookies += payout;
   state.totalCookies += payout;
   playTone(540, 820, 0.1, 0.08);
-  els.fishStatus.textContent = `Sold a duplicate ${character.name} for ${formatNumber(payout)} spreads.`;
+  els.fishStatus.textContent = `Sold a duplicate ${character.name} for ${formatNumber(payout)} spreads. 🤸‍♀️`;
   refreshAfterAdminChange();
 }
 
@@ -2221,8 +2769,8 @@ function sellAllDuplicates() {
   state.cookies += totalPayout;
   state.totalCookies += totalPayout;
   playChime([523.25, 659.25, 783.99]);
-  els.fishStatus.textContent = `Sold ${count.toLocaleString()} duplicate fish for ${formatNumber(totalPayout)} spreads!`;
-  showToast(`🐠 Sold ${count.toLocaleString()} duplicates for +${formatNumber(totalPayout)} spreads!`);
+  els.fishStatus.textContent = `Sold ${count.toLocaleString()} duplicate swimmers for ${formatNumber(totalPayout)} spreads! 🤸‍♂️`;
+  showToast(`🐠 Sold ${count.toLocaleString()} duplicates for +${formatNumber(totalPayout)} spreads! 🤸‍♀️`);
   refreshAfterAdminChange();
 }
 
@@ -2237,7 +2785,7 @@ function levelUpFish(id) {
   playTone(580, 920, 0.12, 0.09);
   const fishCard = els.fishCollection.querySelector(`[data-fish-id="${id}"]`);
   spawnMiniBurstAtElement(fishCard || els.fishRoll, 16);
-  els.fishStatus.textContent = `${character.name} reached level ${level + 1}! Your per-click and production bonuses increased.`;
+  els.fishStatus.textContent = `${character.name} reached level ${level + 1}! Your click and production bonuses increased. 🤸`;
   refreshAfterAdminChange();
 }
 
@@ -2256,8 +2804,8 @@ function levelUpAllAffordableFish() {
   if (upgraded === 0) return;
   playChime([523.25, 659.25, 783.99]);
   launchConfetti(Math.min(40, upgraded * 3 + 12));
-  els.fishStatus.textContent = `Leveled up ${upgraded} fish! Your click & production bonuses surged!`;
-  showToast(`⬆ Leveled up ${upgraded} fish!`);
+  els.fishStatus.textContent = `Leveled up ${upgraded} swimmers! Your aquarium bonuses surged! 🤸‍♂️`;
+  showToast(`⬆ Leveled up ${upgraded} swimmers! 🤸‍♀️`);
   refreshAfterAdminChange();
 }
 
@@ -2338,7 +2886,7 @@ function renderShop() {
   if (availableUpgrades.length === 0 && availableClickUpgrades.length === 0) {
     const message = document.createElement("p");
     message.className = "empty-msg";
-    message.textContent = "Make a few more clicks or spreads to unlock your next upgrade.";
+    message.textContent = "Click or collect a little more to unlock your first upgrade. 🤸‍♂️";
     els.upgrades.appendChild(message);
   }
   availableClickUpgrades.forEach((upgrade) => {
@@ -2369,7 +2917,7 @@ function renderShop() {
     const perUnitCps = getBaseBuildingCps(building);
     const tierTotalCps = owned * perUnitCps;
     const sharePct = totalCps > 0 ? ((tierTotalCps / totalCps) * 100).toFixed(1) : "0.0";
-    button.title = `${building.desc}\nTotal producing: ${formatRate(tierTotalCps)}/sec (${sharePct}% of CPS)`;
+    button.title = `${building.desc}\nProducing: ${formatRate(tierTotalCps)}/sec (${sharePct}% of total)`;
     const icon = document.createElement("span");
     icon.className = "building-icon";
     icon.textContent = building.icon;
@@ -2461,7 +3009,7 @@ function buyFishHabitat(id) {
   launchConfetti(28);
   const card = els.fishHabitats.querySelector(`[data-habitat-id="${id}"]`);
   spawnMiniBurstAtElement(card || els.fishHabitats, 18);
-  els.fishStatus.textContent = `${habitat.name} built! Aquarium click & production increased by ${Math.round(habitat.bonus * 100)}%.`;
+  els.fishStatus.textContent = `${habitat.name} built! Aquarium click & production boost increased by ${Math.round(habitat.bonus * 100)}%. 🤸‍♂️`;
   showToast(`${habitat.icon} ${habitat.name} built · +${Math.round(habitat.bonus * 100)}% click & production!`);
   refreshAfterAdminChange();
 }
@@ -2490,11 +3038,17 @@ function buyOrEquipCursor(id) {
 }
 
 function updateShopAffordability() {
+  let hasAffordableUpgrade = false;
   els.upgrades.querySelectorAll(".upgrade-btn").forEach((button) => {
     const cost = Number(button.dataset.cost);
-    button.classList.toggle("affordable", state.cookies >= cost);
-    button.classList.toggle("locked", state.cookies < cost);
+    const canAfford = state.cookies >= cost;
+    if (canAfford) hasAffordableUpgrade = true;
+    button.classList.toggle("affordable", canAfford);
+    button.classList.toggle("locked", !canAfford);
   });
+  if (els.buyAllUpgradesBtn) {
+    els.buyAllUpgradesBtn.disabled = !hasAffordableUpgrade;
+  }
   els.buildings.querySelectorAll(".building-card").forEach((button) => {
     const cost = Number(button.dataset.cost);
     button.classList.toggle("affordable", state.cookies >= cost);
@@ -2508,7 +3062,7 @@ function updateShopAffordability() {
 
 function updateAchievementDetail(achievement) {
   if (!achievement) {
-    els.achievementDetail.textContent = "Select any victory tile to inspect its requirement.";
+    els.achievementDetail.textContent = "Select any achievement tile to inspect its requirement. 🤸‍♂️";
     return;
   }
   const isUnlocked = state.achievements.includes(achievement.id);
@@ -2550,7 +3104,7 @@ function checkAchievements() {
   ACHIEVEMENTS.forEach((achievement) => {
     if (!state.achievements.includes(achievement.id) && achievement.check(state)) {
       state.achievements.push(achievement.id);
-      showToast(`🏆 ${achievement.name} unlocked! (+2% permanent power)`);
+      showToast(`${achievement.icon} ${achievement.name} unlocked! (+2% permanent power)`);
       playChime([587.33, 739.99, 880]);
       changed = true;
     }
@@ -2588,7 +3142,7 @@ function buyUpgrade(id) {
   state.upgrades.push(id);
   playChime([520, 780]);
   spawnMiniBurstAtElement(els.upgrades, 16);
-  showToast(`✨ ${upgrade.name} unlocked!`);
+  showToast(`✨ ${upgrade.name} unlocked! 🤸‍♂️`);
   refreshAfterAdminChange();
 }
 
@@ -2601,7 +3155,7 @@ function buyClickUpgrade(id) {
   state.clickUpgradeLevels[id] = level + 1;
   playTone(620, 1040, 0.12, 0.09);
   spawnMiniBurstAtElement(els.upgrades, 14);
-  showToast(`✨ ${upgrade.name} upgraded to level ${level + 1}!`);
+  showToast(`${upgrade.icon} ${upgrade.name} leveled to ${level + 1}!`);
   refreshAfterAdminChange();
 }
 
@@ -2622,7 +3176,7 @@ function buyRebirthUpgrade(id) {
 function startSugarFrenzy(duration = 15000) {
   frenzyMultiplier = 5;
   frenzyEndTime = Date.now() + duration;
-  showToast(`🍯 Sugar rush! 5× production for ${Math.ceil(duration / 1000)} seconds!`);
+  showToast(`🏅 Sugar frenzy! 5× production for ${Math.ceil(duration / 1000)} seconds! 🤸‍♂️`);
 }
 
 function executeRebirth() {
@@ -2653,10 +3207,17 @@ function executeRebirth() {
     ordersCompleted: state.ordersCompleted,
     clickCooldownEnabled: state.clickCooldownEnabled,
     lastAcceptedSpreadClickAt: state.lastAcceptedSpreadClickAt,
-    whiteoutScreen: state.whiteoutScreen
+    whiteoutScreen: state.whiteoutScreen,
+    beatModeEnabled: state.beatModeEnabled,
+    wheelSpins: state.wheelSpins,
+    totalWheelSpins: state.totalWheelSpins,
+    wheelRotation: state.wheelRotation,
+    dailyStreak: state.dailyStreak,
+    dailyClaimDate: state.dailyClaimDate,
+    pnfHoldsCompleted: state.pnfHoldsCompleted
   };
   if (!Number.isSafeInteger(retainedProgress.rebirthCount) || !Number.isSafeInteger(retainedProgress.rebirthPoints)) {
-    showToast("Rebirth points have reached their safe storage limit.");
+    showToast("Golden Stars have reached their safe storage limit.");
     return;
   }
 
@@ -2668,13 +3229,16 @@ function executeRebirth() {
   clickFrenzyEndTime = 0;
   clickBoostEndTime = 0;
   productionBoostEndTime = 0;
+  splitSurgeEndTime = 0;
+  splitHoldActive = false;
+  splitHoldCharge = 0;
   comboCharge = 0;
   luckyClickArmed = false;
   document.body.classList.remove("disco-mode", "dance-mode", "spin-mode", "rainbow-mode");
   els.adminLuckyClick.setAttribute("aria-pressed", "false");
   els.adminLuckyClick.textContent = "🍀 Arm a 5× lucky click";
   els.adminDisco.setAttribute("aria-pressed", "false");
-  els.adminDisco.textContent = "🪩 Disco mode: off";
+  els.adminDisco.textContent = "🪩 Disco lighting: off";
   els.adminDance.setAttribute("aria-pressed", "false");
   els.adminDance.textContent = "💃 Dance mode: off";
   els.adminSpinMode.setAttribute("aria-pressed", "false");
@@ -2682,7 +3246,7 @@ function executeRebirth() {
   els.adminRainbowMode.setAttribute("aria-pressed", "false");
   els.adminRainbowMode.textContent = "🌈 Rainbow aura: off";
   els.frenzyBanner.classList.add("hidden");
-  els.clickStreak.textContent = "Click streak bonus every 100 taps";
+  els.clickStreak.textContent = "Golden jar streak bonus every 100 clicks 🤸";
   updateComboUI();
   updateAdminBoosterStatus();
   checkAchievements();
@@ -2700,20 +3264,25 @@ function executeRebirth() {
   updateFishTankUI();
   updateRebirthUI(true);
   updateMilestone();
+  updateSplitGauge(false);
+  updateSplitHoldUI();
+  renderDailyCheckIn();
+  updateWheelUI();
+  syncBeatUI();
   updateShopAffordability();
   updateNews();
   saveGame();
   playChime([523.25, 659.25, 783.99, 1046.5]);
   triggerAllAnimations();
-  showToast(`🌟 Rebirth ${state.rebirthCount} complete! You now have ${formatNumber(state.rebirthPoints)} Spread Stars.`);
+  showToast(`🌟 Rebirth ${state.rebirthCount} complete! You now have ${formatNumber(state.rebirthPoints)} Golden Stars. 🤸‍♂️`);
 }
 
 function performRebirth() {
   const reward = getRebirthReward();
   if (!reward) return;
   showConfirmModal(
-    "Rebirth your spreadery?",
-    `Gain ${reward} Spread Star and +10% permanent click & production power. Current spreads, clicks, buildings, upgrades, and cursors will reset. Fish, habitats, flavors, and achievements stay.`,
+    "Rebirth your spreadery? 🤸‍♂️",
+    `Gain ${reward} Golden Star and +10% permanent click & production power. Current spreads, clicks, shops, upgrades, and cursors will reset. Fish, habitats, flavors, and achievements stay.`,
     "🌟 Rebirth Now",
     executeRebirth
   );
@@ -2736,6 +3305,15 @@ els.bulkBuyControls.addEventListener("click", (event) => {
 });
 
 els.cookieButton.addEventListener("click", (event) => {
+  if (event.detail === 0) {
+    if (heldActivationKeys.has("Enter")) {
+      if (enterClickConsumed) return;
+      enterClickConsumed = true;
+    } else if (heldActivationKeys.has("Space")) {
+      if (spaceClickConsumed) return;
+      spaceClickConsumed = true;
+    }
+  }
   const now = Date.now();
   if (state.clickCooldownEnabled && now - state.lastAcceptedSpreadClickAt < CLICK_COOLDOWN_MS) return;
   state.lastAcceptedSpreadClickAt = state.clickCooldownEnabled ? now : 0;
@@ -2749,18 +3327,33 @@ els.cookieButton.addEventListener("click", (event) => {
   let gain = getCookiesPerClick();
   let streakBonus = 0;
   let isJackpot = false;
+  let isOnBeat = false;
+  if (state.beatModeEnabled) {
+    const phase = (performance.now() % 500) / 500;
+    if (phase < 0.24 || phase > 0.76) {
+      isOnBeat = true;
+      gain = Math.floor(gain * 1.3);
+      if (els.beatRing) {
+        els.beatRing.classList.add("beat-hit");
+        window.clearTimeout(beatHitTimeout);
+        beatHitTimeout = window.setTimeout(() => {
+          if (els.beatRing) els.beatRing.classList.remove("beat-hit");
+        }, 210);
+      }
+    }
+  }
   if (luckyClickArmed) {
     gain *= 5;
     luckyClickArmed = false;
     els.adminLuckyClick.setAttribute("aria-pressed", "false");
     els.adminLuckyClick.textContent = "🍀 Arm a 5× lucky click";
-    els.adminStatus.textContent = `Lucky click! You earned ${formatNumber(gain)} spreads.`;
-    showToast(`🍀 5× lucky click! +${formatNumber(gain)} spreads`);
+    els.adminStatus.textContent = `Lucky click! That jar tap baked ${formatNumber(gain)} spreads.`;
+    showToast(`🍀 5× lucky click! +${formatNumber(gain)} spreads 🤸‍♂️`);
     launchConfetti(24);
   } else if (Math.random() < 0.012) {
     gain *= 5;
     isJackpot = true;
-    showToast(`🎉 Jackpot! That click made ${formatNumber(gain)} spreads!`);
+    showToast(`🤸‍♂️ Jackpot jar! That click made ${formatNumber(gain)} spreads! 🤸‍♀️`);
     launchConfetti(32);
     launchFireworks(2);
     triggerShockwave(true);
@@ -2774,30 +3367,54 @@ els.cookieButton.addEventListener("click", (event) => {
     if (Number.isFinite(state.cookies + streakBonus) && Number.isFinite(state.totalCookies + streakBonus)) {
       state.cookies += streakBonus;
       state.totalCookies += streakBonus;
-      showToast(`🎊 100-click streak! Bonus: ${formatNumber(streakBonus)} spreads!`);
+      showToast(`🎊 100-click streak! Bonus: ${formatNumber(streakBonus)} spreads! 🤸‍♂️`);
       launchConfetti(28);
       launchFireworks(2);
       triggerShockwave(true);
       playChime([523.25, 659.25, 783.99]);
     }
   }
-  showClickGain(gain + streakBonus, event, streakBonus > 0, isJackpot);
+  if (state.totalClicks % 250 === 0) {
+    state.wheelSpins = (state.wheelSpins || 0) + 1;
+    updateWheelUI();
+    showToast("🎡 +1 Prize Wheel Spin unlocked for 250 clicks! 🤸‍♀️");
+    launchConfetti(22);
+  }
+  temporaryLegSpreadBoost = Math.max(temporaryLegSpreadBoost, isJackpot ? 16 : 9);
+  showClickGain(gain + streakBonus, event, streakBonus > 0 || isOnBeat, isJackpot);
   triggerCountBump();
   const jarRect = els.cookieButton.getBoundingClientRect();
   const hasPointer = event && typeof event.clientX === "number" && event.clientX > 0;
   const burstX = hasPointer ? event.clientX : jarRect.left + jarRect.width / 2;
   const burstY = hasPointer ? event.clientY : jarRect.top + jarRect.height / 2;
-  spawnFireworkBurst(burstX, burstY, isJackpot || streakBonus > 0 ? 28 : 9);
+  spawnFireworkBurst(burstX, burstY, isJackpot || streakBonus > 0 ? 28 : isOnBeat ? 15 : 9);
   const clicksUntilStreak = 100 - (state.totalClicks % 100);
-  els.clickStreak.textContent = `Next streak bonus in ${clicksUntilStreak} click${clicksUntilStreak === 1 ? "" : "s"}`;
+  els.clickStreak.textContent = `Next streak bonus in ${clicksUntilStreak} click${clicksUntilStreak === 1 ? "" : "s"} 🤸`;
   updateMilestone();
+  updateSplitGauge(true);
   updateOrdersProgress();
   els.cookieButton.classList.add("clicked");
+  const jarWrap = els.cookieButton.parentElement;
+  if (jarWrap) {
+    jarWrap.classList.remove("jar-pulse");
+    void jarWrap.offsetWidth;
+    jarWrap.classList.add("jar-pulse");
+    window.clearTimeout(jarPulseTimeout);
+    jarPulseTimeout = window.setTimeout(() => jarWrap.classList.remove("jar-pulse"), 360);
+
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && jarWrap.querySelectorAll(".jar-click-ring").length < 4) {
+      const clickRing = document.createElement("span");
+      clickRing.className = "jar-click-ring";
+      clickRing.setAttribute("aria-hidden", "true");
+      jarWrap.appendChild(clickRing);
+      window.setTimeout(() => clickRing.remove(), 580);
+    }
+  }
   window.clearTimeout(spreadAnimationTimer);
   spreadAnimationTimer = window.setTimeout(() => els.cookieButton.classList.remove("clicked"), 120);
 
   // Tactile pop sound scaling subtly with combo
-  const basePitch = 340 + comboCharge * 2.2;
+  const basePitch = isOnBeat ? 520 + comboCharge * 2.4 : 340 + comboCharge * 2.2;
   playTone(basePitch, basePitch * 1.35, 0.065, 0.055, "triangle");
   speakSpread();
 
@@ -2822,6 +3439,10 @@ window.addEventListener("keydown", (event) => {
   }
 
   if (event.key === "Escape") {
+    if (els.backupModal && !els.backupModal.hidden) {
+      closeBackupModal();
+      return;
+    }
     if (!els.confirmModal.hidden) {
       closeConfirmModal();
       return;
@@ -2835,10 +3456,17 @@ window.addEventListener("keydown", (event) => {
   const target = event.target;
   const isTyping = target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
 
-  if (event.code === "Space" && !isTyping && els.adminPanel.hidden && els.confirmModal.hidden) {
+  if (event.key === "Shift" && !isTyping && !state.whiteoutScreen && els.adminPanel.hidden && els.confirmModal.hidden && (!els.backupModal || els.backupModal.hidden)) {
+    startSplitHold();
+  }
+
+  if (event.code === "Space" && !isTyping && !event.repeat && els.adminPanel.hidden && els.confirmModal.hidden && (!els.backupModal || els.backupModal.hidden)) {
     if (document.activeElement !== els.cookieButton && !(document.activeElement instanceof HTMLButtonElement)) {
       event.preventDefault();
-      els.cookieButton.click();
+      if (!spaceClickConsumed) {
+        spaceClickConsumed = true;
+        els.cookieButton.click();
+      }
       return;
     }
   }
@@ -2917,6 +3545,74 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
+window.addEventListener("keydown", (event) => {
+  const isActivationKey = event.key === "Enter" || event.code === "Space" || event.key === " ";
+  if (!isActivationKey) return;
+  const target = event.target;
+  const isTyping = target instanceof HTMLElement && (
+    target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)
+  );
+  if (isTyping) return;
+  const keyId = event.key === "Enter" ? "Enter" : "Space";
+  if (event.repeat || heldActivationKeys.has(keyId)) {
+    event.preventDefault();
+    event.stopPropagation();
+    return;
+  }
+  heldActivationKeys.add(keyId);
+}, true);
+
+window.addEventListener("keyup", (event) => {
+  if (event.key === "Shift") stopSplitHold();
+  if (event.key === "Enter") {
+    heldActivationKeys.delete("Enter");
+    enterClickConsumed = false;
+  } else if (event.code === "Space" || event.key === " ") {
+    heldActivationKeys.delete("Space");
+    spaceClickConsumed = false;
+  }
+}, true);
+
+window.addEventListener("blur", () => {
+  heldActivationKeys.clear();
+  enterClickConsumed = false;
+  spaceClickConsumed = false;
+  stopSplitHold();
+});
+
+if (els.splitHoldBtn) {
+  els.splitHoldBtn.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+    startSplitHold();
+  });
+  ["pointerup", "pointerleave", "pointercancel", "blur"].forEach((evt) => {
+    els.splitHoldBtn.addEventListener(evt, stopSplitHold);
+  });
+}
+
+if (els.toggleBeatBtn) {
+  els.toggleBeatBtn.addEventListener("click", () => {
+    state.beatModeEnabled = !state.beatModeEnabled;
+    lastBeatIndex = -1;
+    syncBeatUI();
+    saveGame();
+    showToast(state.beatModeEnabled ? "🎵 Beat Mode ON — click on the ring pulse for +30% spreads! 🤸‍♂️" : "🎵 Beat Mode off.");
+  });
+}
+
+if (els.backupBtn) els.backupBtn.addEventListener("click", openBackupModal);
+if (els.backupClose) els.backupClose.addEventListener("click", closeBackupModal);
+if (els.backupModal) {
+  els.backupModal.addEventListener("click", (event) => {
+    if (event.target === els.backupModal) closeBackupModal();
+  });
+}
+if (els.backupCopyBtn) els.backupCopyBtn.addEventListener("click", copyBackupSave);
+if (els.backupImportBtn) els.backupImportBtn.addEventListener("click", importBackupSave);
+if (els.dailyClaimBtn) els.dailyClaimBtn.addEventListener("click", claimDailyCheckIn);
+if (els.spinWheelBtn) els.spinWheelBtn.addEventListener("click", spinPrizeWheel);
+if (els.buyAllUpgradesBtn) els.buyAllUpgradesBtn.addEventListener("click", buyAllAffordableUpgrades);
+
 function openAdminPanel() {
   els.adminPanel.hidden = false;
   els.adminLogin.hidden = false;
@@ -2985,6 +3681,10 @@ function refreshAfterAdminChange() {
   updateFishTankUI();
   updateRebirthUI(true);
   updateMilestone();
+  updateSplitGauge(true);
+  updateSplitHoldUI();
+  renderDailyCheckIn();
+  updateWheelUI();
   updateShopAffordability();
   updateNews();
   saveGame();
@@ -3079,11 +3779,11 @@ els.adminRandom.addEventListener("click", () => {
   const amount = getAdminAmount();
   if (amount === null) return;
   if (Math.random() < 0.5) {
-    if (!grantAdminSpreads(amount, `Lucky! You gained ${formatNumber(amount)} spreads.`)) return;
+    if (!grantAdminSpreads(amount, `Sweet luck! You gained ${formatNumber(amount)} spreads.`)) return;
   } else {
     const lost = Math.min(amount, state.cookies);
     state.cookies -= lost;
-    els.adminStatus.textContent = `Oh no! You lost ${formatNumber(lost)} spreads.`;
+    els.adminStatus.textContent = `Sticky spill! You lost ${formatNumber(lost)} spreads.`;
   }
   refreshAfterAdminChange();
 });
@@ -3092,7 +3792,7 @@ els.adminMult10x.addEventListener("click", () => {
   if (state.cookies <= 0) {
     state.cookies = 1000;
     state.totalCookies = Math.max(state.totalCookies, 1000);
-    els.adminStatus.textContent = "Jar started at 1,000 spreads!";
+    els.adminStatus.textContent = "Jar filled to 1,000 spreads!";
   } else {
     const next = Math.min(Number.MAX_VALUE, state.cookies * 10);
     const added = Math.max(0, next - state.cookies);
@@ -3107,7 +3807,7 @@ els.adminMult10x.addEventListener("click", () => {
 els.adminSet1e90.addEventListener("click", () => {
   state.cookies = Math.max(state.cookies, 1e90);
   state.totalCookies = Math.max(state.totalCookies, 1e90);
-  els.adminStatus.textContent = "Cosmic treasury unlocked! Jar set to 1e90 spreads.";
+  els.adminStatus.textContent = "Cosmic spreadery unlocked! Jar set to 1e90 spreads.";
   launchFireworks(3);
   refreshAfterAdminChange();
 });
@@ -3115,7 +3815,7 @@ els.adminSet1e90.addEventListener("click", () => {
 els.adminZeroJar.addEventListener("click", () => {
   state.cookies = 0;
   displayedCookies = 0;
-  els.adminStatus.textContent = "Current jar balance reset to 0 spreads.";
+  els.adminStatus.textContent = "Spread jar emptied to 0.";
   refreshAfterAdminChange();
 });
 
@@ -3136,9 +3836,9 @@ els.adminToggleCooldown.addEventListener("click", () => {
   updateClickCooldownUI();
   saveGame();
   els.adminStatus.textContent = state.clickCooldownEnabled
-    ? "Permanent 20-hour clicker cooldown enabled."
-    : "Clicker cooldown permanently removed! Tap as fast as you want.";
-  showToast(state.clickCooldownEnabled ? "⏱️ Cooldown set to 20 hours." : "⚡ Clicker cooldown removed!");
+    ? "Permanent 20-hour click cooldown enabled."
+    : "Click cooldown permanently removed! Click as fast as you want.";
+  showToast(state.clickCooldownEnabled ? "⏱️ Click cooldown set to 20 hours." : "⚡ Click cooldown removed!");
 });
 
 els.adminMaxCombo.addEventListener("click", () => {
@@ -3153,13 +3853,13 @@ els.adminClickFrenzy.addEventListener("click", () => {
   clickFrenzyMultiplier = 5;
   clickFrenzyEndTime = Date.now() + 30000;
   triggerShockwave(true);
-  showToast("⚡ 5× Click Frenzy for 30 seconds!");
+  showToast("⚡ 5× Click Frenzy for 30 seconds! 🤸‍♂️");
   els.adminStatus.textContent = "5× Click Frenzy active for 30 seconds!";
 });
 
 els.adminSpawnGolden.addEventListener("click", () => {
   spawnGoldenJar(true);
-  els.adminStatus.textContent = "Spawned a Golden Jar on stage!";
+  els.adminStatus.textContent = "Spawned a Golden Jar on the stage!";
 });
 
 els.adminGoldenRain.addEventListener("click", () => {
@@ -3169,7 +3869,7 @@ els.adminGoldenRain.addEventListener("click", () => {
 
 els.adminFxAll.addEventListener("click", () => {
   triggerAllAnimations();
-  els.adminStatus.textContent = "ALL animations triggered! Fireworks, Rain, Confetti & Supernova!";
+  els.adminStatus.textContent = "ALL animations triggered! Fireworks, Cartwheel Rain, Confetti & Supernova!";
 });
 
 els.adminFxFireworks.addEventListener("click", () => {
@@ -3180,7 +3880,7 @@ els.adminFxFireworks.addEventListener("click", () => {
 els.adminFxSpreadRain.addEventListener("click", () => {
   launchSpreadRain(60);
   playChime([523.25, 659.25, 783.99]);
-  els.adminStatus.textContent = "Spread Rain Storm unleashed!";
+  els.adminStatus.textContent = "Cartwheel Rain Storm unleashed! 🤸‍♂️";
 });
 
 els.adminFxShockwave.addEventListener("click", () => {
@@ -3207,7 +3907,7 @@ els.adminEveryBuilding.addEventListener("click", () => {
   BUILDINGS.forEach((building) => {
     state.buildings[building.id] = (state.buildings[building.id] || 0) + 1;
   });
-  els.adminStatus.textContent = "Your spreadery gained one of every building!";
+  els.adminStatus.textContent = "Your spreadery gained one of every helper!";
   refreshAfterAdminChange();
 });
 
@@ -3215,7 +3915,7 @@ els.admin100kBuildings.addEventListener("click", () => {
   BUILDINGS.forEach((building) => {
     state.buildings[building.id] = (state.buildings[building.id] || 0) + 100000;
   });
-  els.adminStatus.textContent = "Added 100,000 of every building to your spreadery!";
+  els.adminStatus.textContent = "Added 100,000 of every bakery helper & shop!";
   refreshAfterAdminChange();
 });
 
@@ -3238,7 +3938,7 @@ els.adminAllFlavors.addEventListener("click", () => {
 els.adminSugarFrenzy.addEventListener("click", () => {
   startSugarFrenzy();
   triggerShockwave(false);
-  els.adminStatus.textContent = "Sugar frenzy! All production is 5× for 15 seconds.";
+  els.adminStatus.textContent = "Sugar rush! All helper production is 5× for 15 seconds.";
 });
 
 els.adminMystery.addEventListener("click", () => {
@@ -3257,9 +3957,9 @@ els.adminMystery.addEventListener("click", () => {
     productionBoostEndTime = Date.now() + 45000;
     els.adminStatus.textContent = "Mystery jar prize: 1.5× production for 45 seconds!";
     updateAdminBoosterStatus();
-    showToast("🏭 The mystery jar boosted production!");
+    showToast("🤸‍♂️ The mystery jar boosted your bakery!");
   } else {
-    els.adminStatus.textContent = "Mystery jar prize: a 5× sugar rush for 10 seconds!";
+    els.adminStatus.textContent = "Mystery jar prize: a 5× sugar frenzy for 10 seconds!";
     startSugarFrenzy(10000);
   }
 });
@@ -3273,15 +3973,15 @@ els.adminConfetti.addEventListener("click", () => {
 els.adminDisco.addEventListener("click", () => {
   const enabled = document.body.classList.toggle("disco-mode");
   els.adminDisco.setAttribute("aria-pressed", String(enabled));
-  els.adminDisco.textContent = `🪩 Disco mode: ${enabled ? "on" : "off"}`;
-  els.adminStatus.textContent = enabled ? "Disco mode is on. Dance, little spreadery!" : "Disco mode is off.";
+  els.adminDisco.textContent = `🪩 Disco lighting: ${enabled ? "on" : "off"}`;
+  els.adminStatus.textContent = enabled ? "Disco lighting is on. Let the kitchen sparkle!" : "Disco lighting is off.";
 });
 
 els.adminDance.addEventListener("click", () => {
   const enabled = document.body.classList.toggle("dance-mode");
   els.adminDance.setAttribute("aria-pressed", String(enabled));
   els.adminDance.textContent = `💃 Dance mode: ${enabled ? "on" : "off"}`;
-  els.adminStatus.textContent = enabled ? "Dance mode is on. Look at that spread move!" : "Dance mode is off.";
+  els.adminStatus.textContent = enabled ? "Dance mode is on. Watch your jar groove!" : "Dance mode is off.";
 });
 
 els.adminLuckyClick.addEventListener("click", () => {
@@ -3291,7 +3991,7 @@ els.adminLuckyClick.addEventListener("click", () => {
     ? "🍀 Lucky click armed!"
     : "🍀 Arm a 5× lucky click";
   els.adminStatus.textContent = luckyClickArmed
-    ? "Your next spread click will be worth 5×!"
+    ? "Your next jar click will be worth 5×!"
     : "Lucky click cancelled.";
 });
 
@@ -3309,7 +4009,7 @@ els.adminRandomFish.addEventListener("click", () => {
     }
   }
   checkFishCollectionReward();
-  els.adminStatus.textContent = "Added 25 random fish to your aquarium!";
+  els.adminStatus.textContent = "Added 25 random swimmers to your aquarium!";
   refreshAfterAdminChange();
   launchConfetti(32);
 });
@@ -3320,14 +4020,14 @@ els.adminCompleteFish.addEventListener("click", () => {
     state.fishLevels[character.id] = state.fishLevels[character.id] || 1;
   });
   checkFishCollectionReward();
-  els.adminStatus.textContent = "All 200 standard fish are now in your aquarium!";
+  els.adminStatus.textContent = "All 200 standard swimmers are now in your aquarium!";
   refreshAfterAdminChange();
   launchConfetti(60);
 });
 
 els.adminFree10kFishRolls.addEventListener("click", () => {
   if (!rollFishBatch(true)) return;
-  els.adminStatus.textContent = "Added 10,000 free tank rolls to your collection!";
+  els.adminStatus.textContent = "Added 10,000 free aquarium rolls to your collection!";
 });
 
 els.adminMaxFishHabitats.addEventListener("click", () => {
@@ -3337,7 +4037,7 @@ els.adminMaxFishHabitats.addEventListener("click", () => {
   FISH_HABITATS.forEach((habitat) => {
     state.fishHabitats[habitat.id] = true;
   });
-  els.adminStatus.textContent = "All owned fish are level 10 and every habitat is built!";
+  els.adminStatus.textContent = "All owned swimmers are level 10 and every habitat is built!";
   refreshAfterAdminChange();
 });
 
@@ -3351,7 +4051,7 @@ els.adminClearBoosts.addEventListener("click", () => {
   luckyClickArmed = false;
   document.body.classList.remove("disco-mode", "dance-mode", "spin-mode", "rainbow-mode");
   els.adminDisco.setAttribute("aria-pressed", "false");
-  els.adminDisco.textContent = "🪩 Disco mode: off";
+  els.adminDisco.textContent = "🪩 Disco lighting: off";
   els.adminDance.setAttribute("aria-pressed", "false");
   els.adminDance.textContent = "💃 Dance mode: off";
   els.adminSpinMode.setAttribute("aria-pressed", "false");
@@ -3370,7 +4070,7 @@ els.adminUnlockOliva.addEventListener("click", () => {
   state.fishLevels[SECRET_FISH.id] = state.fishLevels[SECRET_FISH.id] || 1;
   state.cookies = Math.max(state.cookies, OLIVA_REWARD);
   state.totalCookies = Math.max(state.totalCookies, OLIVA_REWARD);
-  els.fishStatus.textContent = "✨ Admin reveal! Oliva joined your collection with a huge spread bonus!";
+  els.fishStatus.textContent = "✨ Admin reveal! Oliva joined your aquarium with a huge spread bonus!";
   els.adminStatus.textContent = "Oliva unlocked! The secret fish is in your collection.";
   refreshAfterAdminChange();
   els.fishCollectionDetails.open = true;
@@ -3407,7 +4107,7 @@ els.adminAdd100Fish.addEventListener("click", () => {
     state.totalCookies = Math.max(state.totalCookies, OLIVA_REWARD);
   }
   checkFishCollectionReward();
-  els.adminStatus.textContent = `Added 100 random fish${secretUnlocked ? " and unlocked Oliva!" : "!"}`;
+  els.adminStatus.textContent = `Added 100 random swimmers${secretUnlocked ? " and unlocked Oliva!" : "!"}`;
   refreshAfterAdminChange();
   if (secretUnlocked) showOlivaCelebration();
   launchConfetti(50);
@@ -3417,7 +4117,7 @@ els.adminAllCursors.addEventListener("click", () => {
   CURSORS.forEach((cursor) => {
     state.cursorCollection[cursor.id] = true;
   });
-  els.adminStatus.textContent = "Every cursor has been unlocked! Choose one from the Cursor Shop.";
+  els.adminStatus.textContent = "Every cursor tier has been unlocked! Choose one from the Cursor Shop.";
   refreshAfterAdminChange();
 });
 
@@ -3428,17 +4128,27 @@ els.adminGrantTokens.addEventListener("click", () => {
   refreshAfterAdminChange();
 });
 
+if (els.adminGrantSpins) {
+  els.adminGrantSpins.addEventListener("click", () => {
+    state.wheelSpins = (state.wheelSpins || 0) + 10;
+    els.adminStatus.textContent = "Granted +10 Prize Wheel Spins!";
+    playChime([523.25, 659.25, 783.99, 1046.5]);
+    launchConfetti(28);
+    refreshAfterAdminChange();
+  });
+}
+
 els.adminMaxLuck.addEventListener("click", () => {
   state.fishLuckLevel = 5;
-  els.fishStatus.textContent = "Admin boost! Your tank luck is maxed out.";
-  els.adminStatus.textContent = "Tank luck maxed out at level 5!";
+  els.fishStatus.textContent = "Admin boost! Your aquarium luck is maxed out.";
+  els.adminStatus.textContent = "Aquarium luck maxed out at level 5!";
   refreshAfterAdminChange();
 });
 
 els.adminResetDailyRoll.addEventListener("click", () => {
   state.fishDailyRollDate = "";
   els.fishStatus.textContent = "Your daily free roll is ready to claim!";
-  els.adminStatus.textContent = "Today's free fish roll is ready again.";
+  els.adminStatus.textContent = "Today's free aquarium roll is ready again.";
   refreshAfterAdminChange();
 });
 
@@ -3446,7 +4156,7 @@ els.adminMaxRebirths.addEventListener("click", () => {
   state.rebirthCount = MAX_REBIRTHS;
   state.rebirthPoints = Math.max(state.rebirthPoints, 100);
   state.rebirthUpgrades = REBIRTH_UPGRADES.map((u) => u.id);
-  els.adminStatus.textContent = "Maxed rebirths (100) and unlocked all rebirth upgrades!";
+  els.adminStatus.textContent = "Maxed rebirths (100) and unlocked all rebirth perks!";
   refreshAfterAdminChange();
 });
 
@@ -3463,7 +4173,7 @@ els.adminCompleteOrders.addEventListener("click", () => {
   state.activeOrders.forEach((order) => {
     order.baseline = getOrderMetricValue(order.kind) - order.target;
   });
-  els.adminStatus.textContent = "All 3 active Spread Orders are ready to claim!";
+  els.adminStatus.textContent = "All 3 active Bakery Orders are ready to claim!";
   renderOrders();
   saveGame();
 });
@@ -3519,6 +4229,10 @@ function resetAllProgress(preserveCooldown = false) {
   clickFrenzyEndTime = 0;
   clickBoostEndTime = 0;
   productionBoostEndTime = 0;
+  splitSurgeEndTime = 0;
+  splitHoldActive = false;
+  splitHoldCharge = 0;
+  temporaryLegSpreadBoost = 0;
   comboCharge = 0;
   luckyClickArmed = false;
   selectedAchievementId = null;
@@ -3529,7 +4243,7 @@ function resetAllProgress(preserveCooldown = false) {
   els.adminLuckyClick.setAttribute("aria-pressed", "false");
   els.adminLuckyClick.textContent = "🍀 Arm a 5× lucky click";
   els.adminDisco.setAttribute("aria-pressed", "false");
-  els.adminDisco.textContent = "🪩 Disco mode: off";
+  els.adminDisco.textContent = "🪩 Disco lighting: off";
   els.adminDance.setAttribute("aria-pressed", "false");
   els.adminDance.textContent = "💃 Dance mode: off";
   els.adminSpinMode.setAttribute("aria-pressed", "false");
@@ -3537,7 +4251,7 @@ function resetAllProgress(preserveCooldown = false) {
   els.adminRainbowMode.setAttribute("aria-pressed", "false");
   els.adminRainbowMode.textContent = "🌈 Rainbow aura: off";
   els.frenzyBanner.classList.add("hidden");
-  els.clickStreak.textContent = "Click streak bonus every 100 taps";
+  els.clickStreak.textContent = "Golden jar streak bonus every 100 clicks 🤸";
   updateComboUI();
   updateAdminBoosterStatus();
   saveGame();
@@ -3550,22 +4264,29 @@ function resetAllProgress(preserveCooldown = false) {
   renderFishCollection();
   renderAquariumSwimmers();
   syncCooldownHint();
+  syncBeatUI();
+  initPrizeWheel();
   updateClickCooldownUI();
   updateFishTankUI();
   updateRebirthUI(true);
-  updateMilestone();
+  lastMilestoneIndex = -1;
+  updateMilestone(false);
+  updateSplitGauge(false);
+  updateSplitHoldUI();
+  renderDailyCheckIn();
+  updateWheelUI();
   updateShopAffordability();
   updateNews();
 }
 
 els.resetButton.addEventListener("click", () => {
   showConfirmModal(
-    "Start a fresh spreadery?",
-    "This will erase all saved progress including spreads, buildings, rebirths, and your aquarium collection.",
+    "Reset your spreadery? 🤸‍♂️",
+    "This will erase all saved progress including spreads, shops, rebirths, and your aquarium collection.",
     "↺ Reset Everything",
     () => {
       resetAllProgress(true);
-      showToast("Your spreadery is ready for a fresh start!");
+      showToast("Your spreadery is fresh and ready for a new batch! 🤸‍♀️");
     }
   );
 });
@@ -3595,17 +4316,44 @@ function gameLoop(now) {
     clickFrenzyMultiplier = 1;
   }
 
-  const rushActive = frenzyMultiplier > 1 || clickFrenzyMultiplier > 1;
+  const surgeSecs = currentTime < splitSurgeEndTime ? Math.ceil((splitSurgeEndTime - currentTime) / 1000) : 0;
+  const rushActive = frenzyMultiplier > 1 || clickFrenzyMultiplier > 1 || surgeSecs > 0;
   if (rushActive) {
     els.frenzyBanner.classList.remove("hidden");
     const prodSecs = frenzyMultiplier > 1 ? Math.ceil((frenzyEndTime - currentTime) / 1000) : 0;
     const clickSecs = clickFrenzyMultiplier > 1 ? Math.ceil((clickFrenzyEndTime - currentTime) / 1000) : 0;
     const parts = [];
-    if (prodSecs > 0) parts.push(`🍯 Sugar rush ${prodSecs}s (5× CPS)`);
+    if (prodSecs > 0) parts.push(`🏅 Sugar frenzy ${prodSecs}s (5× Production)`);
     if (clickSecs > 0) parts.push(`⚡ Click frenzy ${clickSecs}s (5× Clicks)`);
+    if (surgeSecs > 0) parts.push(`🤸‍♂️ Split Surge ${surgeSecs}s (+50% Power)`);
     els.frenzyBanner.textContent = parts.join(" · ");
   } else {
     els.frenzyBanner.classList.add("hidden");
+  }
+
+  if (state.beatModeEnabled) {
+    const beatIdx = Math.floor(now / 500);
+    if (beatIdx !== lastBeatIndex) {
+      lastBeatIndex = beatIdx;
+      if (state.soundEnabled) playTone(760, 480, 0.03, 0.018, "triangle");
+    }
+  }
+
+  if (splitHoldActive) {
+    splitHoldCharge = Math.min(100, splitHoldCharge + delta * 40);
+    temporaryLegSpreadBoost = Math.max(temporaryLegSpreadBoost, splitHoldCharge * 0.16);
+    updateSplitHoldUI();
+    updateSplitGauge(true);
+    if (splitHoldCharge >= 100) completeSplitHold();
+  } else {
+    if (splitHoldCharge > 0) {
+      splitHoldCharge = Math.max(0, splitHoldCharge - delta * 55);
+      updateSplitHoldUI();
+    }
+    if (temporaryLegSpreadBoost > 0) {
+      temporaryLegSpreadBoost = Math.max(0, temporaryLegSpreadBoost - delta * 24);
+      updateSplitGauge(false);
+    }
   }
 
   const feverActive = getComboMultiplier() >= 2.0;
@@ -3617,15 +4365,11 @@ function gameLoop(now) {
   const visualModeActive = document.body.classList.contains("disco-mode")
     || document.body.classList.contains("spin-mode")
     || document.body.classList.contains("rainbow-mode");
-  if (rushActive || feverActive || visualModeActive) {
-    ambientMoteTimer += delta;
-    const interval = rushActive ? 0.14 : 0.28;
-    if (ambientMoteTimer >= interval) {
-      ambientMoteTimer = 0;
-      spawnAmbientMote();
-    }
-  } else {
+  ambientMoteTimer += delta;
+  const moteInterval = rushActive ? 0.14 : (feverActive || visualModeActive || splitHoldActive) ? 0.28 : 0.65;
+  if (ambientMoteTimer >= moteInterval && fxParticles.length < 180) {
     ambientMoteTimer = 0;
+    spawnAmbientMote();
   }
 
   const comboGraceMs = state.clickCooldownEnabled ? CLICK_COOLDOWN_MS + 60000 : 1400;
@@ -3661,6 +4405,8 @@ function gameLoop(now) {
     checkAchievements();
     checkFlavorUnlocks();
     updateMilestone();
+    updateSplitGauge(true);
+    updateSplitHoldUI();
     updateOrdersProgress();
     const eligibleCount = UPGRADES.filter((upgrade) => !state.upgrades.includes(upgrade.id) && upgrade.req(state)).length
       + CLICK_UPGRADES.filter((upgrade) => upgrade.req(state)).length;
@@ -3672,6 +4418,7 @@ function gameLoop(now) {
     updateAdminBoosterStatus();
     updateFishTankUI();
     updateRebirthUI();
+    updateWheelUI();
   }
 
   els.cookieCount.textContent = formatNumber(displayedCookies);
@@ -3684,9 +4431,9 @@ function gameLoop(now) {
   els.time.textContent = formatTime(state.playTimeSeconds);
   const buildingCount = getBuildingCount();
   els.buildingSummary.textContent = buildingCount
-    ? `${buildingCount.toLocaleString()} helper${buildingCount === 1 ? "" : "s"} making spreads`
-    : "Your spreadery is just getting started";
-  document.title = `${formatNumber(state.cookies)} spreads — Spread Clicker`;
+    ? `${buildingCount.toLocaleString()} helper${buildingCount === 1 ? "" : "s"} & shop${buildingCount === 1 ? "" : "s"} spreading 🤸‍♂️`
+    : "Your spreadery is just getting started 🧘‍♂️";
+  document.title = `${formatNumber(state.cookies)} spreads — Spread Clicker 🤸‍♂️`;
   requestAnimationFrame(gameLoop);
 }
 
@@ -3704,13 +4451,15 @@ function startGame() {
   initStageParallax();
   applyTheme(state.theme);
   applyWhiteoutMode();
+  syncBeatUI();
+  initPrizeWheel();
   const awaySeconds = Math.max(0, (Date.now() - state.lastSaved) / 1000);
   const offlineCookies = Math.min(awaySeconds, 8 * 60 * 60) * getCookiesPerSecond() * 0.5;
   if (offlineCookies > 0) {
     state.cookies += offlineCookies;
     state.totalCookies += offlineCookies;
     saveGame();
-    window.setTimeout(() => showToast(`Welcome back! Your spreadery made ${formatNumber(offlineCookies)} spreads.`), 400);
+    window.setTimeout(() => showToast(`Welcome back! Your spreadery baked ${formatNumber(offlineCookies)} spreads. 🤸‍♂️`), 400);
   }
   displayedCookies = state.cookies;
   els.soundButton.setAttribute("aria-pressed", String(state.soundEnabled));
@@ -3728,11 +4477,35 @@ function startGame() {
   renderAchievements();
   renderFishCollection();
   renderAquariumSwimmers();
+  renderDailyCheckIn();
+  updateWheelUI();
   updateFishTankUI();
   updateRebirthUI(true);
   updateComboUI();
   updateClickCooldownUI();
-  updateMilestone();
+  const brandLink = document.querySelector(".brand");
+  if (brandLink) {
+    brandLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      spawnMiniBurstAtElement(brandLink, 18);
+      launchConfetti(18);
+      playChime([523.25, 659.25, 783.99]);
+      showToast("🥐 The Little Spreadery is swirling fresh jars! 🤸‍♂️");
+    });
+  }
+  const handstandCard = document.getElementById("handstand-loop-card");
+  if (handstandCard) {
+    handstandCard.addEventListener("click", () => {
+      spawnMiniBurstAtElement(handstandCard, 16);
+      playTone(540, 860, 0.1, 0.06, "triangle");
+      temporaryLegSpreadBoost = Math.max(temporaryLegSpreadBoost, 14);
+      updateSplitGauge(false);
+    });
+  }
+  updateMilestone(false);
+  updateSplitGauge(false);
+  updateSplitHoldUI();
+  updateShopAffordability();
   updateNews();
   applyInitialCascade();
   scheduleNextGoldenJar();

@@ -1,10 +1,13 @@
 "use strict";
 
-const CACHE_NAME = "spread-clicker-v52";
+const CACHE_NAME = "spread-clicker-v53";
 const APP_ASSETS = [
   "./index.html",
-  "./style.css?v=52",
-  "./Code.js?v=52",
+  "./style.css?v=53",
+  "./three-scene.js?v=53",
+  "./Code.js?v=53",
+  "./three/build/three.module.js",
+  "./three/build/three.core.js",
   "./spread-clicker.jpg"
 ];
 

@@ -6,10 +6,12 @@ const path = require("node:path");
 
 const PORT = Number(process.env.PORT) || 3000;
 const APP_ROOT = __dirname;
+const THREE_ROOT = path.resolve(APP_ROOT, "node_modules", "three");
 const PUBLIC_FILES = new Map([
   ["/", "index.html"],
   ["/index.html", "index.html"],
   ["/Code.js", "Code.js"],
+  ["/three-scene.js", "three-scene.js"],
   ["/style.css", "style.css"],
   ["/spread-clicker.jpg", "spread-clicker.jpg"],
   ["/service-worker.js", "service-worker.js"]
@@ -37,24 +39,39 @@ function serveApp(request, response) {
     return;
   }
 
-  const fileName = PUBLIC_FILES.get(pathname);
-  if (!fileName) {
+  let filePath = null;
+  let ext = "";
+  if (pathname.startsWith("/three/")) {
+    const relPath = pathname.slice("/three/".length);
+    const candidate = path.resolve(THREE_ROOT, relPath);
+    if (candidate.startsWith(THREE_ROOT + path.sep) && path.extname(candidate) === ".js") {
+      filePath = candidate;
+      ext = ".js";
+    }
+  } else {
+    const fileName = PUBLIC_FILES.get(pathname);
+    if (fileName) {
+      filePath = path.join(APP_ROOT, fileName);
+      ext = path.extname(fileName);
+    }
+  }
+
+  if (!filePath) {
     response.writeHead(404, { "Cache-Control": "no-store" });
     response.end("Not found.");
     return;
   }
 
-  const filePath = path.join(APP_ROOT, fileName);
   fs.readFile(filePath, (error, contents) => {
     if (error) {
-      console.error(`Could not read app asset ${fileName}.`, error);
+      console.error(`Could not read app asset ${pathname}.`, error);
       response.writeHead(500, { "Cache-Control": "no-store" });
       response.end("Could not load the game.");
       return;
     }
 
     response.writeHead(200, {
-      "Content-Type": MIME_TYPES[path.extname(fileName)] || "application/octet-stream",
+      "Content-Type": MIME_TYPES[ext] || "application/octet-stream",
       "Cache-Control": "no-cache"
     });
     response.end(contents);

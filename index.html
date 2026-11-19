@@ -10,9 +10,18 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=52" />
+  <link rel="stylesheet" href="style.css?v=53" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "/three/build/three.module.js",
+        "three/addons/": "/three/examples/jsm/"
+      }
+    }
+  </script>
 </head>
 <body>
+  <div id="three-bg-mount" class="three-bg-mount" aria-hidden="true"></div>
   <div class="game-shell">
     <header class="topbar">
       <a class="brand" href="#" aria-label="Spread Clicker home">
@@ -24,12 +33,12 @@
       </div>
       <nav class="top-controls" aria-label="Quick actions">
         <a class="nav-link" href="#fish-tank">Aquarium 🤸‍♀️</a>
+        <button id="top-zen-btn" class="icon-button" type="button" aria-pressed="false" title="Inspect the full 3D Spreadery Studio scene">🎬 3D Studio</button>
         <button id="rebirth-menu-shortcut" class="icon-button" type="button" aria-label="Jump to the rebirth menu">🌟 Rebirth 🤸‍♂️</button>
         <button id="theme-toggle-btn" class="icon-button" type="button" title="Switch theme">🎨 Warm</button>
         <button id="toggle-beat-btn" class="icon-button" type="button" aria-pressed="false" title="Toggle rhythm beat ring for +30% on-beat bonuses">🎵 Beat off</button>
         <button id="toggle-sfx-btn" class="icon-button" type="button" aria-pressed="true" title="Toggle sound effects">🔊 Sound on</button>
         <button id="toggle-voice-btn" class="icon-button" type="button" aria-pressed="false" title="Toggle spoken cue on click">🗣️ Voice off</button>
-        <button id="backup-btn" class="icon-button" type="button" title="Export or import your save data">💾 Save</button>
         <button id="reset-btn" class="icon-button reset-button" type="button" title="Reset all progress">↺ Reset</button>
       </nav>
     </header>
@@ -151,9 +160,9 @@
             <div class="combo-track"><span id="combo-fill"></span></div>
           </div>
 
-          <button id="split-hold-btn" class="split-hold-btn" type="button" title="Press and hold (or hold Shift) for 2.5s for a +50% surge">
+          <button id="split-hold-btn" class="split-hold-btn" type="button" title="Press and hold (or hold Shift) for 3.0s for a +50% surge">
             <span class="split-hold-head">
-              <span id="split-hold-label">🤸‍♂️ Hold Deep Split (2.5s · +50% Power)</span>
+              <span id="split-hold-label">🤸‍♂️ Hold Deep Split (3.0s · +50% Power)</span>
               <strong id="split-hold-pct" class="tabular-nums">Ready</strong>
             </span>
             <span class="split-hold-track"><span id="split-hold-fill"></span></span>
@@ -249,7 +258,7 @@
               </div>
               <div class="wheel-copy">
                 <strong class="wheel-title">Spreadery Prize Wheel 🎡🤸‍♂️</strong>
-                <p id="wheel-result-status" class="wheel-result-status">Earn spins from daily pantry check-ins, every 250 manual clicks, or Golden Jars 🤸‍♂️.</p>
+                <p id="wheel-result-status" class="wheel-result-status">Earn spins from daily pantry check-ins, every 300 manual clicks, or Golden Jars 🤸‍♂️.</p>
               </div>
             </div>
           </div>
@@ -358,25 +367,7 @@
     </footer>
   </div>
 
-  <!-- Save Backup Modal -->
-  <section id="backup-modal" class="admin-overlay" role="dialog" aria-modal="true" aria-labelledby="backup-title" hidden>
-    <div class="admin-dialog confirm-dialog">
-      <header class="admin-header">
-        <div>
-          <div class="eyebrow">SAVE DATA BACKUP 🤸‍♂️</div>
-          <h2 id="backup-title">Export or Import Save</h2>
-        </div>
-        <button id="backup-close" class="icon-button" type="button" aria-label="Close save backup dialog">✕</button>
-      </header>
-      <p class="admin-intro">Copy your save code to back up your spreadery, or paste a saved code below to restore it.</p>
-      <textarea id="backup-code" class="admin-input backup-textarea" rows="5" spellcheck="false" placeholder="Your exported save code will appear here..."></textarea>
-      <div class="admin-actions">
-        <button id="backup-copy-btn" class="admin-action primary" type="button">📋 Copy Save</button>
-        <button id="backup-import-btn" class="admin-action" type="button">📥 Load Pasted Save</button>
-      </div>
-      <p id="backup-status" class="admin-status" role="status" aria-live="polite"></p>
-    </div>
-  </section>
+
 
   <!-- Confirmation Modal -->
   <section id="confirm-modal" class="admin-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-title" hidden>
@@ -522,7 +513,23 @@
       <span class="fish-oliva-name">OLIVA HAS ENTERED THE TANK</span>
     </div>
   </div>
+  <!-- Collapsible 3D Studio Bottom Dock -->
+  <aside id="studio-dock" class="studio-dock" aria-label="3D studio camera controls">
+    <button id="dock-collapse-btn" class="dock-collapse-btn" type="button" aria-expanded="true">▾ Hide Bar</button>
+    <div class="studio-dock-bar">
+      <button id="dock-zen-btn" class="dock-btn primary" type="button" aria-pressed="false">🎬 3D Studio View</button>
+      <div class="dock-divider" aria-hidden="true"></div>
+      <div class="dock-presets" role="group" aria-label="3D camera angles">
+        <button class="dock-btn" type="button" data-camera-preset="studio" aria-pressed="true">Studio</button>
+        <button class="dock-btn" type="button" data-camera-preset="jar" aria-pressed="false">Spread Jar</button>
+        <button class="dock-btn" type="button" data-camera-preset="gymnast" aria-pressed="false">Handstand 🤸‍♂️</button>
+        <button class="dock-btn" type="button" data-camera-preset="orbit" aria-pressed="false">Free Orbit</button>
+      </div>
+    </div>
+  </aside>
+
   <div id="whiteout-overlay" class="whiteout-overlay" aria-hidden="true"></div>
-  <script src="Code.js?v=52"></script>
+  <script type="module" src="three-scene.js?v=53"></script>
+  <script src="Code.js?v=53"></script>
 </body>
 </html>
